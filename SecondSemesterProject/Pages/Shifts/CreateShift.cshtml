@@ -1,0 +1,75 @@
+﻿@page
+@using SecondSemesterProject.Models
+@model SecondSemesterProject.Pages.Shifts.CreateShiftModel
+@{
+}
+
+<style>
+    .remove-key {
+        position: absolute;
+        right: 20px;
+        margin-top: -5px;
+    }
+
+    .time-picker {
+        background-color: lightgray;
+        margin: 10px 0 10px 0;
+        padding: 10px 0 10px 0;
+    }
+
+    .add-btn {
+        background-color: lightgray;
+    }
+
+</style>
+
+<h3>Opret Vagt</h3>
+<form method="post">
+    <div class="col-6" align="center" style="margin: 10px">
+       @for (int i = 0; i < Model.Shifts.Count; i++)
+        {
+            <div>
+                <div class="time-picker">
+                    Tids punkt Fra:
+                    <input type="time"/>
+                    Til:
+                    <input type="time"/>
+                    @if (i > 0)
+                    {
+                        <a class="btn btn-danger remove-key">X</a>
+                    }
+                </div>
+                @for (int j = 0; j < Model.Shifts[i].Count; j++)
+                {
+                    <div>
+
+                        Vagt:
+                        <select>
+                            @foreach (var type in Model.ShiftTypes)
+                            {
+                                <option value="@type.ShiftTypeId">
+                                    @type.Name
+                                </option>
+                            }
+                        </select>
+                        @if (j > 0)
+                        {
+                            <a class="btn btn-danger remove-key">X</a>
+                        }
+                    </div>
+                    <hr/>
+                }
+                <a class="btn btn-primary add-btn">
+                    Tilføg Vagt
+                </a>
+            </div>
+        }
+        <hr/>
+       <a class="btn btn-primary add-btn" >
+           Tilføg Tidsrum
+       </a>
+    </div>
+    <div class="col-6">
+
+    </div>
+</form>
