@@ -1,4 +1,27 @@
 ﻿@page
 @model SecondSemesterProject.Pages.Login.LogoutModel
 @{
+    ViewData["Title"] = "Logout";
 }
+
+<style>
+    a:hover {
+        text-decoration: none;
+    }
+</style>
+
+<p>@Model.InfoText</p>
+
+<h1>Logout</h1>
+
+<form method="post">
+    <div class="form-group">
+        <label class="control-label">@Model.Member.Name</label>
+    </div>
+    <div class="form-group">
+        <input type="submit" value="Logout" class="btn btn-danger" />
+        <a asp-page="/Profiles/Profile">
+            <input type="button" value="Back" class="btn btn-light" />
+        </a>
+    </div>
+</form>

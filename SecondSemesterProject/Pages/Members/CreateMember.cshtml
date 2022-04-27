@@ -33,6 +33,22 @@
                     <input asp-for="@Model.Member.PhoneNumber">
                 </div>
                 <div class="form-group">
+                    <label asp-for="@Model.Member.BoardMember"></label>
+                    <input type="checkbox" asp-for="@Model.Member.BoardMember">
+                </div>
+                <div class="form-group">
+                    <label asp-for="@Model.Member.HygieneCertified"></label>
+                    <input type="checkbox" asp-for="@Model.Member.HygieneCertified">
+                </div>
+                <div class="form-group">
+                    <label asp-for="@Model.Member.CafeApprentice"></label>
+                    <input type="checkbox" asp-for="@Model.Member.CafeApprentice">
+                </div>
+                <div class="form-group">
+                    <label asp-for="@Model.Member.BakerApprentice"></label>
+                    <input type="checkbox" asp-for="@Model.Member.BakerApprentice">
+                </div>
+                <div class="form-group">
                     <input type="submit" value="Create" />
                     <a asp-page="/Members/Index"><input type="button" value="Cancel" /></a>
                 </div>
