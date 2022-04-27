@@ -13,5 +13,11 @@ namespace SecondSemesterProject.Models
         public Color Color { get; set; }
         public int ShiftTypeId { get; set; }
 
+        public ShiftType(string name, Color color, int shiftTypeId)
+        {
+            Name = name;
+            Color = color;
+            ShiftTypeId = shiftTypeId;
+        }
     }
 }
