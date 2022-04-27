@@ -1,0 +1,64 @@
+﻿@page
+@model SecondSemesterProject.Pages.Members.FamilyGroupModel
+@{
+    ViewData["Title"] = "Family Group";
+}
+
+<p>@Model.InfoText</p>
+
+<h4>Family Group: @Model.FamilyGroupID</h4>
+
+<table class="table">
+    <thead>
+    <tr>
+        <th>
+            ID
+        </th>
+        <th>
+            Name
+        </th>
+        <th>
+            E-mail
+        </th>
+        <th>
+            Password
+        </th>
+        <th>
+            Phone Number
+        </th>
+        <th></th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model.Members)
+    {
+        <tr>
+            <td>
+                @item.ID
+            </td>
+            <td>
+                @item.Name
+            </td>
+            <td>
+                @item.Email
+            </td>
+            <td>
+                @item.Password
+            </td>
+            <td>
+                @item.PhoneNumber
+            </td>
+            <td>
+                <p>
+                    <a asp-page="/Members/UpdateMember" asp-route-id="@item.ID">Update</a>
+                </p>
+            </td>
+            <td>
+                <p>
+                    <a asp-page="/Members/DeleteMember" asp-route-id="@item.ID">Delete</a>
+                </p>
+            </td>
+        </tr>
+    }
+</table>

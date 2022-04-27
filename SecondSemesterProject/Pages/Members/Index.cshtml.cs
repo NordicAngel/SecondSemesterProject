@@ -23,6 +23,8 @@ namespace SecondSemesterProject.Pages.Members
         public IndexModel(IMemberService service)
         {
             MemberService = service;
+
+            Members = new List<IMember>();
         }
 
         public IActionResult OnGet()
@@ -42,11 +44,11 @@ namespace SecondSemesterProject.Pages.Members
             }
             catch (SqlException sqlEx)
             {
-                InfoText = "Database Error\n" + sqlEx.Message;
+                InfoText = "Database Error: " + sqlEx.Message;
             }
             catch (Exception ex)
             {
-                InfoText = "General Error\n" + ex.Message;
+                InfoText = "General Error: " + ex.Message;
             }
 
             return Page();

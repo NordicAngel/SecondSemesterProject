@@ -28,25 +28,26 @@ namespace SecondSemesterProject.Models
 
         public bool BoardMember { get; set; }
         public bool HygieneCertified { get; set; }
-        public bool BakerApprentice { get; set; }
         public bool CafeApprentice { get; set; }
+        public bool BakerApprentice { get; set; }
 
         public Member()
         {
             
         }
 
-        public Member(int id, string name, string email, string password, string phoneNumber, bool boardMember, bool hygieneCertified, bool bakerApprentice, bool cafeApprentice)
+        public Member(int id, int familyGroupId, string name, string email, string password, string phoneNumber, bool boardMember, bool hygieneCertified, bool cafeApprentice, bool bakerApprentice)
         {
             ID = id;
+            FamilyGroupID = familyGroupId;
             Name = name;
             Email = email;
             Password = password;
             PhoneNumber = phoneNumber;
             BoardMember = boardMember;
             HygieneCertified = hygieneCertified;
-            BakerApprentice = bakerApprentice;
             CafeApprentice = cafeApprentice;
+            BakerApprentice = bakerApprentice;
         }
     }
 }

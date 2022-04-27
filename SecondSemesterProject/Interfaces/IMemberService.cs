@@ -17,5 +17,6 @@ namespace SecondSemesterProject.Interfaces
         public IMember GetMemberByID(int id);
         public List<IMember> GetMembersByName(string name);
         public List<IMember> GetAllMembers();
+        public List<IMember> GetAllFamilyGroupMembers(int id);
     }
 }

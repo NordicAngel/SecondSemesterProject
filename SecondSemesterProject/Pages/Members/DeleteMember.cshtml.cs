@@ -40,13 +40,13 @@ namespace SecondSemesterProject.Pages.Members
             }
             catch (SqlException sqlEx)
             {
-                InfoText = "Database Error\n" + sqlEx.Message;
+                InfoText = "Database Error: " + sqlEx.Message;
 
                 return Page();
             }
             catch (Exception ex)
             {
-                InfoText = "General Error\n" + ex.Message;
+                InfoText = "General Error: " + ex.Message;
 
                 return Page();
             }

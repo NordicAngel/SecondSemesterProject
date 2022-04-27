@@ -9,52 +9,43 @@ using SecondSemesterProject.Interfaces;
 
 namespace SecondSemesterProject.Pages.Members
 {
-    public class CreateMemberModel : PageModel
+    public class FamilyGroupModel : PageModel
     {
         private IMemberService MemberService;
 
-        [BindProperty]
-        public IMember Member { get; set; }
+        public int FamilyGroupID { get; set; }
+
+        public List<IMember> Members { get; set; }
 
         public string InfoText;
 
-        public CreateMemberModel(IMemberService service)
+        public FamilyGroupModel(IMemberService service)
         {
             MemberService = service;
+
+            Members = new List<IMember>();
         }
 
-        public IActionResult OnGet()
+        public IActionResult OnGet(int id)
         {
-            return Page();
-        }
-
-        public IActionResult OnPost()
-        {
-            if (!ModelState.IsValid)
-            {
-                return Page();
-            }
-
             InfoText = "";
+
+            FamilyGroupID = id;
 
             try
             {
-                MemberService.CreateMember(Member);
+                Members = MemberService.GetAllFamilyGroupMembers(id);
             }
             catch (SqlException sqlEx)
             {
                 InfoText = "Database Error: " + sqlEx.Message;
-
-                return Page();
             }
             catch (Exception ex)
             {
                 InfoText = "General Error: " + ex.Message;
-
-                return Page();
             }
 
-            return RedirectToPage("Index");
+            return Page();
         }
     }
 }

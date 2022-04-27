@@ -20,7 +20,7 @@ namespace SecondSemesterProject.Interfaces
 
         public bool BoardMember { get; set; }
         public bool HygieneCertified { get; set; }
-        public bool BakerApprentice { get; set; }
         public bool CafeApprentice { get; set; }
+        public bool BakerApprentice { get; set; }
     }
 }
