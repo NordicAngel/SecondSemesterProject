@@ -50,9 +50,10 @@ namespace SecondSemesterProject.Pages.Shifts
             );
         }
 
-        public void OnPostRemoveTimeSpan(int timeSpanIndex)
+        public IActionResult OnPostRemoveTimeSpan(int timeSpanIndex)
         {
             Shifts.RemoveAt(timeSpanIndex);
+            return RedirectToPage();
         }
 
         public void OnPostAddShift(int timeSpanIndex)

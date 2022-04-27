@@ -24,7 +24,7 @@ namespace SecondSemesterProject.Services
         {
             return new List<ShiftType>()
             {
-                new ShiftType() {Color = Color.Blue, Name = "Bagger", ShiftTypeId = 1}
+                new ShiftType() {Color = Color.Blue, Name = "Bager", ShiftTypeId = 1}
             };
         }
 

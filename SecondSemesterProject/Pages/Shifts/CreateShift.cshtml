@@ -12,64 +12,100 @@
     }
 
     .time-picker {
+        position: relative;
         background-color: lightgray;
         margin: 10px 0 10px 0;
         padding: 10px 0 10px 0;
+    }
+
+    .shift {
+        position: relative;
     }
 
     .add-btn {
         background-color: lightgray;
     }
 
+    .f-container {
+        display: flex;
+        text-align: center;
+    }
+
+    .f-container-object {
+        flex: 1;
+        margin: 10px;
+    }
+
 </style>
 
 <h3>Opret Vagt</h3>
 <form method="post">
-    <div class="col-6" align="center" style="margin: 10px">
-       @for (int i = 0; i < Model.Shifts.Count; i++)
-        {
-            <div>
-                <div class="time-picker">
-                    Tids punkt Fra:
-                    <input type="time"/>
-                    Til:
-                    <input type="time"/>
-                    @if (i > 0)
-                    {
-                        <a class="btn btn-danger remove-key">X</a>
-                    }
-                </div>
-                @for (int j = 0; j < Model.Shifts[i].Count; j++)
-                {
-                    <div>
-
-                        Vagt:
-                        <select>
-                            @foreach (var type in Model.ShiftTypes)
-                            {
-                                <option value="@type.ShiftTypeId">
-                                    @type.Name
-                                </option>
-                            }
-                        </select>
-                        @if (j > 0)
+    <div class="f-container">
+        <div class="f-container-object">
+            @for (int i = 0; i < Model.Shifts.Count; i++)
+            {
+                <div>
+                    <div class="time-picker">
+                        Tids punkt Fra:
+                        <input type="time" />
+                        Til:
+                        <input type="time" />
+                        @if (i > 0)
                         {
-                            <a class="btn btn-danger remove-key">X</a>
+                            <a class="btn btn-danger remove-key"
+                               asp-page-handler="RemoveTimeSpan"
+                               asp-route-timeSpanIndex="@i">X</a>
                         }
                     </div>
-                    <hr/>
-                }
-                <a class="btn btn-primary add-btn">
-                    Tilføg Vagt
-                </a>
-            </div>
-        }
-        <hr/>
-       <a class="btn btn-primary add-btn" >
-           Tilføg Tidsrum
-       </a>
-    </div>
-    <div class="col-6">
+                    @for (int j = 0; j < Model.Shifts[i].Count; j++)
+                    {
+                        <div class="shift">
 
+                            Vagt:
+                            <select>
+                                @foreach (var type in Model.ShiftTypes)
+                                {
+                                    <option value="@type.ShiftTypeId">
+                                        @type.Name
+                                    </option>
+                                }
+                            </select>
+                            @if (j > 0)
+                            {
+                                <a
+                                    asp-page-handler="RemoveShift"
+                                    asp-route-timeSpanIndex="@i"
+                                    asp-route-shiftIndex="@j"
+                                    class="btn btn-danger remove-key">X</a>
+                            }
+                        </div>
+                        <hr />
+                    }
+                    <a
+                        asp-page-handler="addShift"
+                        asp-route-timeSpanIndex="@i"
+                        class="btn btn-primary add-btn">
+                        Tilføg Vagt
+                    </a>
+                </div>
+            }
+            <hr />
+            <a
+                asp-page-handler="AddTimeSpan"
+                class="btn btn-primary add-btn">
+                Tilføg Tidsrum
+            </a>
+        </div>
+        <div class="f-container-object">
+            <p>
+                Dato:
+                <input type="date" />
+            </p>
+            <p>
+                <input type="checkbox"/>
+                Gentage denne dags plan hver uge indtil:
+                <input type="week"/>
+            </p>
+        </div>
     </div>
 </form>
