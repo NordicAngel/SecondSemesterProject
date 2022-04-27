@@ -6,13 +6,15 @@ using Microsoft.Extensions.Configuration;
 
 namespace SecondSemesterProject.Services
 {
-    public abstract class Connection
+    public class Connection
     {
-        protected string connectionString = @"";
+        protected string ConnectionString;
 
-        public Connection(string connectionString)
+        public Connection(IConfiguration configuration)
         {
-            this.connectionString = connectionString;
+            ConnectionString = configuration["ConnectionStrings:DefaultConnection"];
         }
+
+
     }
 }
