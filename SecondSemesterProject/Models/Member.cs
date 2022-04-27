@@ -12,6 +12,8 @@ namespace SecondSemesterProject.Models
         [Required(ErrorMessage = "Required")]
         public int ID { get; set; }
 
+        public int FamilyGroupID { get; set; }
+
         [Required(ErrorMessage = "Required")]
         public string Name { get; set; }
 

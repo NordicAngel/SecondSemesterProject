@@ -53,6 +53,16 @@ namespace SecondSemesterProject.Services
             throw new NotImplementedException();
         }
 
+        public IMember Login(string email, string password)
+        {
+
+        }
+
+        public void Logout()
+        {
+
+        }
+
         public IMember GetMemberByID(int id)
         {
             throw new NotImplementedException();

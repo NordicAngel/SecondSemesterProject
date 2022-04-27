@@ -1,4 +1,85 @@
 ﻿@page
 @model SecondSemesterProject.Pages.Members.IndexModel
 @{
+    ViewData["Title"] = "Members";
 }
+
+<p>@Model.InfoText</p>
+
+<p>
+    <a asp-page="/Hotels/Create">Create New Member</a>
+</p>
+
+<form>
+    <p>
+        Search: <input type="text" asp-for="FilterCriteria" />
+        <input type="submit" value="Filter" />
+    </p>
+</form>
+
+<h4>Members</h4>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                ID
+            </th>
+            <th>
+                Family Group
+            </th>
+            <th>
+                Name
+            </th>
+            <th>
+                E-mail
+            </th>
+            <th>
+                Password
+            </th>
+            <th>
+                Phone Number
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model.Members)
+    {
+        <tr>
+            <td>
+                @item.ID
+            </td>
+            <td>
+                @item.FamilyGroupID
+            </td>
+            <td>
+                @item.Name
+            </td>
+            <td>
+                @item.Email
+            </td>
+            <td>
+                @item.Password
+            </td>
+            <td>
+                @item.PhoneNumber
+            </td>
+            <td>
+                <p>
+                    <a asp-page="/Members/FamilyGroup" asp-route-id="@item.ID">Family Group</a>
+                </p>
+            </td>
+            <td>
+                <p>
+                    <a asp-page="/Members/UpdateMember" asp-route-id="@item.ID">Update</a>
+                </p>
+            </td>
+            <td>
+                <p>
+                    <a asp-page="/Members/DeleteMember" asp-route-id="@item.ID">Delete</a>
+                </p>
+            </td>
+        </tr>
+        }
+    }
+</table>
