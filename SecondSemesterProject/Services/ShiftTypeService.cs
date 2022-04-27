@@ -8,23 +8,34 @@ using SecondSemesterProject.Models;
 
 namespace SecondSemesterProject.Services
 {
-    public class ShiftTypeService : IShiftTypeService
+    public class ShiftTypeService : ShiftType, IShiftTypeService
     {
+
+        public List<ShiftType> Types { get; set; }
+
         public void CreateShiftTypeAsync(ShiftType shiftType)
         {
-            throw new NotImplementedException();
+            
         }
 
         public ShiftType GetShiftTypeAsync(int shiftTypeId)
         {
-            throw new NotImplementedException();
+            foreach (ShiftType type in Types)
+            {
+                if (type.ShiftTypeId == shiftTypeId)
+                {
+                    return type;
+                }
+            }
+
+            return null;
         }
 
         public List<ShiftType> GetAllShiftTypesAsync()
         {
             return new List<ShiftType>()
             {
-                new ShiftType() {Color = Color.Blue, Name = "Bagger", ShiftTypeId = 1}
+                new ShiftType() {Name = "Bager", Color = Color.Blue,  ShiftTypeId = 1}
             };
         }
 
@@ -37,5 +48,6 @@ namespace SecondSemesterProject.Services
         {
             throw new NotImplementedException();
         }
+
     }
 }

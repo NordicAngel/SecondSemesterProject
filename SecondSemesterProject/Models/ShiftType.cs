@@ -8,8 +8,10 @@ namespace SecondSemesterProject.Models
 {
     public class ShiftType
     {
-        public int ShiftTypeId { get; set; }
+        
         public string Name { get; set; }
         public Color Color { get; set; }
+        public int ShiftTypeId { get; set; }
+
     }
 }

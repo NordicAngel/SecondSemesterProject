@@ -28,6 +28,7 @@ namespace SecondSemesterProject
             services.AddRazorPages();
             services.AddTransient<IShiftService, ShiftService>();
             services.AddTransient<IShiftTypeService, ShiftTypeService>();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
