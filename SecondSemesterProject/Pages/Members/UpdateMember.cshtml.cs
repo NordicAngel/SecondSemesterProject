@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Data.SqlClient;
 using SecondSemesterProject.Interfaces;
+using SecondSemesterProject.Models;
 
 namespace SecondSemesterProject.Pages.Members
 {
@@ -14,7 +15,7 @@ namespace SecondSemesterProject.Pages.Members
         private IMemberService MemberService;
 
         [BindProperty]
-        public IMember Member { get; set; }
+        public Member Member { get; set; }
 
         public string InfoText;
 
@@ -25,7 +26,7 @@ namespace SecondSemesterProject.Pages.Members
 
         public IActionResult OnGet(int id)
         {
-            Member = MemberService.GetMemberByID(id);
+            Member = (Member)MemberService.GetMemberByID(id);
 
             return Page();
         }
@@ -56,7 +57,7 @@ namespace SecondSemesterProject.Pages.Members
                 return Page();
             }
 
-            return RedirectToPage("GetAllHotels");
+            return RedirectToPage("Index");
         }
     }
 }

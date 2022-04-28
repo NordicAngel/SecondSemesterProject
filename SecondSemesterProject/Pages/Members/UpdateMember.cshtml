@@ -13,6 +13,7 @@
         <form method="post">
             <div asp-validation-summary="All">
                 <input type="hidden" asp-for="@Model.Member.ID" class="form-control" />
+                <input type="hidden" asp-for="@Model.Member.FamilyGroupID" class="form-control" />
                 <div class="form-group">
                     <label asp-for="@Model.Member.Name"></label><br />
                     <input asp-for="@Model.Member.Name">
@@ -36,14 +37,6 @@
                 <div class="form-group">
                     <label asp-for="@Model.Member.HygieneCertified"></label>
                     <input type="checkbox" asp-for="@Model.Member.HygieneCertified">
-                </div>
-                <div class="form-group">
-                    <label asp-for="@Model.Member.CafeApprentice"></label>
-                    <input type="checkbox" asp-for="@Model.Member.CafeApprentice">
-                </div>
-                <div class="form-group">
-                    <label asp-for="@Model.Member.BakerApprentice"></label>
-                    <input type="checkbox" asp-for="@Model.Member.BakerApprentice">
                 </div>
                 <div class="form-group">
                     <input type="submit" value="Update" />

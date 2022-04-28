@@ -53,7 +53,14 @@
                 @item.ID
             </td>
             <td>
-                @item.FamilyGroupID
+                @if (item.FamilyGroupID != null)
+                {
+                    @item.FamilyGroupID
+                }
+                else
+                {
+                    <span>None</span>
+                }
             </td>
             <td>
                 @item.Name
@@ -68,9 +75,12 @@
                 @item.PhoneNumber
             </td>
             <td>
-                <p>
-                    <a asp-page="/Members/FamilyGroup" asp-route-id="@item.ID">Family Group</a>
-                </p>
+                @if (item.FamilyGroupID != null)
+                {
+                    <p>
+                        <a asp-page="/Members/FamilyGroup/FamilyGroup" asp-route-id="@item.FamilyGroupID">Family Group</a>
+                    </p>
+                }
             </td>
             <td>
                 <p>

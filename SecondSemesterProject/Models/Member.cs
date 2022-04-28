@@ -12,7 +12,7 @@ namespace SecondSemesterProject.Models
         [Required(ErrorMessage = "Required")]
         public int ID { get; set; }
 
-        public int FamilyGroupID { get; set; }
+        public int? FamilyGroupID { get; set; }
 
         [Required(ErrorMessage = "Required")]
         public string Name { get; set; }
@@ -28,15 +28,13 @@ namespace SecondSemesterProject.Models
 
         public bool BoardMember { get; set; }
         public bool HygieneCertified { get; set; }
-        public bool CafeApprentice { get; set; }
-        public bool BakerApprentice { get; set; }
 
         public Member()
         {
             
         }
 
-        public Member(int id, int familyGroupId, string name, string email, string password, string phoneNumber, bool boardMember, bool hygieneCertified, bool cafeApprentice, bool bakerApprentice)
+        public Member(int id, int? familyGroupId, string name, string email, string password, string phoneNumber, bool boardMember, bool hygieneCertified)
         {
             ID = id;
             FamilyGroupID = familyGroupId;
@@ -46,8 +44,6 @@ namespace SecondSemesterProject.Models
             PhoneNumber = phoneNumber;
             BoardMember = boardMember;
             HygieneCertified = hygieneCertified;
-            CafeApprentice = cafeApprentice;
-            BakerApprentice = bakerApprentice;
         }
     }
 }
