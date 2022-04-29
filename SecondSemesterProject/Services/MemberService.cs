@@ -14,7 +14,7 @@ namespace SecondSemesterProject.Services
         private string selectSql = $"select * from {databaseName}";
         private string selectByIdSql = $"select * from {databaseName} where Id = @ID";
         private string selectByFamilyGroupIdSql = $"select * from {databaseName} where FamilyGroupId = @ID";
-        private string selectByNameSql = $"select * from {databaseName} where Name = @Name";
+        private string selectByNameSql = $"select * from {databaseName} where Name like @Name";
 
         private string insertSql = $"insert into {databaseName} Values (NULL, @Name, @Email, @Password, @PhoneNumber, @BoardMember, @HygieneCertified)";
         private string updateSql = $"update {databaseName} set Name = @Name, Email = @Email, Password = @Password, PhoneNumber = @PhoneNumber, BoardMember = @BoardMember, HygieneCertified = @HygieneCertified where Id = @ID";
@@ -22,6 +22,7 @@ namespace SecondSemesterProject.Services
 
         private string loginSql = $"select * from {databaseName} where Email = @Email, Password = @Password";
 
+        private string selectFamilyGroupSql = "select * from JO22_FamilyGroup";
         private string insertFamilyGroupSql = "insert into JO22_FamilyGroup";
 
         public MemberService(IConfiguration configuration) : base(configuration)
@@ -157,7 +158,7 @@ namespace SecondSemesterProject.Services
 
         }
 
-        public void CreateFamilyGroup()
+        public void CreateFamilyGroup(List<IMember> members)
         {
             using (SqlConnection connection = new SqlConnection(ConnectionString))
             {
@@ -166,6 +167,11 @@ namespace SecondSemesterProject.Services
                     SqlCommand command = new SqlCommand(insertFamilyGroupSql, connection);
                     command.Connection.Open();
                     command.ExecuteNonQuery();
+
+                    foreach (IMember member in members)
+                    {
+                        member.FamilyGroupID = 0;
+                    }
                 }
                 catch (SqlException)
                 {
@@ -176,6 +182,42 @@ namespace SecondSemesterProject.Services
                     throw;
                 }
             }
+        }
+
+        public Dictionary<int, List<IMember>> GetAllFamilyGroups()
+        {
+            Dictionary<int, List<IMember>> familyGroups = new Dictionary<int, List<IMember>>();
+
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            {
+                try
+                {
+                    SqlCommand command = new SqlCommand(selectFamilyGroupSql, connection);
+                    command.Connection.Open();
+                    command.ExecuteNonQuery();
+
+                    SqlDataReader reader = command.ExecuteReader();
+
+                    while (reader.Read())
+                    {
+                        int familyGroupId = reader.GetInt32(0);
+
+                        List<IMember> familyGroupMembers = GetAllFamilyGroupMembers(familyGroupId);
+
+                        familyGroups.Add(familyGroupId, familyGroupMembers);
+                    }
+                }
+                catch (SqlException)
+                {
+                    throw;
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
+            }
+
+            return familyGroups;
         }
 
         public IMember GetMemberByID(int id)

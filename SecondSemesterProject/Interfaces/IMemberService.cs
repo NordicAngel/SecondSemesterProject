@@ -14,6 +14,9 @@ namespace SecondSemesterProject.Interfaces
         public IMember Login(string email, string password);
         public void Logout();
 
+        public void CreateFamilyGroup(List<IMember> members);
+        public Dictionary<int, List<IMember>> GetAllFamilyGroups();
+
         public IMember GetMemberByID(int id);
         public List<IMember> GetMembersByName(string name);
         public List<IMember> GetAllMembers();
