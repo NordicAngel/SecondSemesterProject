@@ -1,0 +1,73 @@
+﻿@page
+@using SecondSemesterProject.Models
+@model SecondSemesterProject.Pages.Shifts.IndexModel
+@{
+}
+
+<style>
+    hmtl,main, body {
+        height: 100%;
+        margin: 5px
+    }
+    .calendar {
+        display: flex;
+        background: whitesmoke;
+        
+    }
+
+    .day {
+        display: flex;
+        flex: 1;
+        border: 2px solid lightgray;
+        margin: 5px;
+        text-align: center;
+        padding: 5px;
+        flex-flow: column;
+        height: 550px
+    }
+
+    .shift-container {
+        flex-grow: 1;
+        display: flex;
+        flex-flow: row;
+        position: relative
+    }
+    .shift {
+        flex-flow: column;
+        position: relative;
+        border: 1px solid gray;
+    }
+</style>
+<form method="post" 
+      asp-page-handler="Reload">
+    Vis fra 
+    <input 
+        type="date"
+        asp-for="FromDate"
+        onchange="this.form.submit();"
+    />
+    Vis antal dage: 
+    <input 
+        type="number"
+        asp-for="NumOfDays"
+        onchange="this.form.submit();"/>
+</form>
+<div class="calendar">
+    @for (int i = 0; i < Model.NumOfDays; i++)
+    {
+        <div class="day">
+            @Model.DaysOfShifts[i].Key.ToShortDateString()
+            <div class="shift-container">
+                @foreach (Shift s in Model.DaysOfShifts[i])
+                {
+                    <div class="shift"
+                         style="top: @(s.DateTimeStart.TimeOfDay.TotalHours/24*100)%;
+                     height: @(s.DateTimeEnd.TimeOfDay.TotalHours/24*100 
+                                 - s.DateTimeStart.TimeOfDay.TotalHours/24*100)%">
+                        @s.DateTimeStart.TimeOfDay - @s.DateTimeEnd.TimeOfDay
+                    </div>
+                }
+            </div>
+        </div>
+    }
+</div>

@@ -1,0 +1,76 @@
+﻿@page
+@model SecondSemesterProject.Pages.Events.GetAllEventsModel
+@{
+//ViewData["Title"] = "GetAllEvents";
+}
+
+<p>
+    <a asp-page="/Events/Create">Create New Event</a>
+</p>
+
+<form>
+    <p>
+        Search: <input type="text" asp-for="FilterCriteria" />
+        <input type="submit" value="Filter"/> 
+    </p>
+</form>
+
+<h4 style="color:blue"> List of events</h4>
+
+<table class="table">
+    <thead>
+    <tr>
+        <th>
+            Event Id
+        </th>
+        <th>
+            Name
+        </th>
+        <th>
+            Description
+        </th>
+        <th>
+            Time
+        </th>
+        <th>
+            Place
+        </th>
+        <th>
+            Image
+        </th>
+    </tr>
+    </thead>
+    
+    @if (Model.ErrorMsg != null)
+    {
+        <span style="color: red">@Model.ErrorMsg</span>
+    }
+    <tbody>
+    @if (Model.Events.Count() != 0)
+    {
+        @*foreach(var item in Models.Events)*@
+            @*<tr>*@
+                <!--@*<td>
+                    @item.EventId
+                </td>
+                <td>
+                    @item.Name
+                </td>
+                <td>
+                    @item.Description
+                </td>
+                <td>
+                    @item.Time
+                </td>
+                <td>
+                    @item.Place
+                </td>
+                <td>
+                    @item.Image*@-->
+                <!--</td>-->
+            <!--</tr>-->
+    }
+    @*</tbody>*@
+</table>
+
+@*Kilde: 20220325_HotelDB21Starter - Pages, Hotels, GetAllHotels.cshtml*@

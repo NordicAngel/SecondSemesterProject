@@ -26,10 +26,12 @@ namespace SecondSemesterProject
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddRazorPages();
+            services.AddTransient<IShiftService, ShiftService>();
+            services.AddTransient<IShiftTypeService, ShiftTypeService>();
 
             services.AddTransient<IMemberService, MemberService>();
         }
-
+        
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {

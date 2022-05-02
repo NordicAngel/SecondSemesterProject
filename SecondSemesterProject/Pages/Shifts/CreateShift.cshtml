@@ -1,0 +1,125 @@
+﻿@page
+@using SecondSemesterProject.Models
+@model SecondSemesterProject.Pages.Shifts.CreateShiftModel
+@{
+}
+
+<style>
+    .remove-key {
+        position: absolute;
+        right: 20px;
+        margin-top: -5px;
+    }
+
+    .time-picker {
+        position: relative;
+        background-color: lightgray;
+        margin: 10px 0 10px 0;
+        padding: 10px 0 10px 0;
+    }
+
+    .shift {
+        position: relative;
+    }
+
+    .btn1 {
+        background-color: lightgray;
+        color: black
+    }
+
+    .f-container {
+        display: flex;
+        text-align: center;
+    }
+
+    .f-container-object {
+        flex: 1;
+        margin: 10px;
+    }
+
+</style>
+
+<h3>Opret Vagt</h3>
+<form method="post">
+    <div class="f-container">
+        <div class="f-container-object">
+            @for (int i = 0; i < Model.TimeSpans.Count; i++)
+            {
+                <div>
+                    <div class="time-picker">
+                        Tids punkt Fra:
+                        <input type="time"
+                               asp-for="TimeSpans[i].DateTimeStart"
+                            />
+                        Til:
+                        <input type="time" 
+                               asp-for="TimeSpans[i].DateTimeEnd"/>
+                        @if (i > 0)
+                        {
+                            <input type="submit" class="btn btn-danger remove-key"
+                                   value="X"
+                                   asp-page-handler="RemoveTimeSpan"
+                                   asp-route-timeSpanIndex="@i"/>
+                        }
+                    </div>
+                    @for (int j = 0; j < Model.TimeSpans[i].TShifts.Count; j++)
+                    {
+                        <div class="shift">
+
+                            Vagt:
+                            <select asp-for="TimeSpans[i].TShifts[j].ShiftTypeId">
+                                @foreach (ShiftType type in Model.ShiftTypes)
+                                {
+                                    <option value="@type.ShiftTypeId">
+                                        @type.Name
+                                    </option>
+                                }
+                            </select>
+                            @if (j > 0)
+                            {
+                                <input 
+                                    type="submit"
+                                    value="X"
+                                    asp-page-handler="RemoveShift"
+                                    asp-route-timeSpanIndex="@i"
+                                    asp-route-shiftIndex="@j"
+                                    class="btn btn-danger remove-key"/>
+                            }
+                        </div>
+                        <hr />
+                    }
+                    <input
+                        type="submit"
+                        value="Tilføg Vagt"
+                        asp-page-handler="addShift"
+                        asp-route-timeSpanIndex="@i"
+                        class="btn btn-primary btn1"/>
+                </div>
+            }
+            <hr />
+            <input
+                type="submit"
+                value="Tilføg Tidsrum"
+                asp-page-handler="AddTimeSpan"
+                class="btn btn-primary btn1"/>
+        </div>
+        <div class="f-container-object">
+            <p>
+                Dato:
+                <input type="date" 
+                       asp-for="Date"/>
+            </p>
+            <p>
+                <input type="checkbox"
+                       asp-for="RepeatWeekly"/>
+                Gentage denne dags plan hver uge indtil:
+                <input type="week"
+                       asp-for="RepeatUntilWeek"/>
+            </p>
+            <input type="submit"
+                   value="Opret vagter"
+                   class="btn btn-primary btn1"
+                   asp-page=""/>
+        </div>
+    </div>
+</form>
