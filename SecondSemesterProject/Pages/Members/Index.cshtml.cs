@@ -18,6 +18,8 @@ namespace SecondSemesterProject.Pages.Members
         [BindProperty(SupportsGet = true)]
         public string FilterCriteria { get; set; }
 
+        public bool ResultsFound { get; set; }
+
         public string InfoText;
 
         public IndexModel(IMemberService service)
@@ -40,6 +42,15 @@ namespace SecondSemesterProject.Pages.Members
                 else
                 {
                     Members = MemberService.GetAllMembers();
+                }
+
+                if (Members.Count > 0)
+                {
+                    ResultsFound = true;
+                }
+                else
+                {
+                    ResultsFound = false;
                 }
             }
             catch (SqlException sqlEx)

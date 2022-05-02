@@ -12,38 +12,38 @@
 
 <form>
     <p>
-        Search: <input type="text" asp-for="FilterCriteria" />
-        <input type="submit" value="Filter" />
+        <input type="text" asp-for="FilterCriteria" />
+        <input type="submit" value="Search" />
     </p>
 </form>
 
-<h4>Members</h4>
+<h4>Members: @Model.Members.Count</h4>
 
 <table class="table">
     <thead>
-        <tr>
-            <th>
-                ID
-            </th>
-            <th>
-                Family Group ID
-            </th>
-            <th>
-                Name
-            </th>
-            <th>
-                E-mail
-            </th>
-            <th>
-                Password
-            </th>
-            <th>
-                Phone Number
-            </th>
-            <th></th>
-            <th></th>
-            <th></th>
-        </tr>
+    <tr>
+        <th>
+            ID
+        </th>
+        <th>
+            Family Group ID
+        </th>
+        <th>
+            Name
+        </th>
+        <th>
+            E-mail
+        </th>
+        <th>
+            Password
+        </th>
+        <th>
+            Phone Number
+        </th>
+        <th></th>
+        <th></th>
+        <th></th>
+    </tr>
     </thead>
     <tbody>
     @foreach (var item in Model.Members)
@@ -101,3 +101,9 @@
         </tr>
     }
 </table>
+@if (!Model.ResultsFound)
+{
+    <p style="text-align:center">
+        No results found!
+    </p>
+}

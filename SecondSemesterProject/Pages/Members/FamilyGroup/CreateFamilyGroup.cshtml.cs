@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Data.SqlClient;
 using SecondSemesterProject.Interfaces;
 
@@ -14,6 +15,8 @@ namespace SecondSemesterProject.Pages.Members.FamilyGroup
         private IMemberService MemberService;
 
         public List<IMember> Members { get; set; }
+
+        public List<SelectListItem> Options { get; set; }
 
         public string InfoText;
 
@@ -26,6 +29,8 @@ namespace SecondSemesterProject.Pages.Members.FamilyGroup
 
         public IActionResult OnGet()
         {
+            CreateOptionsList();
+
             return Page();
         }
 
@@ -35,7 +40,7 @@ namespace SecondSemesterProject.Pages.Members.FamilyGroup
 
             try
             {
-                MemberService.CreateFamilyGroup();
+                MemberService.CreateFamilyGroup(Members);
             }
             catch (SqlException sqlEx)
             {
@@ -45,6 +50,19 @@ namespace SecondSemesterProject.Pages.Members.FamilyGroup
             {
                 InfoText = "General Error: " + ex.Message;
             }
+
+            // Fix
+            return Page();
+        }
+
+        public void CreateOptionsList()
+        {
+            Options = MemberService.GetAllMembers().Select(a =>
+                new SelectListItem
+                {
+                    Value = a.ID.ToString(),
+                    Text = a.Name
+                }).ToList();
         }
     }
 }
