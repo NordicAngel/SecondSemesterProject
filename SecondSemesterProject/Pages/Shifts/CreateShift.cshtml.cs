@@ -25,7 +25,7 @@ namespace SecondSemesterProject.Pages.Shifts
 
         public void OnGet()
         {
-            ShiftTypes = _shiftTypeService.GetAllShiftTypesAsync();
+            //ShiftTypes = _shiftTypeService.GetAllShiftTypesAsync();
             Shifts = new List<List<Shift>>()
             {
                 new List<Shift>()

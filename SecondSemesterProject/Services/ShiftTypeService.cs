@@ -13,9 +13,13 @@ namespace SecondSemesterProject.Services
 {
     public class ShiftTypeService : Connection, IShiftTypeService
     {
-        private string insertSql = "insert into JO22_ShiftType Values (@Id, @Name, @Color)";
-        private string getTypeFromId = "select * from JO22_ShiftType where Id == @Id";
+        private string insertSql = "insert into JO22_ShiftType Values (@Name, @Color)";
+        private string getTypeFromId = "select * from JO22_ShiftType where Id = @Id";
         private string getAllTypes = "select * from JO22_ShiftType";
+        private string deleteType = "delete from JO22_ShiftType where Id = @Id";
+        private string UpdateType = "update JO22_ShiftType" +
+                                    " set Name = @Name, Color = @Color " +
+                                    "Where Id = @Id";
 
 
         public List<ShiftType> Types { get; set; }
@@ -25,9 +29,9 @@ namespace SecondSemesterProject.Services
             using (SqlConnection connection = new SqlConnection(ConnectionString))
             {
                 SqlCommand command = new SqlCommand(insertSql, connection);
-                command.Parameters.AddWithValue("@Id", shiftType.ShiftTypeId);
+                //command.Parameters.AddWithValue("@Id", shiftType.ShiftTypeId);
                 command.Parameters.AddWithValue("@Name", shiftType.Name);
-                command.Parameters.AddWithValue("@Color", shiftType.Color);
+                command.Parameters.AddWithValue("@Color", shiftType.Color.ToArgb());
                 await command.Connection.OpenAsync();
                 int noOfRows = await command.ExecuteNonQueryAsync();
                 return noOfRows == 1;
@@ -35,21 +39,22 @@ namespace SecondSemesterProject.Services
 
         }
 
-        public async Task<ShiftType> GetShiftTypeAsync(int shiftTypeId)
+        public async Task<ShiftType> GetShiftTypeAsync(int id)
         {
             using (SqlConnection connection = new SqlConnection(ConnectionString))
             {
                 SqlCommand command = new SqlCommand(getTypeFromId, connection);
-                command.Parameters.AddWithValue("@Id", shiftTypeId);
+                command.Parameters.AddWithValue("@Id", id);
                 await command.Connection.OpenAsync();
                 SqlDataReader reader = await command.ExecuteReaderAsync();
 
                 if (await reader.ReadAsync())
                 {
-                    int TypeId = reader.GetInt32(0);
-                    string TypeName = reader.GetString(1);
-                    Color TypeColor = Color.FromArgb(reader.GetInt32(2));
-                    ShiftType shiftType = new ShiftType(TypeName, TypeColor, TypeId);
+                    int typeId = reader.GetInt32(0);
+                    string typeName = reader.GetString(1);
+                    Color typeColor = Color.FromArgb(reader.GetInt32(2));
+                    ShiftType sType = new ShiftType(typeId, typeName, typeColor);
+                    return sType;
                 }
             }
 
@@ -58,27 +63,59 @@ namespace SecondSemesterProject.Services
 
         public async Task<List<ShiftType>> GetAllShiftTypesAsync()
         {
-            List<ShiftType> sTypes;
+            List<ShiftType> sTypes = new List<ShiftType>();
             using (SqlConnection connection = new SqlConnection(ConnectionString))
             {
                 SqlCommand command = new SqlCommand(getAllTypes, connection);
-
+                await command.Connection.OpenAsync();
+                SqlDataReader reader = await command.ExecuteReaderAsync();
+                while (await reader.ReadAsync())
+                {
+                    int TypeId = reader.GetInt32(0);
+                    string TypeName = reader.GetString(1);
+                    Color TypeColor = Color.FromArgb(reader.GetInt32(2));
+                    ShiftType shiftType = new ShiftType(TypeId, TypeName, TypeColor);
+                    sTypes.Add(shiftType);
+                }
             }
 
-            return new List<ShiftType>()
+            return sTypes;
+
+            //return new List<ShiftType>()
+            //{
+            //    new ShiftType() {Name = "Bager", Color = Color.Blue,  ShiftTypeId = 1}
+            //};
+        }
+
+        public async Task<bool> UpdateShiftTypeAsync(int shiftTypeId, ShiftType shiftType)
+        {
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
             {
-                new ShiftType() {Name = "Bager", Color = Color.Blue,  ShiftTypeId = 1}
-            };
+                SqlCommand command = new SqlCommand(UpdateType, connection);
+                command.Parameters.AddWithValue("@Name", shiftType.Name);
+                command.Parameters.AddWithValue("@Color", shiftType.Color.ToArgb());
+                //command.Parameters.AddWithValue("@ShiftId", shiftTypeId);
+                command.Parameters.AddWithValue("@Id", shiftType.ShiftTypeId);
+                await command.Connection.OpenAsync();
+                await command.ExecuteNonQueryAsync();
+            }
+
+            return true;
         }
 
-        public void UpdateShiftTypeAsync(int shiftTypeId, ShiftType newShiftType)
+        public async Task<ShiftType> DeleteShiftTypeAsync(int shiftTypeId)
         {
-            throw new NotImplementedException();
-        }
 
-        public void DeleteShiftTypeAsync(int shiftTypeId)
-        {
-            throw new NotImplementedException();
+            ShiftType shiftType = await GetShiftTypeAsync(shiftTypeId);
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            {
+                SqlCommand command = new SqlCommand(deleteType, connection);
+                command.Parameters.AddWithValue("@Id", shiftType.ShiftTypeId);
+                await command.Connection.OpenAsync();
+                await command.ExecuteNonQueryAsync();
+            }
+
+            return shiftType;
         }
 
         public ShiftTypeService(IConfiguration configuration) : base(configuration)
