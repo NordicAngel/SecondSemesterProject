@@ -1,25 +1,27 @@
 ﻿@page
 @model SecondSemesterProject.Pages.Members.FamilyGroup.CreateFamilyGroupModel
 @{
-    ViewData["Title"] = "Create Member";
+    ViewData["Title"] = "Tilføj Familiegruppe";
 }
 
 <p>@Model.InfoText</p>
 
-<h1>Create Member</h1>
+<h1>Tilføj familiegruppe</h1>
 
 <div class="row">
     <div class="col-md-4">
         <form method="post">
             <div asp-validation-summary="All">
                 <div class="form-group">
-                    <label>Select maximum 5 members</label>
-                    <select asp-for="@Model.Members" asp-items="@Model.Options" class="form-control">
-                    </select>
+                    <label>Vælg max 5 medlemmer</label>
+                    @for (int i = 0; i < 5; i++)
+                    {
+                        <select asp-for="@Model.Members" asp-items="@Model.Options" class="form-control"></select>
+                    }
                 </div>
                 <div class="form-group">
-                    <input type="submit" value="Create" />
-                    <a asp-page="/Members/Index"><input type="button" value="Cancel" /></a>
+                    <input type="submit" value="Tilføj"/>
+                    <a asp-page="/Members/Index"><input type="button" value="Tilbage"/></a>
                 </div>
             </div>
         </form>

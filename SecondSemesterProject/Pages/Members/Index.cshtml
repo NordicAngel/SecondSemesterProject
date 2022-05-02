@@ -1,23 +1,23 @@
 ﻿@page
 @model SecondSemesterProject.Pages.Members.IndexModel
 @{
-    ViewData["Title"] = "Members";
+    ViewData["Title"] = "Medlemmer";
 }
 
 <p>@Model.InfoText</p>
 
 <p>
-    <a asp-page="/Members/CreateMember">Create New Member</a>
+    <a asp-page="/Members/CreateMember">Tilføj nyt medlem</a>
 </p>
 
 <form>
     <p>
         <input type="text" asp-for="FilterCriteria" />
-        <input type="submit" value="Search" />
+        <input type="submit" value="Søg" />
     </p>
 </form>
 
-<h4>Members: @Model.Members.Count</h4>
+<h4>Medlemmer: @Model.Members.Count</h4>
 
 <table class="table">
     <thead>
@@ -78,19 +78,19 @@
                 @if (item.FamilyGroupID != null)
                 {
                     <p>
-                        <a asp-page="/Members/FamilyGroup/FamilyGroup" asp-route-id="@item.FamilyGroupID">Family Group</a>
+                        <a asp-page="/Members/FamilyGroup/FamilyGroup" asp-route-id="@item.FamilyGroupID">Se familiegruppe</a>
                     </p>
                 }
                 else
                 {
                     <p>
-                        <a asp-page="/Members/FamilyGroup/FamilyGroup">Create Family Group</a>
+                        <a asp-page="/Members/FamilyGroup/FamilyGroup">Tilføj til familiegruppe</a>
                     </p>
                 }
             </td>
             <td>
                 <p>
-                    <a asp-page="/Members/UpdateMember" asp-route-id="@item.ID">Update</a>
+                    <a asp-page="/Members/UpdateMember" asp-route-id="@item.ID">Opdater</a>
                 </p>
             </td>
             <td>

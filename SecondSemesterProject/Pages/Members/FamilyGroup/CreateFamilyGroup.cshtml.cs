@@ -14,6 +14,7 @@ namespace SecondSemesterProject.Pages.Members.FamilyGroup
     {
         private IMemberService MemberService;
 
+        [BindProperty]
         public List<IMember> Members { get; set; }
 
         public List<SelectListItem> Options { get; set; }

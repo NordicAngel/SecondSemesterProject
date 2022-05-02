@@ -1,7 +1,7 @@
 ﻿@page
 @model SecondSemesterProject.Pages.Login.LogoutModel
 @{
-    ViewData["Title"] = "Logout";
+    ViewData["Title"] = "Log Ud";
 }
 
 <style>
@@ -12,16 +12,16 @@
 
 <p>@Model.InfoText</p>
 
-<h1>Logout</h1>
+<h1>Log ud</h1>
 
 <form method="post">
     <div class="form-group">
         <label class="control-label">@Model.Member.Name</label>
     </div>
     <div class="form-group">
-        <input type="submit" value="Logout" class="btn btn-danger" />
+        <input type="submit" value="Log Ud" class="btn btn-danger" />
         <a asp-page="/Profiles/Profile">
-            <input type="button" value="Back" class="btn btn-light" />
+            <input type="button" value="Tilbage" class="btn btn-light" />
         </a>
     </div>
 </form>

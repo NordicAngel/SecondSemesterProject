@@ -1,16 +1,16 @@
 ﻿@page
 @model SecondSemesterProject.Pages.Members.FamilyGroup.IndexModel
 @{
-    ViewData["Title"] = "Family Groups";
+    ViewData["Title"] = "Familiegrupper";
 }
 
 <p>@Model.InfoText</p>
 
 <p>
-    <a asp-page="/Members/FamilyGroup/CreateFamilyGroup">Create Family Group</a>
+    <a asp-page="/Members/FamilyGroup/CreateFamilyGroup">Tilføj familiegruppe</a>
 </p>
 
-<h4>Family Groups</h4>
+<h4>Familiegrupper</h4>
 
 <table class="table">
     <thead>
@@ -36,7 +36,7 @@
                 </td>
                 <td>
                     <p>
-                        <a asp-page="/Members/FamilyGroup/FamilyGroup" asp-route-id="@item.Key">Update</a>
+                        <a asp-page="/Members/FamilyGroup/FamilyGroup" asp-route-id="@item.Key">Opdater</a>
                     </p>
                 </td>
             </tr>
