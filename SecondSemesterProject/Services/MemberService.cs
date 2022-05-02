@@ -171,6 +171,8 @@ namespace SecondSemesterProject.Services
                     foreach (IMember member in members)
                     {
                         member.FamilyGroupID = 0;
+
+                        // Update members with new family group id
                     }
                 }
                 catch (SqlException)
