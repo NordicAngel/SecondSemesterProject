@@ -8,6 +8,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using SecondSemesterProject.Interfaces;
+using SecondSemesterProject.Services;
 
 namespace SecondSemesterProject
 {
@@ -24,7 +26,8 @@ namespace SecondSemesterProject
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddRazorPages();
-
+            services.AddTransient<IShiftService, ShiftService>();
+            services.AddTransient<IShiftTypeService, ShiftTypeService>();
         }
         
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
