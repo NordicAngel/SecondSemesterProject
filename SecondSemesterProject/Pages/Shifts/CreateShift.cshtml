@@ -22,8 +22,9 @@
         position: relative;
     }
 
-    .add-btn {
+    .btn1 {
         background-color: lightgray;
+        color: black
     }
 
     .f-container {
@@ -42,28 +43,32 @@
 <form method="post">
     <div class="f-container">
         <div class="f-container-object">
-            @for (int i = 0; i < Model.Shifts.Count; i++)
+            @for (int i = 0; i < Model.TimeSpans.Count; i++)
             {
                 <div>
                     <div class="time-picker">
                         Tids punkt Fra:
-                        <input type="time" />
+                        <input type="time"
+                               asp-for="TimeSpans[i].DateTimeStart"
+                            />
                         Til:
-                        <input type="time" />
+                        <input type="time" 
+                               asp-for="TimeSpans[i].DateTimeEnd"/>
                         @if (i > 0)
                         {
-                            <a class="btn btn-danger remove-key"
-                               asp-page-handler="RemoveTimeSpan"
-                               asp-route-timeSpanIndex="@i">X</a>
+                            <input type="submit" class="btn btn-danger remove-key"
+                                   value="X"
+                                   asp-page-handler="RemoveTimeSpan"
+                                   asp-route-timeSpanIndex="@i"/>
                         }
                     </div>
-                    @for (int j = 0; j < Model.Shifts[i].Count; j++)
+                    @for (int j = 0; j < Model.TimeSpans[i].TShifts.Count; j++)
                     {
                         <div class="shift">
 
                             Vagt:
-                            <select>
-                                @foreach (var type in Model.ShiftTypes)
+                            <select asp-for="TimeSpans[i].TShifts[j].ShiftTypeId">
+                                @foreach (ShiftType type in Model.ShiftTypes)
                                 {
                                     <option value="@type.ShiftTypeId">
                                         @type.Name
@@ -72,40 +77,49 @@
                             </select>
                             @if (j > 0)
                             {
-                                <a
+                                <input 
+                                    type="submit"
+                                    value="X"
                                     asp-page-handler="RemoveShift"
                                     asp-route-timeSpanIndex="@i"
                                     asp-route-shiftIndex="@j"
-                                    class="btn btn-danger remove-key">X</a>
+                                    class="btn btn-danger remove-key"/>
                             }
                         </div>
                         <hr />
                     }
-                    <a
+                    <input
+                        type="submit"
+                        value="Tilføg Vagt"
                         asp-page-handler="addShift"
                         asp-route-timeSpanIndex="@i"
-                        class="btn btn-primary add-btn">
-                        Tilføg Vagt
-                    </a>
+                        class="btn btn-primary btn1"/>
                 </div>
             }
             <hr />
-            <a
+            <input
+                type="submit"
+                value="Tilføg Tidsrum"
                 asp-page-handler="AddTimeSpan"
-                class="btn btn-primary add-btn">
-                Tilføg Tidsrum
-            </a>
+                class="btn btn-primary btn1"/>
         </div>
         <div class="f-container-object">
             <p>
                 Dato:
-                <input type="date" />
+                <input type="date" 
+                       asp-for="Date"/>
             </p>
             <p>
-                <input type="checkbox"/>
+                <input type="checkbox"
+                       asp-for="RepeatWeekly"/>
                 Gentage denne dags plan hver uge indtil:
-                <input type="week"/>
+                <input type="week"
+                       asp-for="RepeatUntilWeek"/>
             </p>
+            <input type="submit"
+                   value="Opret vagter"
+                   class="btn btn-primary btn1"
+                   asp-page=""/>
         </div>
     </div>
 </form>

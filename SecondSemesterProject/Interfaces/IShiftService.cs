@@ -8,10 +8,10 @@ namespace SecondSemesterProject.Interfaces
 {
     public interface IShiftService
     {
-        void CreateShiftAsync(Shift shift);
-        Shift GetShiftAsync(int shiftId);
-        List<Shift> GetAllShiftAsync();
-        void UpdateShiftAsync(int shiftId, Shift newShift);
-        void DeleteShiftAsync(int shiftId);
+        Task CreateShiftAsync(Shift shift);
+        Task<Shift> GetShiftAsync(int shiftId);
+        Task<List<Shift>> GetAllShiftAsync();
+        Task UpdateShiftAsync(int shiftId, Shift newShift);
+        Task DeleteShiftAsync(int shiftId);
     }
 }
