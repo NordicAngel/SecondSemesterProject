@@ -29,13 +29,13 @@ namespace SecondSemesterProject.Pages.Shifts
         {
             _shiftService = shiftService;
             _shiftTypeService = shiftTypeService;
-            ShiftTypes = _shiftTypeService.GetAllShiftTypesAsync();
+            ShiftTypes = _shiftTypeService.GetAllShiftTypesAsync().Result;
         }
 
-        public void OnGet()
+        public async Task OnGetAsync()
         {
-            ShiftTypes = _shiftTypeService.GetAllShiftTypesAsync();
-            Shifts = new List<List<Shift>>()
+            ShiftTypes = await _shiftTypeService.GetAllShiftTypesAsync();
+            TimeSpans = new ()
             {
                 new()
                 {
