@@ -8,7 +8,7 @@ namespace SecondSemesterProject.Services
 {
     public class Connection
     {
-        protected string ConnectionString;
+        protected String ConnectionString;
 
         public Connection(IConfiguration configuration)
         {
