@@ -1,0 +1,31 @@
+﻿@page
+@model SecondSemesterProject.Pages.ShiftTypes.DeleteShiftTypeModel
+@{
+    ViewData["Title"] = "Slet Vagttype";
+}
+
+<h1>Slet vagttype</h1>
+
+
+<div class="row">
+    <div class="col-md-5">
+        <form method="post">
+            <div class="form-group">
+                <label asp-for="@Model.shiftType.ShiftTypeId">Id: </label>
+                <label asp-for="@Model.shiftType.ShiftTypeId">@Model.shiftType.ShiftTypeId</label>
+            </div>
+            <div class="form-group">
+                <label asp-for="@Model.shiftType.Name">Vagttype: </label>
+                <label asp-for="@Model.shiftType.Name">@Model.shiftType.Name</label>
+            </div>
+            <div class="form-group">
+                <label asp-for="@Model.shiftType.Color">Farve: </label>
+                <label asp-for="@Model.shiftType.Color">@Model.shiftType.Color</label>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Slet" style="background-color: tomato"/>
+                <a asp-page="/ShiftTypes/GetAllShiftType"><input type="button" value="Anuller"/></a>
+            </div>
+        </form>
+    </div>
+</div>

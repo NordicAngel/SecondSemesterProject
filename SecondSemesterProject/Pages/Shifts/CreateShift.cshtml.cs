@@ -34,8 +34,8 @@ namespace SecondSemesterProject.Pages.Shifts
 
         public void OnGet()
         {
-            Date = DateTime.Today;
-            TimeSpans = new List<ShiftTimeSpan>()
+            ShiftTypes = _shiftTypeService.GetAllShiftTypesAsync();
+            Shifts = new List<List<Shift>>()
             {
                 new()
                 {
