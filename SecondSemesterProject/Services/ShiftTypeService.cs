@@ -72,7 +72,7 @@ namespace SecondSemesterProject.Services
                 while (await reader.ReadAsync())
                 {
                     int TypeId = reader.GetInt32(0);
-                    string TypeName = reader.GetString(1);
+                    string TypeName = reader.GetString(1);   
                     Color TypeColor = Color.FromArgb(reader.GetInt32(2));
                     ShiftType shiftType = new ShiftType(TypeId, TypeName, TypeColor);
                     sTypes.Add(shiftType);
@@ -94,8 +94,7 @@ namespace SecondSemesterProject.Services
                 SqlCommand command = new SqlCommand(UpdateType, connection);
                 command.Parameters.AddWithValue("@Name", shiftType.Name);
                 command.Parameters.AddWithValue("@Color", shiftType.Color.ToArgb());
-                //command.Parameters.AddWithValue("@ShiftId", shiftTypeId);
-                command.Parameters.AddWithValue("@Id", shiftType.ShiftTypeId);
+                command.Parameters.AddWithValue("@Id", shiftTypeId);
                 await command.Connection.OpenAsync();
                 await command.ExecuteNonQueryAsync();
             }

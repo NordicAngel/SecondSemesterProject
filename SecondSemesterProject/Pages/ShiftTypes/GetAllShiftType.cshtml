@@ -15,10 +15,7 @@
 
 <table class="table">
     <thead>
-        <th>
-            Id
-        </th>
-        <th>
+    <th>
             Vagttype
         </th>
         <th>
@@ -31,9 +28,6 @@
             {
         <tr>
             <td>
-                @item.ShiftTypeId
-            </td>
-            <td>
                 @item.Name
             </td>
             <td>
@@ -44,7 +38,7 @@
             </td>
             <td>
                 <a asp-page="/Shifttypes/DeleteShiftType" asp-route-shiftTypeId="@item.ShiftTypeId">
-                    <input type="submit" value="Slet" style="background-color: tomato" />
+                    <input class="btn-danger" type="submit" value="Slet" />
                 </a>
             </td>
         </tr>

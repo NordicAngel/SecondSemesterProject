@@ -5,20 +5,30 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using SecondSemesterProject.Interfaces;
+using SecondSemesterProject.Models;
 
 namespace SecondSemesterProject.Pages
 {
-    public class IndexModel : PageModel
+    public  class IndexModel : PageModel
     {
         private readonly ILogger<IndexModel> _logger;
+        public List<Shift> Shift { get; private set; }
 
-        public IndexModel(ILogger<IndexModel> logger)
+        public IShiftService ShiftService;
+
+        public IndexModel(ILogger<IndexModel> logger, IShiftService sService)
         {
             _logger = logger;
+            ShiftService = sService;
         }
 
-        public void OnGet()
+        
+
+
+        public async Task OnGet()
         {
+            
 
         }
     }

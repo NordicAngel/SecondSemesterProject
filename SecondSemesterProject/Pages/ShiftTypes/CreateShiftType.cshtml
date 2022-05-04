@@ -15,11 +15,11 @@
             </div>
             <div class="form-group">
                 <label asp-for="@Model.shiftType.Color"></label>
-                <input type="color"/>
+                <input asp-for="@Model.shiftType.Color" type="color"/>
             </div>
             <div class="form-group">
-                <input type="submit" value="Opret VagtType"/>
-                <a asp-page="/ShiftTypes/GetAllShiftType" ><input type="button" value="Anuller" style="background-color:tomato"/></a>
+                <input class="btn-success" type="submit" value="Opret VagtType"/>
+                <a asp-page="/ShiftTypes/GetAllShiftType" ><input class="btn-danger" type="button" value="Anuller"/></a>
             </div>
         </form>
     </div>
