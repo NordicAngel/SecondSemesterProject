@@ -203,8 +203,8 @@ namespace SecondSemesterProject.Services
                     command_2.Connection.Open();
 
                     SqlDataReader reader = command_2.ExecuteReader();
-
                     reader.Read();
+
                     int familyGroupId = reader.GetInt32(0);
 
                     foreach (IMember member in members)

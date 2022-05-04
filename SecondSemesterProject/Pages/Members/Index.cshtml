@@ -7,13 +7,13 @@
 <p>@Model.InfoText</p>
 
 <p>
-    <a asp-page="/Members/CreateMember">Tilføj nyt medlem</a>
+    <a asp-page="/Members/CreateMember" class="btn btn-primary">Tilføj nyt medlem</a>
 </p>
 
 <form>
     <p>
         <input type="text" asp-for="FilterCriteria" />
-        <input type="submit" value="Søg" />
+        <input type="submit" value="Søg" class="btn btn-light" />
     </p>
 </form>
 
@@ -78,24 +78,24 @@
                 @if (item.FamilyGroupID != null)
                 {
                     <p>
-                        <a asp-page="/Members/FamilyGroup/FamilyGroup" asp-route-id="@item.FamilyGroupID">Se familiegruppe</a>
+                        <a asp-page="/Members/FamilyGroups/FamilyGroup" asp-route-id="@item.FamilyGroupID" class="btn btn-light">Se familiegruppe</a>
                     </p>
                 }
                 else
                 {
                     <p>
-                        <a asp-page="/Members/FamilyGroup/Index">Tilføj til familiegruppe</a>
+                        <a asp-page="/Members/FamilyGroups/Index" class="btn btn-light">Tilføj til familiegruppe</a>
                     </p>
                 }
             </td>
             <td>
                 <p>
-                    <a asp-page="/Members/UpdateMember" asp-route-id="@item.ID">Opdater</a>
+                    <a asp-page="/Members/UpdateMember" asp-route-id="@item.ID" class="btn btn-light">Opdater</a>
                 </p>
             </td>
             <td>
                 <p>
-                    <a asp-page="/Members/DeleteMember" asp-route-id="@item.ID">Slet</a>
+                    <a asp-page="/Members/DeleteMember" asp-route-id="@item.ID" class="btn btn-light">Slet</a>
                 </p>
             </td>
         </tr>

@@ -7,7 +7,7 @@
 <p>@Model.InfoText</p>
 
 <p>
-    <a asp-page="/Members/FamilyGroup/CreateFamilyGroup">Tilføj familiegruppe</a>
+    <a asp-page="/Members/FamilyGroups/CreateFamilyGroup" class="btn btn-primary">Tilføj familiegruppe</a>
 </p>
 
 <h4>Familiegrupper</h4>
@@ -36,7 +36,7 @@
                 </td>
                 <td>
                     <p>
-                        <a asp-page="/Members/FamilyGroup/FamilyGroup" asp-route-id="@item.Key">Se medlemmer</a>
+                        <a asp-page="/Members/FamilyGroups/FamilyGroup" asp-route-id="@item.Key" class="btn btn-light">Se medlemmer</a>
                     </p>
                 </td>
             </tr>

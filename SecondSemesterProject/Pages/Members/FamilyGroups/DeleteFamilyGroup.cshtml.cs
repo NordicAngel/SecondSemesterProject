@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace SecondSemesterProject.Pages.Members.FamilyGroup
+namespace SecondSemesterProject.Pages.Members.FamilyGroups
 {
-    public class UpdateFamilyGroupModel : PageModel
+    public class DeleteFamilyGroupModel : PageModel
     {
         public void OnGet()
         {
