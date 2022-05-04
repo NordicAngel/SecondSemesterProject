@@ -121,6 +121,22 @@ namespace SecondSemesterProject.Services
             }
         }
 
+        public bool CheckMemberInfo(IMember checkMember)
+        {
+            foreach (IMember member in GetAllMembers())
+            {
+                if (member.ID != checkMember.ID)
+                {
+                    if (string.Equals(member.Email, checkMember.Email) || string.Equals(member.PhoneNumber, checkMember.PhoneNumber))
+                    {
+                        return false;
+                    }
+                }
+            }
+
+            return true;
+        }
+
         public IMember Login(string email, string password)
         {
             using (SqlConnection connection = new SqlConnection(ConnectionString))

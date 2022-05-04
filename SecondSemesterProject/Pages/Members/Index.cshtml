@@ -26,19 +26,16 @@
             ID
         </th>
         <th>
-            Family Group ID
+            Familiegruppe ID
         </th>
         <th>
-            Name
+            Navn
         </th>
         <th>
             E-mail
         </th>
         <th>
-            Password
-        </th>
-        <th>
-            Phone Number
+            Telefonnummer
         </th>
         <th></th>
         <th></th>
@@ -59,7 +56,7 @@
                 }
                 else
                 {
-                    <span>None</span>
+                    <span>Ingen</span>
                 }
             </td>
             <td>
@@ -67,9 +64,6 @@
             </td>
             <td>
                 @item.Email
-            </td>
-            <td>
-                @item.Password
             </td>
             <td>
                 @item.PhoneNumber
@@ -104,6 +98,6 @@
 @if (!Model.ResultsFound)
 {
     <p style="text-align:center">
-        No results found!
+        Ingen resultater!
     </p>
 }

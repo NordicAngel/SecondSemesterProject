@@ -11,6 +11,7 @@ namespace SecondSemesterProject.Interfaces
         public void UpdateMember(int id, IMember member);
         public void DeleteMember(int id);
 
+        public bool CheckMemberInfo(IMember checkMember);
         public IMember Login(string email, string password);
         public void Logout();
 

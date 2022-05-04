@@ -42,7 +42,16 @@ namespace SecondSemesterProject.Pages.Members
 
             try
             {
-                MemberService.UpdateMember(id, Member);
+                if (MemberService.CheckMemberInfo(Member))
+                {
+                    MemberService.UpdateMember(id, Member);
+                }
+                else
+                {
+                    InfoText = "E-mail eller telefonnummer allerede taget!";
+
+                    return Page();
+                }
             }
             catch (SqlException sqlEx)
             {
