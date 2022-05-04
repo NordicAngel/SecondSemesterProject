@@ -15,6 +15,9 @@ namespace SecondSemesterProject.Interfaces
         public void Logout();
 
         public void CreateFamilyGroup(List<IMember> members);
+        public void UpdateFamilyGroup(List<IMember> members, int id);
+        public void DeleteFamilyGroup(int id);
+
         public Dictionary<int, List<IMember>> GetAllFamilyGroups();
 
         public IMember GetMemberByID(int id);

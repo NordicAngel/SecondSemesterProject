@@ -22,23 +22,35 @@
                 Number of Members
             </th>
             <th></th>
+            <th></th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
         @foreach (var item in Model.FamilyGroups)
         {
-            <tr>
-                <td>
-                    @item.Key
-                </td>
-                <td>
-                    @item.Value.Count
-                </td>
-                <td>
-                    <p>
-                        <a asp-page="/Members/FamilyGroups/FamilyGroup" asp-route-id="@item.Key" class="btn btn-light">Se medlemmer</a>
-                    </p>
-                </td>
-            </tr>
+        <tr>
+            <td>
+                @item.Key
+            </td>
+            <td>
+                @item.Value.Count
+            </td>
+            <td>
+                <p>
+                    <a asp-page="/Members/FamilyGroups/FamilyGroup" asp-route-id="@item.Key" class="btn btn-light">Se medlemmer</a>
+                </p>
+            </td>
+            <td>
+                <p>
+                    <a asp-page="/Members/FamilyGroups/UpdateFamilyGroup" asp-route-id="@item.Key" class="btn btn-light">Opdater familie gruppe</a>
+                </p>
+            </td>
+            <td>
+                <p>
+                    <a asp-page="/Members/FamilyGroups/DeleteFamilyGroup" asp-route-id="@item.Key" class="btn btn-light">Slet familie gruppe</a>
+                </p>
+            </td>
+        </tr>
         }
 </table>

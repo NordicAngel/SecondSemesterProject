@@ -43,11 +43,11 @@ namespace SecondSemesterProject.Pages.Members.FamilyGroup
             {
                 List<IMember> members = new List<IMember>();
 
-                foreach (int? id in MembersID)
+                foreach (int? memberId in MembersID)
                 {
-                    if (id != null)
+                    if (memberId != null)
                     {
-                        members.Add(MemberService.GetMemberByID((int)id));
+                        members.Add(MemberService.GetMemberByID((int)memberId));
                     }
                 }
 

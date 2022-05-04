@@ -7,7 +7,7 @@
 <p>@Model.InfoText</p>
 
 <p>
-    <a asp-page="/Members/FamilyGroups/UpdateFamilyGroup" class="btn btn-primary">Opdater familiegruppe</a>
+    <a asp-page="/Members/FamilyGroups/UpdateFamilyGroup" asp-route-id="@Model.FamilyGroupID" class="btn btn-primary">Opdater familiegruppe</a>
 </p>
 
 <h4>Familiegruppe nummer: @Model.FamilyGroupID</h4>
