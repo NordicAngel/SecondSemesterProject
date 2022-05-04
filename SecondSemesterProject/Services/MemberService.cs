@@ -18,6 +18,7 @@ namespace SecondSemesterProject.Services
 
         private string insertSql = $"insert into {databaseName} values (NULL, @Name, @Email, @Password, @PhoneNumber, @BoardMember, @HygieneCertified)";
         private string updateSql = $"update {databaseName} set FamilyGroupId = @FamilyGroupId, Name = @Name, Email = @Email, Password = @Password, PhoneNumber = @PhoneNumber, BoardMember = @BoardMember, HygieneCertified = @HygieneCertified where Id = @ID";
+        private string updateNoFamilyGroupSql = $"update {databaseName} set Name = @Name, Email = @Email, Password = @Password, PhoneNumber = @PhoneNumber, BoardMember = @BoardMember, HygieneCertified = @HygieneCertified where Id = @ID";
         private string deleteSql = $"delete from {databaseName} where Id = @ID";
 
         private string loginSql = $"select * from {databaseName} where Email = @Email, Password = @Password";
@@ -64,17 +65,33 @@ namespace SecondSemesterProject.Services
             {
                 try
                 {
-                    SqlCommand command = new SqlCommand(updateSql, connection);
-                    command.Parameters.AddWithValue("@ID", id);
-                    command.Parameters.AddWithValue("@FamilyGroupId", member.FamilyGroupID);
-                    command.Parameters.AddWithValue("@Name", member.Name);
-                    command.Parameters.AddWithValue("@Email", member.Email);
-                    command.Parameters.AddWithValue("@Password", member.Password);
-                    command.Parameters.AddWithValue("@PhoneNumber", member.PhoneNumber);
-                    command.Parameters.AddWithValue("@BoardMember", member.BoardMember);
-                    command.Parameters.AddWithValue("@HygieneCertified", member.HygieneCertified);
-                    command.Connection.Open();
-                    command.ExecuteNonQuery();
+                    if (member.FamilyGroupID != null)
+                    {
+                        SqlCommand command = new SqlCommand(updateSql, connection);
+                        command.Parameters.AddWithValue("@ID", id);
+                        command.Parameters.AddWithValue("@FamilyGroupId", member.FamilyGroupID);
+                        command.Parameters.AddWithValue("@Name", member.Name);
+                        command.Parameters.AddWithValue("@Email", member.Email);
+                        command.Parameters.AddWithValue("@Password", member.Password);
+                        command.Parameters.AddWithValue("@PhoneNumber", member.PhoneNumber);
+                        command.Parameters.AddWithValue("@BoardMember", member.BoardMember);
+                        command.Parameters.AddWithValue("@HygieneCertified", member.HygieneCertified);
+                        command.Connection.Open();
+                        command.ExecuteNonQuery();
+                    }
+                    else
+                    {
+                        SqlCommand command = new SqlCommand(updateNoFamilyGroupSql, connection);
+                        command.Parameters.AddWithValue("@ID", id);
+                        command.Parameters.AddWithValue("@Name", member.Name);
+                        command.Parameters.AddWithValue("@Email", member.Email);
+                        command.Parameters.AddWithValue("@Password", member.Password);
+                        command.Parameters.AddWithValue("@PhoneNumber", member.PhoneNumber);
+                        command.Parameters.AddWithValue("@BoardMember", member.BoardMember);
+                        command.Parameters.AddWithValue("@HygieneCertified", member.HygieneCertified);
+                        command.Connection.Open();
+                        command.ExecuteNonQuery();
+                    }
                 }
                 catch (SqlException)
                 {
@@ -125,7 +142,7 @@ namespace SecondSemesterProject.Services
                     if (reader.Read())
                     {
                         int memberId = reader.GetInt32(0);
-                        int familyGroupId = reader.GetInt32(1);
+                        int? familyGroupId = (reader[1] as int?) ?? null;
 
                         string memberName = reader.GetString(2);
                         string memberEmail = reader.GetString(3);
@@ -134,8 +151,6 @@ namespace SecondSemesterProject.Services
 
                         bool boardMember = reader.GetBoolean(6);
                         bool hygieneCertified = reader.GetBoolean(7);
-                        bool cafeApprentice = reader.GetBoolean(8);
-                        bool bakerApprentice = reader.GetBoolean(9);
 
                         IMember member = new Member(memberId, familyGroupId, memberName, memberEmail, memberPassword, memberPhoneNumber, boardMember, hygieneCertified);
 
@@ -186,7 +201,11 @@ namespace SecondSemesterProject.Services
                 {
                     SqlCommand command_2 = new SqlCommand(selectFamilyGroupIdSql, connection);
                     command_2.Connection.Open();
-                    int familyGroupId = command_2.ExecuteNonQuery();
+
+                    SqlDataReader reader = command_2.ExecuteReader();
+
+                    reader.Read();
+                    int familyGroupId = reader.GetInt32(0);
 
                     foreach (IMember member in members)
                     {
