@@ -7,12 +7,15 @@ namespace SecondSemesterProject.Interfaces
 {
     public interface IMemberService
     {
+        public IMember GetCurrentMember();
+        public bool CheckCurrentMember();
+
         public void CreateMember(IMember member);
         public void UpdateMember(int id, IMember member);
         public void DeleteMember(int id);
 
         public bool CheckMemberInfo(IMember checkMember);
-        public IMember Login(string email, string password);
+        public void Login(string email, string password);
         public void Logout();
 
         public void CreateFamilyGroup(List<IMember> members);

@@ -21,7 +21,7 @@ namespace SecondSemesterProject.Services
         private string deleteSql = "DELETE FROM JO22_Member WHERE Id = @ID";
 
         // LOGIN
-        private string loginSql = "SELECT * FROM JO22_Member WHERE Email = @Email, Password = @Password";
+        private string loginSql = "SELECT * FROM JO22_Member WHERE Email = @Email AND Password = @Password";
 
         // FAMILY GROUP
         private string selectFamilyGroupSql = "SELECT * FROM JO22_FamilyGroup";
@@ -29,11 +29,34 @@ namespace SecondSemesterProject.Services
         private string insertFamilyGroupSql = "INSERT INTO JO22_FamilyGroup DEFAULT VALUES";
         private string deleteFamilyGroupSql = "DELETE FROM JO22_FamilyGroup WHERE Id = @ID";
 
+        private IMember CurrentMember;
+
         public MemberService(IConfiguration configuration) : base(configuration)
         {
 
         }
 
+        public IMember GetCurrentMember()
+        {
+            return CurrentMember;
+        }
+
+        public bool CheckCurrentMember()
+        {
+            if (CurrentMember != null)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Takes an IMember as parameter and inserts it into the database.
+        /// </summary>
+        /// <param name="member"></param>
         public void CreateMember(IMember member)
         {
             using (SqlConnection connection = new SqlConnection(ConnectionString))
@@ -137,7 +160,7 @@ namespace SecondSemesterProject.Services
             return true;
         }
 
-        public IMember Login(string email, string password)
+        public void Login(string email, string password)
         {
             using (SqlConnection connection = new SqlConnection(ConnectionString))
             {
@@ -165,7 +188,7 @@ namespace SecondSemesterProject.Services
 
                         IMember member = new Member(memberId, familyGroupId, memberName, memberEmail, memberPassword, memberPhoneNumber, boardMember, hygieneCertified);
 
-                        return member;
+                        CurrentMember = member;
                     }
                 }
                 catch (SqlException)
@@ -177,16 +200,14 @@ namespace SecondSemesterProject.Services
                     throw;
                 }
             }
-
-            return new Member();
         }
 
         public void Logout()
         {
-
+            CurrentMember = null;
         }
 
-        public void CreateFamilyGroup(List<IMember> members)
+        private void InsertFamilyGroup()
         {
             using (SqlConnection connection = new SqlConnection(ConnectionString))
             {
@@ -205,6 +226,11 @@ namespace SecondSemesterProject.Services
                     throw;
                 }
             }
+        }
+
+        public void CreateFamilyGroup(List<IMember> members)
+        {
+            InsertFamilyGroup();
 
             using (SqlConnection connection = new SqlConnection(ConnectionString))
             {

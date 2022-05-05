@@ -4,12 +4,6 @@
     ViewData["Title"] = "Log Ind";
 }
 
-<style>
-    a:hover {
-        text-decoration: none;
-    }
-</style>
-
 <p>@Model.InfoText</p>
 
 <h1>Log ind</h1>
@@ -29,12 +23,10 @@
             </div>
             <div class="form-group">
                 <input type="submit" value="Log Ind" class="btn btn-primary" />
-                <a asp-page="/Profiles/CreateProfile">
-                    <input type="button" value="Registrer" class="btn btn-light" />
-                </a>
-                <a asp-page="/Logins/ForgotAccount">
-                    <input type="button" value="Glemt Kodeord" class="btn btn-light" />
-                </a>
+                <a asp-page="/Profiles/CreateProfile"><input type="button" value="Registrer" class="btn btn-light" /></a>
+            </div>
+            <div>
+                <a asp-page="/Logins/ForgotAccount"><input type="button" value="Glemt Kodeord" class="btn btn-light" /></a>
             </div>
         </form>
     </div>
