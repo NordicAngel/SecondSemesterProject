@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using SecondSemesterProject.Interfaces;
@@ -316,6 +317,20 @@ namespace SecondSemesterProject.Services
                     throw;
                 }
             }
+        }
+
+        public async Task UpdateMemberShiftTypes(int id, Dictionary<int, bool> shiftTypes)
+        {
+
+        }
+
+        public async Task<Dictionary<int, bool>> GetMemberShiftTypes(int id)
+        {
+            Dictionary<int, bool> shiftTypes = new Dictionary<int, bool>();
+
+
+
+            return shiftTypes;
         }
 
         public Dictionary<int, List<IMember>> GetAllFamilyGroups()

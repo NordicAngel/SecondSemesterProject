@@ -1,4 +1,5 @@
 ﻿@page
+@using SecondSemesterProject.Models
 @model SecondSemesterProject.Pages.Profiles.ProfileModel
 @{
     ViewData["Title"] = "Min Profil";
@@ -20,10 +21,6 @@
                     <label>@Model.Member.Email</label>
                 </div>
                 <div class="form-group">
-                    <label asp-for="@Model.Member.Password"></label><br />
-                    <label>@Model.Member.Password</label>
-                </div>
-                <div class="form-group">
                     <label asp-for="@Model.Member.PhoneNumber"></label><br />
                     <label>@Model.Member.PhoneNumber</label>
                 </div>
@@ -34,6 +31,17 @@
                 <div class="form-group">
                     <label asp-for="@Model.Member.HygieneCertified"></label>
                     <label>@Model.Member.HygieneCertified</label>
+                </div>
+                <div class="form-group">
+                    <label>Vagttyper</label>
+                    @foreach (KeyValuePair<ShiftType, bool> item in Model.ShiftTypes)
+                    {
+                        <div class="form-group">
+                            <input type="checkbox" asp-for="@item.Value">
+                            <label asp-for="@item.Key.ShiftTypeId">@item.Key.Name</label>
+                        </div>
+                    }
+                    <input type="submit" value="Gem ændringer" class="btn btn-primary" />
                 </div>
             </div>
         </form>

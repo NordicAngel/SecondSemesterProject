@@ -22,6 +22,10 @@ namespace SecondSemesterProject.Interfaces
         public void UpdateFamilyGroup(List<IMember> members, int id);
         public void DeleteFamilyGroup(int id);
 
+        public Task UpdateMemberShiftTypes(int id, Dictionary<int, bool> shiftTypes);
+
+        public Task<Dictionary<int, bool>> GetMemberShiftTypes(int id);
+
         public Dictionary<int, List<IMember>> GetAllFamilyGroups();
 
         public IMember GetMemberByID(int id);
