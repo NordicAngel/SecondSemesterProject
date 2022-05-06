@@ -29,7 +29,7 @@ namespace SecondSemesterProject.Services
         private string insertFamilyGroupSql = "INSERT INTO JO22_FamilyGroup DEFAULT VALUES";
         private string deleteFamilyGroupSql = "DELETE FROM JO22_FamilyGroup WHERE Id = @ID";
 
-        private IMember CurrentMember;
+        private static IMember CurrentMember;
 
         public MemberService(IConfiguration configuration) : base(configuration)
         {
@@ -189,6 +189,10 @@ namespace SecondSemesterProject.Services
                         IMember member = new Member(memberId, familyGroupId, memberName, memberEmail, memberPassword, memberPhoneNumber, boardMember, hygieneCertified);
 
                         CurrentMember = member;
+                    }
+                    else
+                    {
+                        throw new NullReferenceException();
                     }
                 }
                 catch (SqlException)

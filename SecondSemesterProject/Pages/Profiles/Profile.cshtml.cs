@@ -17,8 +17,6 @@ namespace SecondSemesterProject.Pages.Profiles
         [BindProperty]
         public Member Member { get; set; }
 
-        public string InfoText;
-
         public ProfileModel(IMemberService service)
         {
             MemberService = service;
@@ -28,15 +26,13 @@ namespace SecondSemesterProject.Pages.Profiles
 
         public IActionResult OnGet()
         {
-            InfoText = "";
-
-            try
+            if (MemberService.CheckCurrentMember())
             {
                 Member = (Member)MemberService.GetCurrentMember();
             }
-            catch (NullReferenceException)
+            else
             {
-                InfoText = "Ikke logget ind!";
+                return Redirect("~/Index");
             }
 
             return Page();

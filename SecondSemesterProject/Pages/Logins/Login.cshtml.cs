@@ -53,6 +53,12 @@ namespace SecondSemesterProject.Pages.Login
 
                 return Page();
             }
+            catch (NullReferenceException nullEx)
+            {
+                InfoText = "General Error: " + nullEx.Message;
+
+                return Page();
+            }
             catch (Exception ex)
             {
                 InfoText = "General Error: " + ex.Message;
