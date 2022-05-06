@@ -14,10 +14,15 @@
     .time-picker {
         position: relative;
         background-color: lightgray;
-        margin: 10px 0 10px 0;
+        margin: 0 0 10px 0;
         padding: 10px 0 10px 0;
     }
 
+    .time-span-block {
+        border: 2px solid gray;
+        margin: 5px;
+        padding-bottom: 5px
+    }
     .shift {
         position: relative;
     }
@@ -37,89 +42,107 @@
         margin: 10px;
     }
 
+    .time-inval-msg {
+        position: relative;
+        top: -11px
+        /*position: absolute;*/
+      /*  bottom: -10px;
+        left: 10px;
+        right: 10px*/
+    }
 </style>
 
-<h3>Opret Vagt</h3>
-<form method="post">
-    <div class="f-container">
-        <div class="f-container-object">
-            @for (int i = 0; i < Model.TimeSpans.Count; i++)
-            {
-                <div>
-                    <div class="time-picker">
-                        Tids punkt Fra:
-                        <input type="time"
-                               asp-for="TimeSpans[i].DateTimeStart"
-                            />
-                        Til:
-                        <input type="time" 
-                               asp-for="TimeSpans[i].DateTimeEnd"/>
-                        @if (i > 0)
-                        {
-                            <input type="submit" class="btn btn-danger remove-key"
-                                   value="X"
-                                   asp-page-handler="RemoveTimeSpan"
-                                   asp-route-timeSpanIndex="@i"/>
-                        }
-                    </div>
-                    @for (int j = 0; j < Model.TimeSpans[i].TShifts.Count; j++)
-                    {
-                        <div class="shift">
+@if (Model.ErrMsg == null)
+{
 
-                            Vagt:
-                            <select asp-for="TimeSpans[i].TShifts[j].ShiftTypeId">
-                                @foreach (ShiftType type in Model.ShiftTypes)
-                                {
-                                    <option value="@type.ShiftTypeId">
-                                        @type.Name
-                                    </option>
-                                }
-                            </select>
-                            @if (j > 0)
+
+    <h3>Opret Vagt</h3>
+    <form method="post">
+        <div class="f-container">
+            <div class="f-container-object">
+                <p>
+                    Dato:
+                    <input type="date"
+                           asp-for="Date"/>
+                    <p><span asp-validation-for="Date" class="alert-danger"></span></p>
+                </p>
+                @for (int i = 0; i < Model.TimeSpans.Count; i++) //Creates every TimeSpan
+                {
+                    <div class="time-span-block">
+                        <div class="time-picker">
+                            Tids punkt Fra:
+                            <input type="time"
+                                   asp-for="TimeSpans[i].DateTimeStart"/>
+                            Til:
+                            <input type="time"
+                                   asp-for="TimeSpans[i].DateTimeEnd"/>
+                            @if (i > 0)
                             {
-                                <input 
-                                    type="submit"
-                                    value="X"
-                                    asp-page-handler="RemoveShift"
-                                    asp-route-timeSpanIndex="@i"
-                                    asp-route-shiftIndex="@j"
-                                    class="btn btn-danger remove-key"/>
+                                <input type="submit" class="btn btn-danger remove-key"
+                                       value="X"
+                                       asp-page-handler="RemoveTimeSpan"
+                                       asp-route-timeSpanIndex="@i"/>
                             }
                         </div>
-                        <hr />
-                    }
-                    <input
-                        type="submit"
-                        value="Tilføg Vagt"
-                        asp-page-handler="addShift"
-                        asp-route-timeSpanIndex="@i"
-                        class="btn btn-primary btn1"/>
-                </div>
-            }
-            <hr />
-            <input
-                type="submit"
-                value="Tilføg Tidsrum"
-                asp-page-handler="AddTimeSpan"
-                class="btn btn-primary btn1"/>
+
+                        <span class="time-inval-msg alert-danger" asp-validation-for="TimeSpans[i].DateTimeEnd"></span>
+
+                        @for (int j = 0; j < Model.TimeSpans[i].TShifts.Count; j++) //Creates every shift in the TimeSpan
+                        {
+                            <div class="shift">
+
+                                Vagt:
+                                <select asp-for="TimeSpans[i].TShifts[j].ShiftTypeId">
+                                    @foreach (ShiftType type in Model.ShiftTypes)
+                                    {
+                                        <option value="@type.ShiftTypeId">
+                                            @type.Name
+                                        </option>
+                                    }
+                                </select>
+                                @if (j > 0)
+                                {
+                                    <input type="submit"
+                                           value="X"
+                                           asp-page-handler="RemoveShift"
+                                           asp-route-timeSpanIndex="@i"
+                                           asp-route-shiftIndex="@j"
+                                           class="btn btn-danger remove-key"/>
+                                }
+                            </div>
+                            <hr/>
+                        }
+                        <input type="submit"
+                               value="Tilføg Vagt"
+                               asp-page-handler="addShift"
+                               asp-route-timeSpanIndex="@i"
+                               class="btn btn-primary btn1"/>
+                    </div>
+                }
+                <input type="submit"
+                       value="Tilføg Tidsrum"
+                       asp-page-handler="AddTimeSpan"
+                       class="btn btn-primary btn1"/>
+            </div>
+            <div class="f-container-object">
+                <p>
+                    <input type="checkbox"
+                           asp-for="RepeatWeekly"/>
+                    Gentage denne dags plan hver uge indtil:
+                    <input type="week"
+                           asp-for="RepeatUntilWeek"/>
+                </p>
+                <input type="submit"
+                       value="Opret vagter"
+                       class="btn btn-success"
+                       asp-page=""/>
+            </div>
         </div>
-        <div class="f-container-object">
-            <p>
-                Dato:
-                <input type="date" 
-                       asp-for="Date"/>
-            </p>
-            <p>
-                <input type="checkbox"
-                       asp-for="RepeatWeekly"/>
-                Gentage denne dags plan hver uge indtil:
-                <input type="week"
-                       asp-for="RepeatUntilWeek"/>
-            </p>
-            <input type="submit"
-                   value="Opret vagter"
-                   class="btn btn-primary btn1"
-                   asp-page=""/>
-        </div>
+    </form>
+}
+else
+{
+    <div>
+        @Model.ErrMsg
     </div>
-</form>
+}

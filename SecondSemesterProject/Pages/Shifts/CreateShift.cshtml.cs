@@ -5,13 +5,14 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using SecondSemesterProject.Exceptions;
 using SecondSemesterProject.Helpers;
 using SecondSemesterProject.Interfaces;
 using SecondSemesterProject.Models;
 
 namespace SecondSemesterProject.Pages.Shifts
 {
-    public partial class CreateShiftModel : PageModel
+    public class CreateShiftModel : PageModel
     {
         private IShiftService _shiftService;
         private IShiftTypeService _shiftTypeService;
@@ -24,17 +25,32 @@ namespace SecondSemesterProject.Pages.Shifts
         [BindProperty] 
         public bool RepeatWeekly { get; set; }
         public List<ShiftType> ShiftTypes { get; set; }
+        public string ErrMsg { get; set; }
 
         public CreateShiftModel(IShiftService shiftService, IShiftTypeService shiftTypeService)
         {
-            _shiftService = shiftService;
-            _shiftTypeService = shiftTypeService;
-            ShiftTypes = _shiftTypeService.GetAllShiftTypesAsync().Result;
+            try
+            {
+                _shiftService = shiftService;
+                _shiftTypeService = shiftTypeService;
+                ShiftTypes = _shiftTypeService.GetAllShiftTypesAsync().Result;
+            }
+            catch (Exception Ex)
+            {
+                ErrMsg = Ex.Message;
+            }
         }
 
         public async Task OnGetAsync()
         {
-            ShiftTypes = await _shiftTypeService.GetAllShiftTypesAsync();
+            try{
+                //ShiftTypes = await _shiftTypeService.GetAllShiftTypesAsync();
+            }
+            catch (DatabaseException dbEx)
+            {
+                ErrMsg = dbEx.Message;
+            }
+            Date = DateTime.Today;
             TimeSpans = new ()
             {
                 new()
@@ -47,8 +63,28 @@ namespace SecondSemesterProject.Pages.Shifts
             };
         }
 
-        public async Task OnPostAsync()
+        public async Task<IActionResult> OnPostAsync()
         {
+            #region validations
+
+            if (Date < DateTime.Today)
+            {
+                ModelState.AddModelError("Date","Dato må ikke være før i dag");
+            }
+
+            for(int i = 0; i < TimeSpans.Count; i++)
+            {
+                if (TimeSpans[i].DateTimeEnd <= TimeSpans[i].DateTimeStart)
+                {
+                    ModelState.AddModelError($"TimeSpans[{i}].DateTimeEnd","Slut tid skal være efter start tid");
+                }
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return Page();
+            }
+            #endregion
             List<Shift> allShifts = new List<Shift>();
             foreach (ShiftTimeSpan timeSpan in TimeSpans)
             {
@@ -79,10 +115,19 @@ namespace SecondSemesterProject.Pages.Shifts
                 }
             }
 
-            foreach (Shift shift in allShifts)
+            try
             {
-                await _shiftService.CreateShiftAsync(shift);
+                foreach (Shift shift in allShifts)
+                {
+                    await _shiftService.CreateShiftAsync(shift);
+                }
             }
+            catch (DatabaseException dbEx)
+            {
+                ErrMsg = dbEx.Message;
+            }
+
+            return RedirectToPage("/Shifts/index");
         }
 
         public void OnPostAddTimeSpan()

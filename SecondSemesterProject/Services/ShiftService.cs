@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
+using SecondSemesterProject.Exceptions;
 using SecondSemesterProject.Interfaces;
 using SecondSemesterProject.Models;
 
@@ -16,12 +17,19 @@ namespace SecondSemesterProject.Services
         private string createSql = "Insert into JO22_Shift (DateTimeStart, DateTimeEnd, ShiftTypeId) values (@DStart, @DEnd, @STId)";
         private string getAllSql = "select * from JO22_Shift";
         private string getShiftSql = "select * from JO22_Shift where Id = @ID";
+        private string removeSql = "delete from JO22_Shift where Id = @ID";
 
         #endregion
         public ShiftService(IConfiguration config):base(config)
         { }
         public async Task CreateShiftAsync(Shift shift)
         {
+            if (shift.DateTimeStart < DateTime.Now)
+                throw new ShiftDateBeforeNow("Shift can't be added retroactively");
+
+            if (shift.DateTimeStart > shift.DateTimeEnd)
+                throw new StartAfterEndException("Start time can not after end time");
+
             await using SqlConnection connection = new SqlConnection(ConnectionString);
             await using SqlCommand command = new SqlCommand(createSql, connection);
             try
@@ -33,10 +41,10 @@ namespace SecondSemesterProject.Services
                 await command.Connection.OpenAsync();
                 await command.ExecuteNonQueryAsync();
             }
-            catch (SqlException sqlE)
+            catch (SqlException sqlEx)
             {
 
-                throw;
+                throw new DatabaseException($"Databasen havde en fejl: {sqlEx.Message}");
             }
         }
 
@@ -44,26 +52,33 @@ namespace SecondSemesterProject.Services
         {
             await using SqlConnection connection = new SqlConnection(ConnectionString);
             await using SqlCommand command = new SqlCommand(getShiftSql, connection);
-            command.Parameters.AddWithValue("@ID", shiftId);
-            await command.Connection.OpenAsync();
-            SqlDataReader reader = await command.ExecuteReaderAsync();
-
-            if (!await reader.ReadAsync()) return null;
-
-            int id = (int)reader["Id"];
-            int? memberId = reader["MemberId"] as int?;
-            DateTime dTStart = (DateTime)reader["DateTimeStart"];
-            DateTime dTEnd = (DateTime)reader["DateTimeEnd"];
-            int sTId = (int)reader["ShiftTypeId"];
-
-            return new Shift()
+            try
             {
-                ShiftId = id,
-                MemberId = memberId,
-                DateTimeStart = dTStart,
-                DateTimeEnd = dTEnd,
-                ShiftTypeId = sTId
-            };
+                command.Parameters.AddWithValue("@ID", shiftId);
+                await command.Connection.OpenAsync();
+                SqlDataReader reader = await command.ExecuteReaderAsync();
+
+                if (!await reader.ReadAsync()) return null;
+
+                int id = (int)reader["Id"];
+                int? memberId = reader["MemberId"] as int?;
+                DateTime dTStart = (DateTime)reader["DateTimeStart"];
+                DateTime dTEnd = (DateTime)reader["DateTimeEnd"];
+                int sTId = (int)reader["ShiftTypeId"];
+                return new Shift()
+                {
+                    ShiftId = id,
+                    MemberId = memberId,
+                    DateTimeStart = dTStart,
+                    DateTimeEnd = dTEnd,
+                    ShiftTypeId = sTId
+                };
+            }
+            catch (SqlException sqlEx)
+            {
+                throw new DatabaseException($"Databasen havde en fejl: {sqlEx.Message}");
+            }
+
 
             return null;
         }
@@ -96,8 +111,7 @@ namespace SecondSemesterProject.Services
             }
             catch (SqlException sqlEx)
             {
-
-                throw;
+                throw new DatabaseException($"Databasen havde en fejl: {sqlEx.Message}");
             }
 
             return shifts;
@@ -110,7 +124,18 @@ namespace SecondSemesterProject.Services
 
         public async Task DeleteShiftAsync(int shiftId)
         {
-            throw new NotImplementedException();
+            await using SqlConnection connection = new SqlConnection(ConnectionString);
+            await using SqlCommand command = new SqlCommand(removeSql, connection);
+            try
+            {
+                command.Parameters.AddWithValue("@ID", shiftId);
+                await command.Connection.OpenAsync();
+                command.ExecuteNonQuery();
+            }
+            catch (SqlException sqlEx)
+            {
+                throw new DatabaseException($"Databasen havde en fejl: {sqlEx.Message}");
+            }
         }
     }
 }
