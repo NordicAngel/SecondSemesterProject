@@ -41,15 +41,8 @@ namespace SecondSemesterProject.Pages.Shifts
             }
         }
 
-        public async Task OnGetAsync()
+        public void OnGetAsync()
         {
-            try{
-                //ShiftTypes = await _shiftTypeService.GetAllShiftTypesAsync();
-            }
-            catch (DatabaseException dbEx)
-            {
-                ErrMsg = dbEx.Message;
-            }
             Date = DateTime.Today;
             TimeSpans = new ()
             {

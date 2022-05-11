@@ -166,30 +166,34 @@
                                 <div class="shift-container">
                                     @foreach (Shift s in list)
                                     {
-                                        <div class="shift"
-                                             style="top: @(s.DateTimeStart.TimeOfDay.TotalHours / 24 * 100)%; height: @(s.DateTimeEnd.TimeOfDay.TotalHours / 24 * 100 - s.DateTimeStart.TimeOfDay.TotalHours / 24 * 100)%; border-color: #@stService.GetShiftTypeAsync(s.ShiftTypeId).Result.Color.ToArgb().ToString("x").Substring(2)">
-                                            <span class="tooltiptext">
-                                                @s.DateTimeStart.TimeOfDay.Hours:@s.DateTimeStart.TimeOfDay.Minutes.ToString("D2")
-                                                @s.DateTimeEnd.TimeOfDay.Hours:@s.DateTimeEnd.TimeOfDay.Minutes.ToString("D2")
+                                        <a asp-page="/Shifts/Shift" asp-route-id="@s.ShiftId">
+                                            <div class="shift"
+                                                 style="top: @(s.DateTimeStart.TimeOfDay.TotalHours / 24 * 100)%;
+                                                        height: @(s.DateTimeEnd.TimeOfDay.TotalHours / 24 * 100 - s.DateTimeStart.TimeOfDay.TotalHours / 24 * 100)%; border-color: #@stService.GetShiftTypeAsync(s.ShiftTypeId).Result.Color.ToArgb().ToString("x").Substring(2)"
+                                            >
+                                                <span class="tooltiptext">
+                                                    @s.DateTimeStart.TimeOfDay.Hours:@s.DateTimeStart.TimeOfDay.Minutes.ToString("D2")
+                                                    @s.DateTimeEnd.TimeOfDay.Hours:@s.DateTimeEnd.TimeOfDay.Minutes.ToString("D2")
+                                                    @if (s.MemberId == null)
+                                                    {
+                                                        <p>Ledig</p>
+                                                    }
+                                                    else
+                                                    {
+                                                        <p>Taget af @mService.GetMemberByID((int) s.MemberId).Name;</p>
+                                                    }
+                                                    <p>@stService.GetShiftTypeAsync(s.ShiftTypeId).Result.Name</p>
+                                                </span>
                                                 @if (s.MemberId == null)
                                                 {
                                                     <p>Ledig</p>
                                                 }
                                                 else
                                                 {
-                                                    <p>Taget af @mService.GetMemberByID((int) s.MemberId).Name;</p>
+                                                    <p>Taget</p>
                                                 }
-                                                <p>@stService.GetShiftTypeAsync(s.ShiftTypeId).Result.Name</p>
-                                            </span>
-                                            @if (s.MemberId == null)
-                                            {
-                                                <p>Ledig</p>
-                                            }
-                                            else
-                                            {
-                                                <p>Taget</p>
-                                            }
-                                        </div>
+                                            </div>
+                                        </a>
                                     }
                                 </div>
                             }
@@ -209,97 +213,3 @@ else
 }
 
 
-@*@page
-@using SecondSemesterProject.Models
-@using SecondSemesterProject.Interfaces
-@inject IShiftTypeService stService
-@model SecondSemesterProject.Pages.Shifts.IndexModel
-@{
-}
-
-<style>
-    hmtl, main, body {
-        height: 100%;
-        margin: 5px
-    }
-
-    .button-pannel {
-        display: flex;
-    }
-
-    .add_shift_button {
-        flex: 1;
-        text-align: right
-    }
-
-    .calendar {
-        display: flex;
-        background: whitesmoke;
-    }
-
-    .day {
-        display: flex;
-        flex: 1;
-        border: 2px solid lightgray;
-        margin: 5px;
-        text-align: center;
-        padding: 5px;
-        flex-flow: column;
-        height: 550px
-    }
-
-    .shift-container {
-        flex-grow: 1;
-        display: flex;
-        flex-flow: row;
-        position: relative
-    }
-
-    .shift {
-        flex-flow: row;
-        position: relative;
-        border: 1px solid gray;
-        padding: 2px
-    }
-</style>
-
-<div class="button-pannel">
-    <form method="post"
-          asp-page-handler="Reload">
-        Vis fra
-        <input type="date"
-               asp-for="FromDate"
-               onchange="this.form.submit();" />
-        Vis antal dage:
-        <input type="number"
-               asp-for="NumOfDays"
-               onchange="this.form.submit();" />
-    </form>
-    <span class="add_shift_button">
-        <a class="btn btn-primary" asp-page="/Shifts/CreateShift">
-            Opret Vagter
-        </a>
-    </span>
-</div>
-<div class="calendar">
-    @for (int i = 0; i < Model.NumOfDays; i++)
-    {
-        <div class="day">
-            @Model.DaysOfShifts[i].Key.ToShortDateString()
-            <div class="shift-container">
-                @foreach (Shift s in Model.DaysOfShifts[i])
-                {
-                    <div class="shift"
-                         style="
-
-                            top: @(s.DateTimeStart.TimeOfDay.TotalHours/24*100)%;
-                            height: @(s.DateTimeEnd.TimeOfDay.TotalHours/24*100
-                               - s.DateTimeStart.TimeOfDay.TotalHours/24*100)%">
-                        @s.DateTimeStart.TimeOfDay.Hours:@s.DateTimeStart.TimeOfDay.Minutes.ToString("D2")
-                        @s.DateTimeEnd.TimeOfDay.Hours:@s.DateTimeEnd.TimeOfDay.Minutes.ToString("D2")
-                    </div>
-                }
-            </div>
-        </div>
-    }
-</div>*@

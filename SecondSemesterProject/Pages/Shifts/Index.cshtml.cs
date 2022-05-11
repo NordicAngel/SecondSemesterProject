@@ -34,6 +34,9 @@ namespace SecondSemesterProject.Pages.Shifts
             FromDate = DateTime.Today;
             NumOfDays = 3;
             await SetPropsAsync();
+            NumOfDays = NumOfDays >= DaysOfShifts.Count
+                ? DaysOfShifts.Count
+                : NumOfDays;
         }
 
         public async Task OnPostReloadAsync()
@@ -78,33 +81,33 @@ namespace SecondSemesterProject.Pages.Shifts
                         .GroupBy(s => s.DateTimeStart.Date)
                         .ToList();
 
-            //Days
-            var list1 = new List<ShiftGrouping>();
-            foreach (var a in list0)
-            {
-                //day of shift coloums
-                var list2 = new List<List<Shift>>();
-                    
-                //coloum of shifts
-                foreach (var shift in a)
+                //Days
+                var list1 = new List<ShiftGrouping>();
+                foreach (var a in list0)
                 {
-                    for (int i = 0; true; i++)
+                    //day of shift coloums
+                    var list2 = new List<List<Shift>>();
+                        
+                    //coloum of shifts
+                    foreach (var shift in a)
                     {
-                        if (list2.Count < i + 1)
+                        for (int i = 0; true; i++)
                         {
-                            list2.Add(new List<Shift>());
-                        }
+                            if (list2.Count < i + 1)
+                            {
+                                list2.Add(new List<Shift>());
+                            }
 
-                        if (list2[i].Count == 0 || list2[i][^1].DateTimeEnd <= shift.DateTimeStart)
-                        {
-                            list2[i].Add(shift);
-                            break;
+                            if (list2[i].Count == 0 || list2[i][^1].DateTimeEnd <= shift.DateTimeStart)
+                            {
+                                list2[i].Add(shift);
+                                break;
+                            }
                         }
                     }
+                    list1.Add(new ShiftGrouping(a.Key,list2));
                 }
-                list1.Add(new ShiftGrouping(a.Key,list2));
-            }
-            DaysOfShifts = list1;
+                DaysOfShifts = list1;
             }
             catch (DatabaseException dbEx)
             {

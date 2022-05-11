@@ -18,13 +18,14 @@ namespace SecondSemesterProject.Services
         private string getAllSql = "select * from JO22_Shift";
         private string getShiftSql = "select * from JO22_Shift where Id = @ID";
         private string removeSql = "delete from JO22_Shift where Id = @ID";
+        private string updateSql = "update JO22_Shift set MemberId = @MemId, DateTimeStart = @DStart, DateTimeEnd = @DEnd, ShiftTypeId = @STId where Id = @ID";
 
         #endregion
         public ShiftService(IConfiguration config):base(config)
         { }
         public async Task CreateShiftAsync(Shift shift)
         {
-            if (shift.DateTimeStart < DateTime.Now)
+            if (shift.DateTimeStart < DateTime.Now.Date)
                 throw new ShiftDateBeforeNow("Shift can't be added retroactively");
 
             if (shift.DateTimeStart > shift.DateTimeEnd)
@@ -78,9 +79,6 @@ namespace SecondSemesterProject.Services
             {
                 throw new DatabaseException($"Databasen havde en fejl: {sqlEx.Message}");
             }
-
-
-            return null;
         }
 
         public async Task<List<Shift>> GetAllShiftAsync()
@@ -119,7 +117,23 @@ namespace SecondSemesterProject.Services
 
         public async Task UpdateShiftAsync(int shiftId, Shift newShift)
         {
-            throw new NotImplementedException();
+            await using SqlConnection connection = new SqlConnection(ConnectionString);
+            await using SqlCommand command = new SqlCommand(updateSql, connection);
+            try
+            {
+                command.Parameters.AddWithValue("@ID", shiftId);
+                command.Parameters.AddWithValue("@MemId", newShift.MemberId);
+                command.Parameters.AddWithValue("@DStart", newShift.DateTimeStart);
+                command.Parameters.AddWithValue("@DEnd", newShift.DateTimeEnd);
+                command.Parameters.AddWithValue("@STId", newShift.ShiftTypeId);
+
+                await command.Connection.OpenAsync();
+                await command.ExecuteNonQueryAsync();
+            }
+            catch (SqlException sqlEx)
+            {
+                throw new DatabaseException($"Databasen havde en fejl: {sqlEx.Message}");
+            }
         }
 
         public async Task DeleteShiftAsync(int shiftId)
@@ -130,7 +144,7 @@ namespace SecondSemesterProject.Services
             {
                 command.Parameters.AddWithValue("@ID", shiftId);
                 await command.Connection.OpenAsync();
-                command.ExecuteNonQuery();
+                await command.ExecuteNonQueryAsync();
             }
             catch (SqlException sqlEx)
             {
