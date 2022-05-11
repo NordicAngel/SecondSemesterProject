@@ -106,7 +106,7 @@ namespace SecondSemesterProject.Services
             throw new NotImplementedException();
         }
 
-
+        
 
         //Kilde: HotelDB2022... - Services, HotelService
     }

@@ -7,7 +7,7 @@
 <p>@Model.InfoText</p>
 
 <p>
-    <a asp-page="/Members/FamilyGroup/UpdateFamilyGroup">Opdater familiegruppe</a>
+    <a asp-page="/Members/FamilyGroups/UpdateFamilyGroup" asp-route-id="@Model.FamilyGroupID" class="btn btn-primary">Opdater familiegruppe</a>
 </p>
 
 <h4>Familiegruppe nummer: @Model.FamilyGroupID</h4>
@@ -19,16 +19,13 @@
             ID
         </th>
         <th>
-            Name
+            Navn
         </th>
         <th>
             E-mail
         </th>
         <th>
-            Password
-        </th>
-        <th>
-            Phone Number
+            Telefonnummer
         </th>
         <th></th>
         <th></th>
@@ -48,19 +45,16 @@
                 @item.Email
             </td>
             <td>
-                @item.Password
-            </td>
-            <td>
                 @item.PhoneNumber
             </td>
             <td>
                 <p>
-                    <a asp-page="/Members/UpdateMember" asp-route-id="@item.ID">Opdater</a>
+                    <a asp-page="/Members/UpdateMember" asp-route-id="@item.ID" class="btn btn-light">Opdater</a>
                 </p>
             </td>
             <td>
                 <p>
-                    <a asp-page="/Members/DeleteMember" asp-route-id="@item.ID">Fjern</a>
+                    <a asp-page="/Members/DeleteMember" asp-route-id="@item.ID" class="btn btn-light">Fjern</a>
                 </p>
             </td>
         </tr>

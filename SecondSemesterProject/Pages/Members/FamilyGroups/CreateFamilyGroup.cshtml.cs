@@ -15,7 +15,7 @@ namespace SecondSemesterProject.Pages.Members.FamilyGroup
         private IMemberService MemberService;
 
         [BindProperty]
-        public List<IMember> Members { get; set; }
+        public List<int?> MembersID { get; set; }
 
         public List<SelectListItem> Options { get; set; }
 
@@ -25,7 +25,7 @@ namespace SecondSemesterProject.Pages.Members.FamilyGroup
         {
             MemberService = service;
 
-            Members = new List<IMember>();
+            MembersID = new List<int?>() {null, null, null, null, null};
         }
 
         public IActionResult OnGet()
@@ -41,29 +41,47 @@ namespace SecondSemesterProject.Pages.Members.FamilyGroup
 
             try
             {
-                MemberService.CreateFamilyGroup(Members);
+                List<IMember> members = new List<IMember>();
+
+                foreach (int? memberId in MembersID)
+                {
+                    if (memberId != null)
+                    {
+                        members.Add(MemberService.GetMemberByID((int)memberId));
+                    }
+                }
+
+                MemberService.CreateFamilyGroup(members);
             }
             catch (SqlException sqlEx)
             {
                 InfoText = "Database Error: " + sqlEx.Message;
+
+                return Page();
             }
             catch (Exception ex)
             {
                 InfoText = "General Error: " + ex.Message;
+
+                return Page();
             }
 
-            // Fix
-            return Page();
+            return RedirectToPage("Index");
         }
 
         public void CreateOptionsList()
         {
-            Options = MemberService.GetAllMembers().Select(a =>
+            Options = new List<SelectListItem>()
+            {
+                new SelectListItem("Ikke valgt", null)
+            };
+
+            Options.AddRange(MemberService.GetAllMembers().Select(a =>
                 new SelectListItem
                 {
-                    Value = a.ID.ToString(),
-                    Text = a.Name
-                }).ToList();
+                    Text = a.Name,
+                    Value = a.ID.ToString()
+                }).ToList());
         }
     }
 }

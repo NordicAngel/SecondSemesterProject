@@ -17,13 +17,9 @@ namespace SecondSemesterProject.Pages.ShiftTypes
         [BindProperty]
         public ShiftType shiftType { get; set; }
 
-        [BindProperty]
-        public Color Color { get; set; }
 
         public CreateShiftTypeModel(IShiftTypeService catalog)
         {
-            shiftType = new ShiftType();
-            Color = new Color();
             ShiftTypeService = catalog;
         }
 
