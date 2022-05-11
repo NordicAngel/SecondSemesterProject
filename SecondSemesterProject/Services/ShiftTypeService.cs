@@ -21,41 +21,61 @@ namespace SecondSemesterProject.Services
                                     " set Name = @Name, Color = @Color " +
                                     "Where Id = @Id";
 
-
         public List<ShiftType> Types { get; set; }
+
+        public ShiftTypeService(IConfiguration configuration) : base(configuration)
+        {
+        }
 
         public async Task<bool> CreateShiftTypeAsync(ShiftType shiftType)
         {
-            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            try
             {
-                SqlCommand command = new SqlCommand(insertSql, connection);
-                //command.Parameters.AddWithValue("@Id", shiftType.ShiftTypeId);
-                command.Parameters.AddWithValue("@Name", shiftType.Name);
-                command.Parameters.AddWithValue("@Color", shiftType.Color.ToArgb());
-                await command.Connection.OpenAsync();
-                int noOfRows = await command.ExecuteNonQueryAsync();
-                return noOfRows == 1;
+                using (SqlConnection connection = new SqlConnection(ConnectionString))
+                {
+                    SqlCommand command = new SqlCommand(insertSql, connection);
+                    command.Parameters.AddWithValue("@Name", shiftType.Name);
+                    command.Parameters.AddWithValue("@Color", shiftType.Color.ToArgb());
+                    await command.Connection.OpenAsync();
+                    int noOfRows = await command.ExecuteNonQueryAsync();
+                    return noOfRows == 1;
+                }
             }
+            catch (SqlException)
+            {
+                Console.WriteLine("Noget gik galt i databasen");
+                throw;
+            }
+
+           
 
         }
 
         public async Task<ShiftType> GetShiftTypeAsync(int id)
         {
-            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            try
             {
-                SqlCommand command = new SqlCommand(getTypeFromId, connection);
-                command.Parameters.AddWithValue("@Id", id);
-                await command.Connection.OpenAsync();
-                SqlDataReader reader = await command.ExecuteReaderAsync();
-
-                if (await reader.ReadAsync())
+                using (SqlConnection connection = new SqlConnection(ConnectionString))
                 {
-                    int typeId = reader.GetInt32(0);
-                    string typeName = reader.GetString(1);
-                    Color typeColor = Color.FromArgb(reader.GetInt32(2));
-                    ShiftType sType = new ShiftType(typeId, typeName, typeColor);
-                    return sType;
+                    SqlCommand command = new SqlCommand(getTypeFromId, connection);
+                    command.Parameters.AddWithValue("@Id", id);
+                    await command.Connection.OpenAsync();
+                    SqlDataReader reader = await command.ExecuteReaderAsync();
+
+                    if (await reader.ReadAsync())
+                    {
+                        int typeId = reader.GetInt32(0);
+                        string typeName = reader.GetString(1);
+                        Color typeColor = Color.FromArgb(reader.GetInt32(2));
+                        ShiftType sType = new ShiftType(typeId, typeName, typeColor);
+                        return sType;
+                    }
                 }
+            }
+            catch (SqlException)
+            {
+                Console.WriteLine("Noget gik galt i databasen");
+                throw;
             }
 
             return null;
@@ -63,20 +83,30 @@ namespace SecondSemesterProject.Services
 
         public async Task<List<ShiftType>> GetAllShiftTypesAsync()
         {
+
             List<ShiftType> sTypes = new List<ShiftType>();
-            using (SqlConnection connection = new SqlConnection(ConnectionString))
+
+            try
             {
-                SqlCommand command = new SqlCommand(getAllTypes, connection);
-                await command.Connection.OpenAsync();
-                SqlDataReader reader = await command.ExecuteReaderAsync();
-                while (await reader.ReadAsync())
+                using (SqlConnection connection = new SqlConnection(ConnectionString))
                 {
-                    int TypeId = reader.GetInt32(0);
-                    string TypeName = reader.GetString(1);   
-                    Color TypeColor = Color.FromArgb(reader.GetInt32(2));
-                    ShiftType shiftType = new ShiftType(TypeId, TypeName, TypeColor);
-                    sTypes.Add(shiftType);
+                    SqlCommand command = new SqlCommand(getAllTypes, connection);
+                    await command.Connection.OpenAsync();
+                    SqlDataReader reader = await command.ExecuteReaderAsync();
+                    while (await reader.ReadAsync())
+                    {
+                        int TypeId = reader.GetInt32(0);
+                        string TypeName = reader.GetString(1);
+                        Color TypeColor = Color.FromArgb(reader.GetInt32(2));
+                        ShiftType shiftType = new ShiftType(TypeId, TypeName, TypeColor);
+                        sTypes.Add(shiftType);
+                    }
                 }
+            }
+            catch (SqlException)
+            {
+                Console.WriteLine("Noget gik galt i databasen");
+                throw;
             }
 
             return sTypes;
@@ -89,36 +119,51 @@ namespace SecondSemesterProject.Services
 
         public async Task<bool> UpdateShiftTypeAsync(int shiftTypeId, ShiftType shiftType)
         {
-            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            try
             {
-                SqlCommand command = new SqlCommand(UpdateType, connection);
-                command.Parameters.AddWithValue("@Name", shiftType.Name);
-                command.Parameters.AddWithValue("@Color", shiftType.Color.ToArgb());
-                command.Parameters.AddWithValue("@Id", shiftTypeId);
-                await command.Connection.OpenAsync();
-                await command.ExecuteNonQueryAsync();
+                using (SqlConnection connection = new SqlConnection(ConnectionString))
+                {
+                    SqlCommand command = new SqlCommand(UpdateType, connection);
+                    command.Parameters.AddWithValue("@Name", shiftType.Name);
+                    command.Parameters.AddWithValue("@Color", shiftType.Color.ToArgb());
+                    command.Parameters.AddWithValue("@Id", shiftTypeId);
+                    await command.Connection.OpenAsync();
+                    await command.ExecuteNonQueryAsync();
+                }
             }
+            catch (SqlException)
+            {
+                Console.WriteLine("Noget gik galt i databasen");
+                throw;
+            }
+
 
             return true;
         }
 
         public async Task<ShiftType> DeleteShiftTypeAsync(int shiftTypeId)
         {
-
             ShiftType shiftType = await GetShiftTypeAsync(shiftTypeId);
-            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            try
             {
-                SqlCommand command = new SqlCommand(deleteType, connection);
-                command.Parameters.AddWithValue("@Id", shiftType.ShiftTypeId);
-                await command.Connection.OpenAsync();
-                await command.ExecuteNonQueryAsync();
+                using (SqlConnection connection = new SqlConnection(ConnectionString))
+                {
+                    SqlCommand command = new SqlCommand(deleteType, connection);
+                    command.Parameters.AddWithValue("@Id", shiftType.ShiftTypeId);
+                    await command.Connection.OpenAsync();
+                    await command.ExecuteNonQueryAsync();
+                }
             }
+            catch (SqlException)
+            {
+                Console.WriteLine("Noget gik galt i databasen");
+                throw;
+            }
+
 
             return shiftType;
         }
 
-        public ShiftTypeService(IConfiguration configuration) : base(configuration)
-        {
-        }
+        
     }
 }
