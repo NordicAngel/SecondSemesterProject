@@ -11,10 +11,6 @@
     <div class="col-md-5">
         <form method="post">
             <div class="form-group">
-                <label asp-for="@Model.shiftType.ShiftTypeId">Id: </label>
-                <label asp-for="@Model.shiftType.ShiftTypeId">@Model.shiftType.ShiftTypeId</label>
-            </div>
-            <div class="form-group">
                 <label asp-for="@Model.shiftType.Name">Vagttype: </label>
                 <label asp-for="@Model.shiftType.Name">@Model.shiftType.Name</label>
             </div>
@@ -23,7 +19,7 @@
                 <label asp-for="@Model.shiftType.Color">@Model.shiftType.Color</label>
             </div>
             <div class="form-group">
-                <input type="submit" value="Slet" style="background-color: tomato"/>
+                <input class="btn-danger" type="submit" value="Slet"/>
                 <a asp-page="/ShiftTypes/GetAllShiftType"><input type="button" value="Anuller"/></a>
             </div>
         </form>

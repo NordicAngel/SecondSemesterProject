@@ -40,7 +40,16 @@ namespace SecondSemesterProject.Pages.Members
 
             try
             {
-                MemberService.CreateMember(Member);
+                if (MemberService.CheckMemberInfo(Member))
+                {
+                    MemberService.CreateMember(Member);
+                }
+                else
+                {
+                    InfoText = "E-mail eller telefonnummer allerede taget!";
+
+                    return Page();
+                }
             }
             catch (SqlException sqlEx)
             {

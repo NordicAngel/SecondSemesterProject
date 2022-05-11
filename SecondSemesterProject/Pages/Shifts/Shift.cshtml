@@ -1,0 +1,58 @@
+﻿@page
+@model SecondSemesterProject.Pages.Shifts.ShiftModel
+@{
+}
+
+<style>
+    .page {
+        display: flex;
+        flex-flow: row;
+    }
+    .page div {
+        flex: 1
+    }
+</style>
+
+<div class="page">
+    <div>
+        <h4>
+            Vagt den @Model.Shift.DateTimeStart.Date.ToString("dd/MM/yyyy")<br />
+            Fra kl: @Model.Shift.DateTimeStart.TimeOfDay.ToString("hh\\:mm")
+            Til kl: @Model.Shift.DateTimeEnd.TimeOfDay.ToString("hh\\:mm")<br />
+            @Model.ShiftType.Name<br />
+            Vagten er @Model.MemberName<br />
+
+        </h4>
+    </div>
+    <div>
+        @if(Model.Shift.MemberId != null)
+        {
+            <form method="post">
+                <input type="submit" value="Tage vagt" asp-page-handler="TakeShift" 
+                       asp-route-memberId=""/>
+            </form>
+        }
+
+        @if (true) //if board member
+        {
+            <div>
+                <form method="post">
+                    <select asp-for="DeleteOption">
+                        <option value="0">
+                            Slet denne vagt
+                        </option>
+                        <option value="1">
+                            Slet denne og alle vagter i katagorien efter denne indtil dag
+                        </option>
+                        <option value="2">
+                            Slet denne og alle vagter i katagorien efter denne
+                        </option>
+                    </select><br/>
+                    En katagori er vagter af samme tidsrum, type og uge dag.<br/>
+                    <input type="date" value="@DateTime.Today.ToString("yyyy-MM-dd")" asp-for="DeleteUntilDate"/>
+                    <input type="submit" value="Slet" asp-page-handler="delete" asp-route-id="@Model.Shift.ShiftId"/>
+                </form>
+            </div>
+        }
+    </div>
+</div>

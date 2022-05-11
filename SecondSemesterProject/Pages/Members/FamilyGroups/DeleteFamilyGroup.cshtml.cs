@@ -8,50 +8,36 @@ using Microsoft.Data.SqlClient;
 using SecondSemesterProject.Interfaces;
 using SecondSemesterProject.Models;
 
-namespace SecondSemesterProject.Pages.Members
+namespace SecondSemesterProject.Pages.Members.FamilyGroups
 {
-    public class UpdateMemberModel : PageModel
+    public class DeleteFamilyGroupModel : PageModel
     {
         private IMemberService MemberService;
 
         [BindProperty]
-        public Member Member { get; set; }
+        public int FamilyGroupId { get; set; }
 
         public string InfoText;
 
-        public UpdateMemberModel(IMemberService service)
+        public DeleteFamilyGroupModel(IMemberService service)
         {
             MemberService = service;
         }
 
         public IActionResult OnGet(int id)
         {
-            Member = (Member)MemberService.GetMemberByID(id);
+            FamilyGroupId = id;
 
             return Page();
         }
 
         public IActionResult OnPost(int id)
         {
-            if (!ModelState.IsValid)
-            {
-                return Page();
-            }
-
             InfoText = "";
 
             try
             {
-                if (MemberService.CheckMemberInfo(Member))
-                {
-                    MemberService.UpdateMember(id, Member);
-                }
-                else
-                {
-                    InfoText = "E-mail eller telefonnummer allerede taget!";
-
-                    return Page();
-                }
+                MemberService.DeleteFamilyGroup(id);
             }
             catch (SqlException sqlEx)
             {

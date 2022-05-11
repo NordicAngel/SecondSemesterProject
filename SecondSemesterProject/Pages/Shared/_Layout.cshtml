@@ -1,4 +1,7 @@
-﻿<!DOCTYPE html>
+﻿@using SecondSemesterProject.Interfaces
+@inject IMemberService MemberService
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -25,7 +28,7 @@
                             <a class="nav-link text-dark" asp-area="" asp-page="/Members/Index">Medlemmer</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Members/FamilyGroup/Index">Familiegrupper</a>
+                            <a class="nav-link text-dark" asp-area="" asp-page="/Members/FamilyGroups/Index">Familiegrupper</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-page="/ShiftTypes/GetAllShiftType">Vagttyper</a>
@@ -40,6 +43,28 @@
                             <a class="nav-link text-dark" asp-area="" asp-page="/Privacy">Privacy</a>
                         </li>
                     </ul>
+                    <div>
+                        <ul class="navbar-nav flex-grow-1">
+                            @if (MemberService.CheckCurrentMember())
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-page="/Logins/Logout">Log Ud</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-page="/Profiles/Profile">
+                                        <span>@MemberService.GetCurrentMember().Name</span>
+                                        <span><img src="~/Images/Default.jpg" width="28" height="28" /></span>
+                                    </a>
+                                </li>
+                            }
+                            else
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-page="/Logins/Login">Log Ind</a>
+                                </li>
+                            }
+                        </ul>
+                    </div>
                 </div>
             </div>
         </nav>
@@ -50,11 +75,11 @@
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
+    @*<footer class="border-top footer text-muted">
         <div class="container">
             &copy; 2022 - SecondSemesterProject - <a asp-area="" asp-page="/Privacy">Privacy</a>
         </div>
-    </footer>
+    </footer>*@
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>

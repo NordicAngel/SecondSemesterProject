@@ -1,29 +1,82 @@
 ﻿@page
 @using SecondSemesterProject.Models
+@using SecondSemesterProject.Interfaces
+@using SecondSemesterProject.Exceptions
+@inject IShiftTypeService stService 
+@inject IMemberService mService
 @model SecondSemesterProject.Pages.Shifts.IndexModel
 @{
 }
 
 <style>
-    hmtl,main, body {
+    hmtl, main, body {
         height: 100%;
         margin: 5px
     }
+
+    .button-pannel {
+        display: flex;
+    }
+
+    .add_shift_button {
+        flex: 1;
+        text-align: right
+    }
+
+    .calendar-container {
+        position: relative;
+        display: flex;
+        width: 100%;
+    }
+
+    .time-display {
+        display: flex;
+        flex-flow: column;
+        top: 29px;
+        bottom: 5px;
+        position: absolute;
+        width: 100%;
+        /*padding-top: 29px;*/
+    }
+
+    .time-marker {
+        flex: 1;
+        border-top: 1px solid lightgray;
+        border-bottom: 1px solid lightgray;
+        position: relative
+    }
+
+    .time-marker-span {
+        position: absolute;
+        bottom: 0
+    }
+
+    .time-spacer {
+        width: 60px;
+        border-right: 2px solid lightgray;
+    }
+
     .calendar {
         display: flex;
+        width: 100%;
         background: whitesmoke;
-        
+        height: 600px;
+    }
+
+    .days {
+        display: flex;
+        width: 100%;
     }
 
     .day {
         display: flex;
         flex: 1;
-        border: 2px solid lightgray;
-        margin: 5px;
+        border-left: 2px solid lightgray;
+        border-right: 2px solid lightgray;
         text-align: center;
         padding: 5px;
         flex-flow: column;
-        height: 550px
+        /*height: 600px*/
     }
 
     .shift-container {
@@ -32,42 +85,131 @@
         flex-flow: row;
         position: relative
     }
+
     .shift {
-        flex-flow: column;
-        position: relative;
-        border: 1px solid gray;
+        flex-flow: row;
+        /*flex: 1;*/
+        position: absolute;
+        border: 2px solid gray;
+        width: 100%;
+        display: inline-block;
+        background-color: lightgray;
+        text-align: center;
+        /*vertical-align: middle*/
+    }
+
+    .shift .tooltiptext {
+        visibility: hidden;
+        width: 120px;
+        background-color: black;
+        color: #fff;
+        text-align: center;
+        border-radius: 6px;
+        padding: 5px 0;
+
+        /* Position the tooltip */
+        position: absolute;
+        z-index: 1;
+    }
+
+    .shift:hover .tooltiptext {
+        visibility: visible;
     }
 </style>
-<form method="post" 
-      asp-page-handler="Reload">
-    Vis fra 
-    <input 
-        type="date"
-        asp-for="FromDate"
-        onchange="this.form.submit();"
-    />
-    Vis antal dage: 
-    <input 
-        type="number"
-        asp-for="NumOfDays"
-        onchange="this.form.submit();"/>
-</form>
-<div class="calendar">
-    @for (int i = 0; i < Model.NumOfDays; i++)
-    {
-        <div class="day">
-            @Model.DaysOfShifts[i].Key.ToShortDateString()
-            <div class="shift-container">
-                @foreach (Shift s in Model.DaysOfShifts[i])
+
+@if (Model.ErrMsg == null)
+{
+    <div class="button-pannel">
+        <form method="post"
+              asp-page-handler="Reload">
+            Vis fra
+            <input type="date"
+                   asp-for="FromDate"
+                   value="@Model.FromDate.ToString("yyyy-MM-dd")"
+                   onchange="this.form.submit();"/>
+
+            Vis antal dage:
+            <input type="number"
+                   asp-for="NumOfDays"
+                   onchange="this.form.submit();"/>
+            <input hidden="True"type="submit" asp-page-handler="Reload"/>
+            <input type="submit" class="btn-secondary" value="Vis næste dage"
+                   asp-page-handler="Next"/>
+        </form>
+        <span class="add_shift_button">
+            <a class="btn btn-primary" asp-page="/Shifts/CreateShift">
+                Opret Vagter
+            </a>
+        </span>
+    </div>
+    <div class="calendar-container">
+        <div class="time-display">
+            @for (int i = 0; i < 12; i++)
+            {
+                <div class="time-marker">
+                    <span class="time-marker-span">
+                        kl: @((i + 1) * 2)
+                    </span>
+                </div>
+            }
+        </div>
+        <div class="calendar">
+            <div class="time-spacer"></div>
+            <div class="days">
+                @for (int i = 0; i < Model.NumOfDays; i++)
                 {
-                    <div class="shift"
-                         style="top: @(s.DateTimeStart.TimeOfDay.TotalHours/24*100)%;
-                     height: @(s.DateTimeEnd.TimeOfDay.TotalHours/24*100 
-                                 - s.DateTimeStart.TimeOfDay.TotalHours/24*100)%">
-                        @s.DateTimeStart.TimeOfDay - @s.DateTimeEnd.TimeOfDay
+                    <div class="day">
+                        @Model.DaysOfShifts[i].Key.ToShortDateString()
+                        <div class="shift-container">
+                            @foreach (List<Shift> list in Model.DaysOfShifts[i])
+                            {
+                                <div class="shift-container">
+                                    @foreach (Shift s in list)
+                                    {
+                                        <a asp-page="/Shifts/Shift" asp-route-id="@s.ShiftId">
+                                            <div class="shift"
+                                                 style="top: @(s.DateTimeStart.TimeOfDay.TotalHours / 24 * 100)%;
+                                                        height: @(s.DateTimeEnd.TimeOfDay.TotalHours / 24 * 100 - s.DateTimeStart.TimeOfDay.TotalHours / 24 * 100)%; border-color: #@stService.GetShiftTypeAsync(s.ShiftTypeId).Result.Color.ToArgb().ToString("x").Substring(2)"
+                                            >
+                                                <span class="tooltiptext">
+                                                    @s.DateTimeStart.TimeOfDay.Hours:@s.DateTimeStart.TimeOfDay.Minutes.ToString("D2")
+                                                    @s.DateTimeEnd.TimeOfDay.Hours:@s.DateTimeEnd.TimeOfDay.Minutes.ToString("D2")
+                                                    @if (s.MemberId == null)
+                                                    {
+                                                        <p>Ledig</p>
+                                                    }
+                                                    else
+                                                    {
+                                                        <p>Taget af @mService.GetMemberByID((int) s.MemberId).Name;</p>
+                                                    }
+                                                    <p>@stService.GetShiftTypeAsync(s.ShiftTypeId).Result.Name</p>
+                                                </span>
+                                                @if (s.MemberId == null)
+                                                {
+                                                    <p>Ledig</p>
+                                                }
+                                                else
+                                                {
+                                                    <p>Taget</p>
+                                                }
+                                            </div>
+                                        </a>
+                                    }
+                                </div>
+                            }
+
+                        </div>
                     </div>
                 }
             </div>
         </div>
-    }
-</div>
+    </div>
+}
+else
+{
+    <div>
+        @Model.ErrMsg
+    </div>
+}
+
+
