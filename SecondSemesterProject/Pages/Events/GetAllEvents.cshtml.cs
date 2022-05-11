@@ -16,22 +16,22 @@ namespace SecondSemesterProject.Pages.Events
         public string FilterCriteria { get; set; }
         public List<Event> Events { get; private set; }
         public string ErrorMsg { get; set; }
-        private IEventService eventService;
+        private IEventService _eventService;
 
         public GetAllEventsModel(IEventService eService)
         {
-            this.eventService = eService;
+            this._eventService = eService;
         }
 
         public async Task OnGetAsync()
         {
-            if (!String.IsNullOrEmpty(FilterCriteria))
+            //if (!String.IsNullOrEmpty(FilterCriteria))
+            //{
+            //    Events = await _eventService.GetEventAsync(FilterCriteria);
+            //}
+            //else
             {
-                //Events = await eventService.GetEventsByNameAsync(FilterCriteria);
-            }
-            else
-            {
-                Events = await eventService.GetAllEventAsync();
+                Events = await _eventService.GetAllEventAsync();
             }
         }
 
@@ -39,7 +39,7 @@ namespace SecondSemesterProject.Pages.Events
         {
             try
             {
-                await eventService.DeleteEventAsync(EventId);
+                await _eventService.DeleteEventAsync(EventId);
             }
             catch (DatabaseException ex)
             {

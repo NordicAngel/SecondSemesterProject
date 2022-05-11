@@ -28,7 +28,7 @@ namespace SecondSemesterProject
             services.AddRazorPages();
             services.AddTransient<IShiftService, ShiftService>();
             services.AddTransient<IShiftTypeService, ShiftTypeService>();
-
+            services.AddTransient<IEventService, EventService>();
             services.AddTransient<IMemberService, MemberService>();
         }
         
