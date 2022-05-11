@@ -1,6 +1,8 @@
 ﻿@page
 @using SecondSemesterProject.Models
+@using SecondSemesterProject.Interfaces
 @model SecondSemesterProject.Pages.Profiles.ProfileModel
+@inject IShiftTypeService ShiftTypeService
 @{
     ViewData["Title"] = "Min Profil";
 }
@@ -10,8 +12,7 @@
 <div class="row">
     <div class="col-md-4">
         <form method="post">
-            <div asp-validation-summary="All">
-                <input type="hidden" asp-for="@Model.Member.ID" class="form-control" />
+            <div>
                 <div class="form-group">
                     <label asp-for="@Model.Member.Name"></label><br />
                     <label>@Model.Member.Name</label>
@@ -34,13 +35,14 @@
                 </div>
                 <div class="form-group">
                     <label>Vagttyper</label>
-                    @foreach (KeyValuePair<ShiftType, bool> item in Model.ShiftTypes)
+                    @foreach (KeyValuePair<int, bool> shiftType in Model.ShiftTypes)
                     {
                         <div class="form-group">
-                            <input type="checkbox" asp-for="@item.Value">
-                            <label asp-for="@item.Key.ShiftTypeId">@item.Key.Name</label>
+                            <input type="checkbox" asp-for="@Model.ShiftTypes[shiftType.Key]">
+                            <label>@ShiftTypeService.GetShiftTypeAsync(shiftType.Key).Result.Name</label>
                         </div>
                     }
+                    <br />
                     <input type="submit" value="Gem ændringer" class="btn btn-primary" />
                 </div>
             </div>

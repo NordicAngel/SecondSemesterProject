@@ -24,7 +24,7 @@ namespace SecondSemesterProject.Interfaces
 
         public Task UpdateMemberShiftTypes(int id, Dictionary<int, bool> shiftTypes);
 
-        public Task<Dictionary<int, bool>> GetMemberShiftTypes(int id);
+        public Task<List<int>> GetMemberShiftTypes(int id);
 
         public Dictionary<int, List<IMember>> GetAllFamilyGroups();
 

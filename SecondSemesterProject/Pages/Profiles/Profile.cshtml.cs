@@ -18,14 +18,18 @@ namespace SecondSemesterProject.Pages.Profiles
         [BindProperty]
         public Member Member { get; set; }
 
-        public Dictionary<ShiftType, bool> ShiftTypes { get; set; }
+        //[BindProperty]
+        //public Dictionary<ShiftType, bool> ShiftTypes { get; set; }
+
+        [BindProperty]
+        public Dictionary<int, bool> ShiftTypes { get; set; }
 
         public ProfileModel(IMemberService service, IShiftTypeService shiftTypeService)
         {
             MemberService = service;
             ShiftTypeService = shiftTypeService;
 
-            ShiftTypes = new Dictionary<ShiftType, bool>();
+            ShiftTypes = new Dictionary<int, bool>();
         }
 
         public async Task<IActionResult> OnGet()
@@ -34,9 +38,17 @@ namespace SecondSemesterProject.Pages.Profiles
             {
                 Member = (Member)MemberService.GetCurrentMember();
 
-                foreach (KeyValuePair<int, bool> item in await MemberService.GetMemberShiftTypes(Member.ID))
+                foreach (int id in await MemberService.GetMemberShiftTypes(Member.ID))
                 {
-                    ShiftTypes.Add(await ShiftTypeService.GetShiftTypeAsync(item.Key), item.Value);
+                    ShiftTypes.Add(id, true);
+                }
+
+                foreach (ShiftType shiftType in await ShiftTypeService.GetAllShiftTypesAsync())
+                {
+                    if (!CheckShiftType(shiftType.ShiftTypeId))
+                    {
+                        ShiftTypes.Add(shiftType.ShiftTypeId, false);
+                    }
                 }
             }
             else
@@ -49,16 +61,31 @@ namespace SecondSemesterProject.Pages.Profiles
 
         public async Task<IActionResult> OnPost()
         {
-            Dictionary<int, bool> shiftTypes = new Dictionary<int, bool>();
+            //Dictionary<int, bool> shiftTypes = new Dictionary<int, bool>();
 
-            foreach (KeyValuePair<ShiftType, bool> item in ShiftTypes)
-            {
-                shiftTypes.Add(item.Key.ShiftTypeId, item.Value);
-            }
+            //foreach (KeyValuePair<ShiftType, bool> shiftType in ShiftTypes)
+            //{
+            //    shiftTypes.Add(shiftType.Key.ShiftTypeId, shiftType.Value);
+            //}
 
-            await MemberService.UpdateMemberShiftTypes(Member.ID, shiftTypes);
+            Member = (Member)MemberService.GetCurrentMember();
+
+            await MemberService.UpdateMemberShiftTypes(Member.ID, ShiftTypes);
 
             return Page();
+        }
+
+        private bool CheckShiftType(int id)
+        {
+            foreach (KeyValuePair<int, bool> shiftType in ShiftTypes)
+            {
+                if (shiftType.Key == id)
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
     }
 }

@@ -30,6 +30,11 @@ namespace SecondSemesterProject.Services
         private string insertFamilyGroupSql = "INSERT INTO JO22_FamilyGroup DEFAULT VALUES";
         private string deleteFamilyGroupSql = "DELETE FROM JO22_FamilyGroup WHERE Id = @ID";
 
+        // SHIFT TYPE
+        private string selectMemberShiftTypeSql = "SELECT * FROM JO22_MemberShiftType WHERE MemberId = @ID";
+        private string insertMemberShiftTypeSql = "INSERT INTO JO22_MemberShiftType VALUES (@MemberID, @ShiftTypeID)";
+        private string deleteMemberShiftTypeSql = "DELETE FROM JO22_MemberShiftType WHERE MemberId = @MemberID AND ShiftTypeId = @ShiftTypeID";
+
         private static IMember CurrentMember;
 
         public MemberService(IConfiguration configuration) : base(configuration)
@@ -319,16 +324,106 @@ namespace SecondSemesterProject.Services
             }
         }
 
-        public async Task UpdateMemberShiftTypes(int id, Dictionary<int, bool> shiftTypes)
+        private async Task CreateMemberShiftType(int memberId, int shiftTypeId)
         {
-
+            using(SqlConnection connection = new SqlConnection(ConnectionString))
+            {
+                try
+                {
+                    SqlCommand command = new SqlCommand(insertMemberShiftTypeSql, connection);
+                    command.Parameters.AddWithValue("@MemberID", memberId);
+                    command.Parameters.AddWithValue("@ShiftTypeID", shiftTypeId);
+                    await command.Connection.OpenAsync();
+                    await command.ExecuteNonQueryAsync();
+                }
+                catch (SqlException)
+                {
+                    throw;
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
+            }
         }
 
-        public async Task<Dictionary<int, bool>> GetMemberShiftTypes(int id)
+        public async Task UpdateMemberShiftTypes(int id, Dictionary<int, bool> shiftTypes)
         {
-            Dictionary<int, bool> shiftTypes = new Dictionary<int, bool>();
+            List<int> memberShiftTypes = await GetMemberShiftTypes(id);
 
+            // INSERT
+            foreach (KeyValuePair<int, bool> shiftType in shiftTypes)
+            {
+                if (!memberShiftTypes.Contains(shiftType.Key) && shiftType.Value)
+                {
+                    await CreateMemberShiftType(id, shiftType.Key);
+                }
+            }
 
+            // DELETE
+            foreach (KeyValuePair<int, bool> shiftType in shiftTypes)
+            {
+                if (memberShiftTypes.Contains(shiftType.Key) && !shiftType.Value)
+                {
+                    await DeleteMemberShiftTypes(id, shiftType.Key);
+                }
+            }
+        }
+
+        private async Task DeleteMemberShiftTypes(int memberId, int shiftTypeId)
+        {
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            {
+                try
+                {
+                    SqlCommand command = new SqlCommand(deleteMemberShiftTypeSql, connection);
+                    command.Parameters.AddWithValue("@MemberID", memberId);
+                    command.Parameters.AddWithValue("@ShiftTypeID", shiftTypeId);
+                    await command.Connection.OpenAsync();
+                    await command.ExecuteNonQueryAsync();
+                }
+                catch (SqlException)
+                {
+                    throw;
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
+            }
+        }
+
+        public async Task<List<int>> GetMemberShiftTypes(int id)
+        {
+            List<int> shiftTypes = new List<int>();
+
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            {
+                try
+                {
+                    SqlCommand command = new SqlCommand(selectMemberShiftTypeSql, connection);
+                    command.Parameters.AddWithValue("@ID", id);
+                    await command.Connection.OpenAsync();
+                    await command.ExecuteNonQueryAsync();
+
+                    SqlDataReader reader = await command.ExecuteReaderAsync();
+
+                    while (await reader.ReadAsync())
+                    {
+                        int shiftTypeId = reader.GetInt32(1);
+
+                        shiftTypes.Add(shiftTypeId);
+                    }
+                }
+                catch (SqlException)
+                {
+                    throw;
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
+            }
 
             return shiftTypes;
         }
