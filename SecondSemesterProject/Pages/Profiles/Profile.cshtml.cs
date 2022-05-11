@@ -18,9 +18,6 @@ namespace SecondSemesterProject.Pages.Profiles
         [BindProperty]
         public Member Member { get; set; }
 
-        //[BindProperty]
-        //public Dictionary<ShiftType, bool> ShiftTypes { get; set; }
-
         [BindProperty]
         public Dictionary<int, bool> ShiftTypes { get; set; }
 
@@ -32,7 +29,7 @@ namespace SecondSemesterProject.Pages.Profiles
             ShiftTypes = new Dictionary<int, bool>();
         }
 
-        public async Task<IActionResult> OnGet()
+        public async Task<IActionResult> OnGetAsync()
         {
             if (MemberService.CheckCurrentMember())
             {
@@ -59,15 +56,8 @@ namespace SecondSemesterProject.Pages.Profiles
             return Page();
         }
 
-        public async Task<IActionResult> OnPost()
+        public async Task<IActionResult> OnPostAsync()
         {
-            //Dictionary<int, bool> shiftTypes = new Dictionary<int, bool>();
-
-            //foreach (KeyValuePair<ShiftType, bool> shiftType in ShiftTypes)
-            //{
-            //    shiftTypes.Add(shiftType.Key.ShiftTypeId, shiftType.Value);
-            //}
-
             Member = (Member)MemberService.GetCurrentMember();
 
             await MemberService.UpdateMemberShiftTypes(Member.ID, ShiftTypes);

@@ -44,7 +44,7 @@ namespace SecondSemesterProject.Pages.Login
 
                 if (MemberService.CheckCurrentMember() && MemberService.GetCurrentMember().BoardMember)
                 {
-                    return RedirectToPage("/Members/Index");
+                    return RedirectToPage("/Profiles/Profile");
                 }
             }
             catch (SqlException sqlEx)
