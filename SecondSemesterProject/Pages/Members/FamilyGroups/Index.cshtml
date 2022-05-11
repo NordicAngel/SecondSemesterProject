@@ -1,0 +1,56 @@
+﻿@page
+@model SecondSemesterProject.Pages.Members.FamilyGroup.IndexModel
+@{
+    ViewData["Title"] = "Familiegrupper";
+}
+
+<p>@Model.InfoText</p>
+
+<p>
+    <a asp-page="/Members/FamilyGroups/CreateFamilyGroup" class="btn btn-primary">Tilføj familiegruppe</a>
+</p>
+
+<h4>Familiegrupper</h4>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Familiegruppe ID
+            </th>
+            <th>
+                Medlemmer i gruppe
+            </th>
+            <th></th>
+            <th></th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.FamilyGroups)
+        {
+        <tr>
+            <td>
+                @item.Key
+            </td>
+            <td>
+                @item.Value.Count
+            </td>
+            <td>
+                <p>
+                    <a asp-page="/Members/FamilyGroups/FamilyGroup" asp-route-id="@item.Key" class="btn btn-light">Se medlemmer</a>
+                </p>
+            </td>
+            <td>
+                <p>
+                    <a asp-page="/Members/FamilyGroups/UpdateFamilyGroup" asp-route-id="@item.Key" class="btn btn-light">Opdater familiegruppe</a>
+                </p>
+            </td>
+            <td>
+                <p>
+                    <a asp-page="/Members/FamilyGroups/DeleteFamilyGroup" asp-route-id="@item.Key" class="btn btn-light">Slet familiegruppe</a>
+                </p>
+            </td>
+        </tr>
+        }
+</table>

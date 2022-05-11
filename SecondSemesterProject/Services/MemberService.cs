@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using SecondSemesterProject.Interfaces;
@@ -9,27 +10,59 @@ namespace SecondSemesterProject.Services
 {
     public class MemberService : Connection, IMemberService
     {
-        private static string databaseName = "JO22_Member";
+        // SELECT
+        private string selectSql = "SELECT * FROM JO22_Member";
+        private string selectByIdSql = "SELECT * FROM JO22_Member WHERE Id = @ID";
+        private string selectByFamilyGroupIdSql = "SELECT * FROM JO22_Member WHERE FamilyGroupId = @ID";
+        private string selectByNameSql = "SELECT * FROM JO22_Member WHERE Name LIKE @Name";
 
-        private string selectSql = $"select * from {databaseName}";
-        private string selectByIdSql = $"select * from {databaseName} where Id = @ID";
-        private string selectByFamilyGroupIdSql = $"select * from {databaseName} where FamilyGroupId = @ID";
-        private string selectByNameSql = $"select * from {databaseName} where Name like @Name";
+        // CREATE, UPDATE, DELETE
+        private string insertSql = "INSERT INTO JO22_Member VALUES (NULL, @Name, @Email, @Password, @PhoneNumber, @BoardMember, @HygieneCertified)";
+        private string updateSql = "UPDATE JO22_Member SET FamilyGroupId = @FamilyGroupId, Name = @Name, Email = @Email, Password = @Password, PhoneNumber = @PhoneNumber, BoardMember = @BoardMember, HygieneCertified = @HygieneCertified WHERE Id = @ID";
+        private string deleteSql = "DELETE FROM JO22_Member WHERE Id = @ID";
 
-        private string insertSql = $"insert into {databaseName} Values (NULL, @Name, @Email, @Password, @PhoneNumber, @BoardMember, @HygieneCertified)";
-        private string updateSql = $"update {databaseName} set Name = @Name, Email = @Email, Password = @Password, PhoneNumber = @PhoneNumber, BoardMember = @BoardMember, HygieneCertified = @HygieneCertified where Id = @ID";
-        private string deleteSql = $"delete from {databaseName} where Id = @ID";
+        // LOGIN
+        private string loginSql = "SELECT * FROM JO22_Member WHERE Email = @Email AND Password = @Password";
 
-        private string loginSql = $"select * from {databaseName} where Email = @Email, Password = @Password";
+        // FAMILY GROUP
+        private string selectFamilyGroupSql = "SELECT * FROM JO22_FamilyGroup";
+        private string selectFamilyGroupIdSql = "SELECT MAX(Id) FROM JO22_FamilyGroup";
+        private string insertFamilyGroupSql = "INSERT INTO JO22_FamilyGroup DEFAULT VALUES";
+        private string deleteFamilyGroupSql = "DELETE FROM JO22_FamilyGroup WHERE Id = @ID";
 
-        private string selectFamilyGroupSql = "select * from JO22_FamilyGroup";
-        private string insertFamilyGroupSql = "insert into JO22_FamilyGroup";
+        // SHIFT TYPE
+        private string selectMemberShiftTypeSql = "SELECT * FROM JO22_MemberShiftType WHERE MemberId = @ID";
+        private string insertMemberShiftTypeSql = "INSERT INTO JO22_MemberShiftType VALUES (@MemberID, @ShiftTypeID)";
+        private string deleteMemberShiftTypeSql = "DELETE FROM JO22_MemberShiftType WHERE MemberId = @MemberID AND ShiftTypeId = @ShiftTypeID";
+
+        private static IMember CurrentMember;
 
         public MemberService(IConfiguration configuration) : base(configuration)
         {
 
         }
 
+        public IMember GetCurrentMember()
+        {
+            return CurrentMember;
+        }
+
+        public bool CheckCurrentMember()
+        {
+            if (CurrentMember != null)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Takes an IMember as parameter and inserts it into the database.
+        /// </summary>
+        /// <param name="member"></param>
         public void CreateMember(IMember member)
         {
             using (SqlConnection connection = new SqlConnection(ConnectionString))
@@ -65,6 +98,16 @@ namespace SecondSemesterProject.Services
                 {
                     SqlCommand command = new SqlCommand(updateSql, connection);
                     command.Parameters.AddWithValue("@ID", id);
+
+                    if (member.FamilyGroupID != null)
+                    {
+                        command.Parameters.AddWithValue("@FamilyGroupId", member.FamilyGroupID);
+                    }
+                    else
+                    {
+                        command.Parameters.AddWithValue("@FamilyGroupId", DBNull.Value);
+                    }
+
                     command.Parameters.AddWithValue("@Name", member.Name);
                     command.Parameters.AddWithValue("@Email", member.Email);
                     command.Parameters.AddWithValue("@Password", member.Password);
@@ -107,7 +150,23 @@ namespace SecondSemesterProject.Services
             }
         }
 
-        public IMember Login(string email, string password)
+        public bool CheckMemberInfo(IMember checkMember)
+        {
+            foreach (IMember member in GetAllMembers())
+            {
+                if (member.ID != checkMember.ID)
+                {
+                    if (string.Equals(member.Email, checkMember.Email) || string.Equals(member.PhoneNumber, checkMember.PhoneNumber))
+                    {
+                        return false;
+                    }
+                }
+            }
+
+            return true;
+        }
+
+        public void Login(string email, string password)
         {
             using (SqlConnection connection = new SqlConnection(ConnectionString))
             {
@@ -123,7 +182,7 @@ namespace SecondSemesterProject.Services
                     if (reader.Read())
                     {
                         int memberId = reader.GetInt32(0);
-                        int familyGroupId = reader.GetInt32(1);
+                        int? familyGroupId = (reader[1] as int?) ?? null;
 
                         string memberName = reader.GetString(2);
                         string memberEmail = reader.GetString(3);
@@ -132,12 +191,14 @@ namespace SecondSemesterProject.Services
 
                         bool boardMember = reader.GetBoolean(6);
                         bool hygieneCertified = reader.GetBoolean(7);
-                        bool cafeApprentice = reader.GetBoolean(8);
-                        bool bakerApprentice = reader.GetBoolean(9);
 
                         IMember member = new Member(memberId, familyGroupId, memberName, memberEmail, memberPassword, memberPhoneNumber, boardMember, hygieneCertified);
 
-                        return member;
+                        CurrentMember = member;
+                    }
+                    else
+                    {
+                        throw new NullReferenceException();
                     }
                 }
                 catch (SqlException)
@@ -149,16 +210,14 @@ namespace SecondSemesterProject.Services
                     throw;
                 }
             }
-
-            return new Member();
         }
 
         public void Logout()
         {
-
+            CurrentMember = null;
         }
 
-        public void CreateFamilyGroup(List<IMember> members)
+        private void InsertFamilyGroup()
         {
             using (SqlConnection connection = new SqlConnection(ConnectionString))
             {
@@ -167,12 +226,41 @@ namespace SecondSemesterProject.Services
                     SqlCommand command = new SqlCommand(insertFamilyGroupSql, connection);
                     command.Connection.Open();
                     command.ExecuteNonQuery();
+                }
+                catch (SqlException)
+                {
+                    throw;
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
+            }
+        }
 
-                    foreach (IMember member in members)
+        public void CreateFamilyGroup(List<IMember> members)
+        {
+            InsertFamilyGroup();
+
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            {
+                try
+                {
+                    SqlCommand command = new SqlCommand(selectFamilyGroupIdSql, connection);
+                    command.Connection.Open();
+
+                    SqlDataReader reader = command.ExecuteReader();
+
+                    if (reader.Read())
                     {
-                        member.FamilyGroupID = 0;
+                        int familyGroupId = reader.GetInt32(0);
 
-                        // Update members with new family group id
+                        foreach (IMember member in members)
+                        {
+                            member.FamilyGroupID = familyGroupId;
+
+                            UpdateMember(member.ID, member);
+                        }
                     }
                 }
                 catch (SqlException)
@@ -184,6 +272,160 @@ namespace SecondSemesterProject.Services
                     throw;
                 }
             }
+        }
+
+        public void UpdateFamilyGroup(List<IMember> members, int id)
+        {
+            List<IMember> familyGroupMembers = GetAllFamilyGroupMembers(id);
+
+            foreach (IMember member in familyGroupMembers)
+            {
+                member.FamilyGroupID = null;
+
+                UpdateMember(member.ID, member);
+            }
+
+            foreach (IMember member in members)
+            {
+                member.FamilyGroupID = id;
+
+                UpdateMember(member.ID, member);
+            }
+        }
+
+        public void DeleteFamilyGroup(int id)
+        {
+            List<IMember> familyGroupMembers = GetAllFamilyGroupMembers(id);
+
+            foreach (IMember member in familyGroupMembers)
+            {
+                member.FamilyGroupID = null;
+
+                UpdateMember(member.ID, member);
+            }
+
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            {
+                try
+                {
+                    SqlCommand command = new SqlCommand(deleteFamilyGroupSql, connection);
+                    command.Parameters.AddWithValue("@ID", id);
+                    command.Connection.Open();
+                    command.ExecuteNonQuery();
+                }
+                catch (SqlException)
+                {
+                    throw;
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
+            }
+        }
+
+        private async Task CreateMemberShiftType(int memberId, int shiftTypeId)
+        {
+            using(SqlConnection connection = new SqlConnection(ConnectionString))
+            {
+                try
+                {
+                    SqlCommand command = new SqlCommand(insertMemberShiftTypeSql, connection);
+                    command.Parameters.AddWithValue("@MemberID", memberId);
+                    command.Parameters.AddWithValue("@ShiftTypeID", shiftTypeId);
+                    await command.Connection.OpenAsync();
+                    await command.ExecuteNonQueryAsync();
+                }
+                catch (SqlException)
+                {
+                    throw;
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
+            }
+        }
+
+        public async Task UpdateMemberShiftTypes(int id, Dictionary<int, bool> shiftTypes)
+        {
+            List<int> memberShiftTypes = await GetMemberShiftTypes(id);
+
+            // INSERT
+            foreach (KeyValuePair<int, bool> shiftType in shiftTypes)
+            {
+                if (!memberShiftTypes.Contains(shiftType.Key) && shiftType.Value)
+                {
+                    await CreateMemberShiftType(id, shiftType.Key);
+                }
+            }
+
+            // DELETE
+            foreach (KeyValuePair<int, bool> shiftType in shiftTypes)
+            {
+                if (memberShiftTypes.Contains(shiftType.Key) && !shiftType.Value)
+                {
+                    await DeleteMemberShiftTypes(id, shiftType.Key);
+                }
+            }
+        }
+
+        private async Task DeleteMemberShiftTypes(int memberId, int shiftTypeId)
+        {
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            {
+                try
+                {
+                    SqlCommand command = new SqlCommand(deleteMemberShiftTypeSql, connection);
+                    command.Parameters.AddWithValue("@MemberID", memberId);
+                    command.Parameters.AddWithValue("@ShiftTypeID", shiftTypeId);
+                    await command.Connection.OpenAsync();
+                    await command.ExecuteNonQueryAsync();
+                }
+                catch (SqlException)
+                {
+                    throw;
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
+            }
+        }
+
+        public async Task<List<int>> GetMemberShiftTypes(int id)
+        {
+            List<int> shiftTypes = new List<int>();
+
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            {
+                try
+                {
+                    SqlCommand command = new SqlCommand(selectMemberShiftTypeSql, connection);
+                    command.Parameters.AddWithValue("@ID", id);
+                    await command.Connection.OpenAsync();
+                    await command.ExecuteNonQueryAsync();
+
+                    SqlDataReader reader = await command.ExecuteReaderAsync();
+
+                    while (await reader.ReadAsync())
+                    {
+                        int shiftTypeId = reader.GetInt32(1);
+
+                        shiftTypes.Add(shiftTypeId);
+                    }
+                }
+                catch (SqlException)
+                {
+                    throw;
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
+            }
+
+            return shiftTypes;
         }
 
         public Dictionary<int, List<IMember>> GetAllFamilyGroups()

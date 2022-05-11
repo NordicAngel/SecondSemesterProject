@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using SecondSemesterProject.Interfaces;
+using SecondSemesterProject.Models;
 
 namespace SecondSemesterProject.Pages.Login
 {
@@ -12,15 +13,10 @@ namespace SecondSemesterProject.Pages.Login
     {
         private IMemberService MemberService;
 
-        [BindProperty]
+        public Member Member { get; set; }
+
         public string Email { get; set; }
-
-        [BindProperty]
         public string Password { get; set; }
-
-        public IMember Member { get; set; }
-
-        public string InfoText;
 
         public LogoutModel(IMemberService service)
         {
@@ -29,12 +25,26 @@ namespace SecondSemesterProject.Pages.Login
 
         public IActionResult OnGet()
         {
+            if (MemberService.CheckCurrentMember())
+            {
+                Member = (Member)MemberService.GetCurrentMember();
+
+                Email = Member.Email;
+                Password = Member.Password;
+            }
+            else
+            {
+                return Redirect("~/Index");
+            }
+
             return Page();
         }
 
         public IActionResult OnPost()
         {
-            return Page();
+            MemberService.Logout();
+
+            return Redirect("~/Index");
         }
     }
 }

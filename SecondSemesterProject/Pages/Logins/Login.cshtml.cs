@@ -19,8 +19,6 @@ namespace SecondSemesterProject.Pages.Login
         [BindProperty]
         public string Password { get; set; }
 
-        public IMember Member { get; set; }
-
         public string InfoText;
 
         public LoginModel(IMemberService service)
@@ -42,23 +40,22 @@ namespace SecondSemesterProject.Pages.Login
 
             try
             {
-                Member = MemberService.Login(Email, Password);
+                MemberService.Login(Email, Password);
 
-                if (Member != null)
+                if (MemberService.CheckCurrentMember() && MemberService.GetCurrentMember().BoardMember)
                 {
-                    if (Member.BoardMember)
-                    {
-                        return RedirectToPage("/Members/Index");
-                    }
-                    else if (!Member.BoardMember)
-                    {
-                        return RedirectToPage("/Index");
-                    }
+                    return RedirectToPage("/Profiles/Profile");
                 }
             }
             catch (SqlException sqlEx)
             {
                 InfoText = "Database Error: " + sqlEx.Message;
+
+                return Page();
+            }
+            catch (NullReferenceException nullEx)
+            {
+                InfoText = "General Error: " + nullEx.Message;
 
                 return Page();
             }
