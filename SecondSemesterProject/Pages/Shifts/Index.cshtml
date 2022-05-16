@@ -74,7 +74,7 @@
         border-left: 2px solid lightgray;
         border-right: 2px solid lightgray;
         text-align: center;
-        padding: 5px;
+        /*padding: 5px;*/
         flex-flow: column;
         /*height: 600px*/
     }
@@ -83,19 +83,37 @@
         flex-grow: 1;
         display: flex;
         flex-flow: row;
-        position: relative
+        position: relative;
+        margin: 2px
     }
 
     .shift {
         flex-flow: row;
-        /*flex: 1;*/
-        position: absolute;
-        border: 2px solid gray;
-        width: 100%;
-        display: inline-block;
         background-color: lightgray;
+        position: absolute;
+        border: 4px solid gray;
+        width: 100%;
+        /*display: inline-block;*/
         text-align: center;
-        /*vertical-align: middle*/
+        border-radius: 5px;
+    }
+
+    .shift-div {
+        /*margin: 4px;*/
+        height: 100%;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .shift-text {
+        position: absolute;
+        /*height: 100%;*/
+        /*width: 50%;*/
+        top: 50%;
+        left: 50%;
+        -ms-transform: translate(-50%, -50%);
+        transform: translate(-50%, -50%);
+        overflow: hidden;
     }
 
     .shift .tooltiptext {
@@ -169,9 +187,10 @@
                                         <a asp-page="/Shifts/Shift" asp-route-id="@s.ShiftId">
                                             <div class="shift"
                                                  style="top: @(s.DateTimeStart.TimeOfDay.TotalHours / 24 * 100)%;
-                                                        height: @(s.DateTimeEnd.TimeOfDay.TotalHours / 24 * 100 - s.DateTimeStart.TimeOfDay.TotalHours / 24 * 100)%; border-color: #@stService.GetShiftTypeAsync(s.ShiftTypeId).Result.Color.ToArgb().ToString("x").Substring(2)"
+                                                        height: @(s.DateTimeEnd.TimeOfDay.TotalHours / 24 * 100 - s.DateTimeStart.TimeOfDay.TotalHours / 24 * 100)%;
+                                                        border-color: #@stService.GetShiftTypeAsync(s.ShiftTypeId).Result.Color.ToArgb().ToString("x").Substring(2)"
                                             >
-                                                <span class="tooltiptext">
+                                                <div class="tooltiptext">
                                                     @s.DateTimeStart.TimeOfDay.Hours:@s.DateTimeStart.TimeOfDay.Minutes.ToString("D2")
                                                     @s.DateTimeEnd.TimeOfDay.Hours:@s.DateTimeEnd.TimeOfDay.Minutes.ToString("D2")
                                                     @if (s.MemberId == null)
@@ -183,15 +202,19 @@
                                                         <p>Taget af @mService.GetMemberByID((int) s.MemberId).Name;</p>
                                                     }
                                                     <p>@stService.GetShiftTypeAsync(s.ShiftTypeId).Result.Name</p>
-                                                </span>
-                                                @if (s.MemberId == null)
-                                                {
-                                                    <p>Ledig</p>
-                                                }
-                                                else
-                                                {
-                                                    <p>Taget</p>
-                                                }
+                                                </div>
+                                                <div class="shift-div">
+                                                    <div class="shift-text">
+                                                        @if (s.MemberId == null)
+                                                        {
+                                                            <span>Ledig</span>
+                                                        }
+                                                        else
+                                                        {
+                                                            <span>Taget</span>
+                                                        }
+                                                    </div>
+                                                </div>
                                             </div>
                                         </a>
                                     }
