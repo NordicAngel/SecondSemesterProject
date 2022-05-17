@@ -1,12 +1,12 @@
 ﻿@page
 @model SecondSemesterProject.Pages.Events.CreateModel
 @{
-    ViewData["Title"] = "Create Event";
+    ViewData["Title"] = "Opret ny begivenhed";
 }
 
-<h1>Create Event</h1>
+<h1>Opret begivenhed</h1>
 <p>
-    <a asp-page="Index">Back to List</a>
+    <a asp-page="/Events/GetAllEvents">Tilbage til listen</a>
 </p>
 
 @if (Model.ErrorMsg != null)
@@ -18,33 +18,33 @@
     <div class="col-md-4">
         <form method="post">
             <div asp-validation-summary="All" class="text-danger"></div>
-            <div class="form-group">
+            @*<div class="form-group">
                 <label asp-for="@Model.Event.EventId" class="control-label"></label>
                 <input asp-for="@Model.Event.EventId" class="form-control" />
-            </div>
+            </div>*@
             <div class="form-group">
-                <label asp-for="@Model.Event.Name" class="control-label"></label>
+                <label asp-for="@Model.Event.Name" class="control-label">Navn</label>
                 <input asp-for="@Model.Event.Name" class="form-control" />
             </div>
             <div class="form-group">
-                <label asp-for="@Model.Event.Description" class="control-label"></label>
+                <label asp-for="@Model.Event.Description" class="control-label">Beskrivelse</label>
                 <input asp-for="@Model.Event.Description" class="form-control" />
             </div>
             <div class="form-group">
-                <label asp-for="@Model.Event.Time" class="control-label"></label>
+                <label asp-for="@Model.Event.Time" class="control-label">Tidspunkt</label>
                 <input asp-for="@Model.Event.Time" class="form-control" />
             </div>
             <div class="form-group">
-                <label asp-for="@Model.Event.Place" class="control-label"></label>
+                <label asp-for="@Model.Event.Place" class="control-label">Sted</label>
                 <input asp-for="@Model.Event.Place" class="form-control" />
             </div>
             <div class="form-group">
-                <label asp-for="@Model.Event.Image" class="control-label"></label>
+                <label asp-for="@Model.Event.Image" class="control-label">Billede</label>
                 <input asp-for="@Model.Event.Image" class="form-control" />
             </div>
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-                <input type="button" value="Cancel" class="btn btn-link" />
+                <input type="submit" value="Opret ny begivenhed" class="btn btn-primary" />
+                <input type="button" value="Annuller" class="btn btn-link" />
         </form>
     </div>
 </div>

@@ -1,5 +1,6 @@
 ﻿@page
 @using Microsoft.Extensions.Logging
+@using SecondSemesterProject.Models
 @model SecondSemesterProject.Pages.Events.GetAllEventsModel
 @{
     ViewData["Title"] = "GetAllEvents";
@@ -20,26 +21,26 @@
 
 <table class="table">
     <thead>
-        <tr>
-            @*<th>
+    <tr>
+        @*<th>
                 Begivenhed ID
             </th>*@
-            <th>
-                Navn
-            </th>
-            <th>
-                Beskrivelse
-            </th>
-            <th>
-                Tidspunkt
-            </th>
-            <th>
-                Sted
-            </th>
-            <th>
-                Billede
-            </th>
-        </tr>
+        <th>
+            Navn
+        </th>
+        <th>
+            Beskrivelse
+        </th>
+        <th>
+            Tidspunkt
+        </th>
+        <th>
+            Sted
+        </th>
+        <th>
+            Billede
+        </th>
+    </tr>
     </thead>
 
     @if (Model.ErrorMsg != null)
@@ -51,28 +52,39 @@
     {
         @foreach (var item in Model.Events)
         {
-            <tr>
-                @*<td>
-                    @item.EventId
-                </td>*@
-                <td>
-                    @item.Name
-                </td>
-                <td>
-                    @item.Description
-                </td>
-                <td>
-                    @item.Time
-                </td>
-                <td>
-                    @item.Place
-                </td>
-                <td>
+    <tr>
+        @*<td>
+            @item.EventId
+        </td>*@
+        <td>
+            @item.Name
+        </td>
+        <td>
+            @item.Description
+        </td>
+        <td>
+            @item.Time
+        </td>
+        <td>
+            @item.Place
+        </td>
+        <td>
 
-                    <img src="@item.Image" @*width="100"*@ height="100"/>
-                </td>
-            </tr>
+            <img src="@item.Image" @*width="100"*@ height="100" />
+        </td>
+        <td>
+            <a input type="button" class="btn btn-primary" asp-page="/Events/Update" asp-route-evId="@item.EventId">Rediger</a>
+        </td>
+        <td>
+            <form method="post">
+
+                <input type="submit" class="btn btn-danger" asp-page-handler="Delete" 
+                       asp-route-eventId="@item.EventId" value="Slet"
+                       onclick="return confirm('Er du sikker på, at du vil slette denne begivenhed?')"/>
+            </form>
             
+        </td>
+    </tr>
         }
     }
 </tbody>

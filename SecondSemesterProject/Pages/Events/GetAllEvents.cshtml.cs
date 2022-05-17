@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Logging;
 using SecondSemesterProject.Exceptions;
 using SecondSemesterProject.Interfaces;
 using SecondSemesterProject.Models;
@@ -35,11 +36,11 @@ namespace SecondSemesterProject.Pages.Events
             }
         }
 
-        public async Task OnPostDelete(int EventId)
+        public async Task OnPostDelete(int eventId)
         {
             try
             {
-                await _eventService.DeleteEventAsync(EventId);
+                await _eventService.DeleteEventAsync(eventId);
             }
             catch (DatabaseException ex)
             {

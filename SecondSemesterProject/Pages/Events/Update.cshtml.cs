@@ -13,6 +13,7 @@ namespace SecondSemesterProject.Pages.Events
     public class UpdateModel : PageModel
     {
         private IEventService eventService;
+        [BindProperty]
         public Event Event { get; set; }
 
         public UpdateModel(IEventService eventService)
@@ -31,15 +32,15 @@ namespace SecondSemesterProject.Pages.Events
             return Page();
         }
 
-        //public IActionResult OnPost()
-        //{
-        //    if (!ModelState.IsValid)
-        //    {
-        //        return Page();
-        //    }
+        public IActionResult OnPost(int evId)
+        {
+            if (!ModelState.IsValid)
+            {
+                return Page();
+            }
 
-        //    eventService.UpdateEventAsync(evId);
-        //    return RedirectToPage("Index");
-        //}
+            eventService.UpdateEventAsync(evId,Event);
+            return RedirectToPage("/Events/GetAllEvents");
+        }
     }
 }
