@@ -12,7 +12,7 @@ namespace SecondSemesterProject.Interfaces
         Task<Event> GetEventAsync(int evId);
         Task<List<Event>> GetAllEventAsync();
         Task UpdateEventAsync(int evId, Event ev);
-        Task DeleteEventAsync(int evId);
+        Task<Event> DeleteEventAsync(int evId);
 
         //Task<List<Event>> GetEventAsync(string filterCriteria);
     }
