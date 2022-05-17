@@ -10,14 +10,14 @@ namespace SecondSemesterProject.Services
 {
     public class MemberService : Connection, IMemberService
     {
-        // SELECT
+        // SELECT MEMBER
         private string selectSql = "SELECT * FROM JO22_Member";
         private string selectByIdSql = "SELECT * FROM JO22_Member WHERE Id = @ID";
         private string selectByFamilyGroupIdSql = "SELECT * FROM JO22_Member WHERE FamilyGroupId = @ID";
         private string selectByNameSql = "SELECT * FROM JO22_Member WHERE Name LIKE @Name";
 
-        // CREATE, UPDATE, DELETE
-        private string insertSql = "INSERT INTO JO22_Member VALUES (NULL, @Name, @Email, @Password, @PhoneNumber, @BoardMember, @HygieneCertified, Default.jpg)";
+        // CREATE, UPDATE, DELETE MEMBER
+        private string insertSql = "INSERT INTO JO22_Member VALUES (NULL, @Name, @Email, @Password, @PhoneNumber, @BoardMember, @HygieneCertified, 'Default.jpg')";
         private string updateSql = "UPDATE JO22_Member SET FamilyGroupId = @FamilyGroupId, Name = @Name, Email = @Email, Password = @Password, PhoneNumber = @PhoneNumber, BoardMember = @BoardMember, HygieneCertified = @HygieneCertified, ImageFileName = @ImageFileName WHERE Id = @ID";
         private string deleteSql = "DELETE FROM JO22_Member WHERE Id = @ID";
 

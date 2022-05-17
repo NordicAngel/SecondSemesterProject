@@ -19,6 +19,9 @@
             ID
         </th>
         <th>
+            Billede
+        </th>
+        <th>
             Navn
         </th>
         <th>
@@ -27,8 +30,6 @@
         <th>
             Telefonnummer
         </th>
-        <th></th>
-        <th></th>
     </tr>
     </thead>
     <tbody>
@@ -39,6 +40,9 @@
                 @item.ID
             </td>
             <td>
+                <img src="~/Images/@item.ImageFileName" width="64" height="64" />
+            </td>
+            <td>
                 @item.Name
             </td>
             <td>
@@ -46,16 +50,6 @@
             </td>
             <td>
                 @item.PhoneNumber
-            </td>
-            <td>
-                <p>
-                    <a asp-page="/Members/UpdateMember" asp-route-id="@item.ID" class="btn btn-light">Opdater</a>
-                </p>
-            </td>
-            <td>
-                <p>
-                    <a asp-page="/Members/DeleteMember" asp-route-id="@item.ID" class="btn btn-light">Fjern</a>
-                </p>
             </td>
         </tr>
     }
