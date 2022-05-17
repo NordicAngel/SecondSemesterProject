@@ -31,7 +31,7 @@ namespace SecondSemesterProject.Pages.Login
             return Page();
         }
 
-        public IActionResult OnPost()
+        public async Task<IActionResult> OnPost()
         {
             if (!ModelState.IsValid)
             {
@@ -40,7 +40,7 @@ namespace SecondSemesterProject.Pages.Login
 
             try
             {
-                MemberService.Login(Email, Password);
+                await MemberService.Login(Email, Password);
 
                 if (MemberService.CheckCurrentMember() && MemberService.GetCurrentMember().BoardMember)
                 {
@@ -66,7 +66,7 @@ namespace SecondSemesterProject.Pages.Login
                 return Page();
             }
 
-            return RedirectToPage("Index");
+            return Redirect("~/Index");
         }
     }
 }

@@ -31,13 +31,13 @@ namespace SecondSemesterProject.Pages.Members.FamilyGroups
             return Page();
         }
 
-        public IActionResult OnPost(int id)
+        public async Task<IActionResult> OnPost(int id)
         {
             InfoText = "";
 
             try
             {
-                MemberService.DeleteFamilyGroup(id);
+                await MemberService.DeleteFamilyGroup(id);
             }
             catch (SqlException sqlEx)
             {

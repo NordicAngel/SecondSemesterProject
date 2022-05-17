@@ -29,12 +29,14 @@ namespace SecondSemesterProject.Models
         public bool BoardMember { get; set; }
         public bool HygieneCertified { get; set; }
 
+        public string ImageFileName { get; set; }
+
         public Member()
         {
             
         }
 
-        public Member(int id, int? familyGroupId, string name, string email, string password, string phoneNumber, bool boardMember, bool hygieneCertified)
+        public Member(int id, int? familyGroupId, string name, string email, string password, string phoneNumber, bool boardMember, bool hygieneCertified, string imageFileName)
         {
             ID = id;
             FamilyGroupID = familyGroupId;
@@ -44,6 +46,7 @@ namespace SecondSemesterProject.Models
             PhoneNumber = phoneNumber;
             BoardMember = boardMember;
             HygieneCertified = hygieneCertified;
+            ImageFileName = imageFileName;
         }
     }
 }

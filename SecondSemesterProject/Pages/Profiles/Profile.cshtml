@@ -11,15 +11,18 @@
 
 <div class="row">
     <div class="col-md-4">
-        <form method="post">
+        <form method="post" enctype="multipart/form-data">
             <div>
                 <div asp-validation-summary="All" class="text-danger"></div>
                 <input type="hidden" asp-for="@Model.Member.ID" class="form-control" />
+                <input type="hidden" asp-for="@Model.Member.Password" class="form-control" />
                 <input type="hidden" asp-for="@Model.Member.BoardMember" class="form-control" />
                 <input type="hidden" asp-for="@Model.Member.HygieneCertified" class="form-control" />
-                <div><img src="~/Images/Default.jpg" width="128" height="128" /></div>
+                <input type="hidden" asp-for="@Model.Member.ImageFileName" class="form-control" />
+                <div>
+                    <img src="~/Images/@Model.Member.ImageFileName" width="128" height="128"/>
+                </div>
                 <div class="form-group">
-                    <label class="control-label"></label>
                     <input type="file" asp-for="@Model.Upload" class="form-control" />
                 </div>
                 <div class="form-group">

@@ -26,7 +26,7 @@ namespace SecondSemesterProject.Pages.Members
             Members = new List<IMember>();
         }
 
-        public IActionResult OnGet(int id)
+        public async Task<IActionResult> OnGet(int id)
         {
             InfoText = "";
 
@@ -34,7 +34,7 @@ namespace SecondSemesterProject.Pages.Members
 
             try
             {
-                Members = MemberService.GetAllFamilyGroupMembers(id);
+                Members = await MemberService.GetAllFamilyGroupMembers(id);
             }
             catch (SqlException sqlEx)
             {

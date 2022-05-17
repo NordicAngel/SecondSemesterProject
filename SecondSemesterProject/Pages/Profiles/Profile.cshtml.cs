@@ -66,12 +66,12 @@ namespace SecondSemesterProject.Pages.Profiles
 
         public async Task<IActionResult> OnPostAsync()
         {
-            Member = (Member)MemberService.GetCurrentMember();
-
             if (Upload != null)
             {
                 await UploadImage();
             }
+
+            await MemberService.UpdateMember(Member.ID, Member);
 
             await MemberService.UpdateMemberShiftTypes(Member.ID, ShiftTypes);
 
@@ -99,8 +99,7 @@ namespace SecondSemesterProject.Pages.Profiles
                 await Upload.CopyToAsync(fileStream);
             }
 
-            //Member.ImageFileName = Upload.FileName;
-            MemberService.UpdateMember(Member.ID, Member);
+            Member.ImageFileName = Upload.FileName;
         }
     }
 }

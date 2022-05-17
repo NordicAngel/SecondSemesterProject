@@ -33,7 +33,7 @@ namespace SecondSemesterProject.Pages.Shifts
             Shift = await _shiftService.GetShiftAsync(id);
             MemberName = Shift.MemberId == null? 
                 "Ledig":
-                "Taget af " + _memberService.GetMemberByID((int)Shift.MemberId).Name;
+                "Taget af " + _memberService.GetMemberByID((int)Shift.MemberId).Result.Name;
             ShiftType = await _shiftTypeService.GetShiftTypeAsync(Shift.ShiftTypeId);
         }
 

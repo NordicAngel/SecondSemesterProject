@@ -31,11 +31,11 @@ namespace SecondSemesterProject.Pages.Members.FamilyGroup
             MembersID = new List<int?>() { null, null, null, null, null };
         }
 
-        public IActionResult OnGet(int id)
+        public async Task<IActionResult> OnGet(int id)
         {
             FamilyGroupID = id;
 
-            MembersID = MemberService.GetAllFamilyGroupMembers(id).Select(a => (int?)a.ID).ToList();
+            MembersID = MemberService.GetAllFamilyGroupMembers(id).Result.Select(a => (int?)a.ID).ToList();
 
             int count = MembersID.Count;
 
@@ -44,12 +44,12 @@ namespace SecondSemesterProject.Pages.Members.FamilyGroup
                 MembersID.Add(null);
             }
 
-            CreateOptionsList();
+            await CreateOptionsList();
 
             return Page();
         }
 
-        public IActionResult OnPost(int id)
+        public async Task<IActionResult> OnPost(int id)
         {
             InfoText = "";
 
@@ -61,11 +61,11 @@ namespace SecondSemesterProject.Pages.Members.FamilyGroup
                 {
                     if (memberId != null)
                     {
-                        members.Add(MemberService.GetMemberByID((int)memberId));
+                        members.Add(await MemberService.GetMemberByID((int)memberId));
                     }
                 }
 
-                MemberService.UpdateFamilyGroup(members, id);
+                await MemberService.UpdateFamilyGroup(members, id);
             }
             catch (SqlException sqlEx)
             {
@@ -83,14 +83,16 @@ namespace SecondSemesterProject.Pages.Members.FamilyGroup
             return RedirectToPage("Index");
         }
 
-        public void CreateOptionsList()
+        public async Task CreateOptionsList()
         {
             Options = new List<SelectListItem>()
             {
                 new SelectListItem("Ikke valgt", null)
             };
 
-            Options.AddRange(MemberService.GetAllMembers().Select(a =>
+            List<IMember> members = await MemberService.GetAllMembers();
+
+            Options.AddRange(members.Select(a =>
                 new SelectListItem
                 {
                     Text = a.Name,

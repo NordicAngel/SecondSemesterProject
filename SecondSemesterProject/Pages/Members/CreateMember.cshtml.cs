@@ -29,7 +29,7 @@ namespace SecondSemesterProject.Pages.Members
             return Page();
         }
 
-        public IActionResult OnPost()
+        public async Task<IActionResult> OnPost()
         {
             if (!ModelState.IsValid)
             {
@@ -40,9 +40,9 @@ namespace SecondSemesterProject.Pages.Members
 
             try
             {
-                if (MemberService.CheckMemberInfo(Member))
+                if (await MemberService.CheckMemberInfo(Member))
                 {
-                    MemberService.CreateMember(Member);
+                    await MemberService.CreateMember(Member);
                 }
                 else
                 {

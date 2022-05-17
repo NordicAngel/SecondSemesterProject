@@ -24,14 +24,14 @@ namespace SecondSemesterProject.Pages.Members
             MemberService = service;
         }
 
-        public IActionResult OnGet(int id)
+        public async Task<IActionResult> OnGet(int id)
         {
-            Member = (Member)MemberService.GetMemberByID(id);
+            Member = (Member) await MemberService.GetMemberByID(id);
 
             return Page();
         }
 
-        public IActionResult OnPost(int id)
+        public async Task<IActionResult> OnPost(int id)
         {
             if (!ModelState.IsValid)
             {
@@ -42,9 +42,9 @@ namespace SecondSemesterProject.Pages.Members
 
             try
             {
-                if (MemberService.CheckMemberInfo(Member))
+                if (await MemberService.CheckMemberInfo(Member))
                 {
-                    MemberService.UpdateMember(id, Member);
+                    await MemberService.UpdateMember(id, Member);
                 }
                 else
                 {

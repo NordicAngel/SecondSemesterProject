@@ -28,14 +28,14 @@ namespace SecondSemesterProject.Pages.Members.FamilyGroup
             MembersID = new List<int?>() {null, null, null, null, null};
         }
 
-        public IActionResult OnGet()
+        public async Task<IActionResult> OnGet()
         {
-            CreateOptionsList();
+            await CreateOptionsList();
 
             return Page();
         }
 
-        public IActionResult OnPost()
+        public async Task<IActionResult> OnPost()
         {
             InfoText = "";
 
@@ -47,11 +47,11 @@ namespace SecondSemesterProject.Pages.Members.FamilyGroup
                 {
                     if (memberId != null)
                     {
-                        members.Add(MemberService.GetMemberByID((int)memberId));
+                        members.Add(await MemberService.GetMemberByID((int)memberId));
                     }
                 }
 
-                MemberService.CreateFamilyGroup(members);
+                await MemberService.CreateFamilyGroup(members);
             }
             catch (SqlException sqlEx)
             {
@@ -69,14 +69,14 @@ namespace SecondSemesterProject.Pages.Members.FamilyGroup
             return RedirectToPage("Index");
         }
 
-        public void CreateOptionsList()
+        public async Task CreateOptionsList()
         {
             Options = new List<SelectListItem>()
             {
                 new SelectListItem("Ikke valgt", null)
             };
 
-            Options.AddRange(MemberService.GetAllMembers().Select(a =>
+            Options.AddRange(MemberService.GetAllMembers().Result.Select(a =>
                 new SelectListItem
                 {
                     Text = a.Name,
