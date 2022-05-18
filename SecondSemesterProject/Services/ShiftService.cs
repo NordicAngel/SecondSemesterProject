@@ -14,15 +14,24 @@ namespace SecondSemesterProject.Services
     {
         #region SQL statments
 
-        private string createSql = "Insert into JO22_Shift (DateTimeStart, DateTimeEnd, ShiftTypeId) values (@DStart, @DEnd, @STId)";
+        private string createSql =
+            "Insert into JO22_Shift (DateTimeStart, DateTimeEnd, ShiftTypeId) values (@DStart, @DEnd, @STId)";
+
         private string getAllSql = "select * from JO22_Shift";
         private string getShiftSql = "select * from JO22_Shift where Id = @ID";
         private string removeSql = "delete from JO22_Shift where Id = @ID";
-        private string updateSql = "update JO22_Shift set MemberId = @MemId, DateTimeStart = @DStart, DateTimeEnd = @DEnd, ShiftTypeId = @STId where Id = @ID";
+
+        private string updateSql =
+            "update JO22_Shift set MemberId = @MemId, DateTimeStart = @DStart, DateTimeEnd = @DEnd, ShiftTypeId = @STId where Id = @ID";
+
+        private string memberShiftSql = "select * from JO22_Shift where MemberId = @MemId";
 
         #endregion
-        public ShiftService(IConfiguration config):base(config)
-        { }
+
+        public ShiftService(IConfiguration config) : base(config)
+        {
+        }
+
         public async Task CreateShiftAsync(Shift shift)
         {
             if (shift.DateTimeStart < DateTime.Now.Date)
@@ -61,11 +70,11 @@ namespace SecondSemesterProject.Services
 
                 if (!await reader.ReadAsync()) return null;
 
-                int id = (int)reader["Id"];
+                int id = (int) reader["Id"];
                 int? memberId = reader["MemberId"] as int?;
-                DateTime dTStart = (DateTime)reader["DateTimeStart"];
-                DateTime dTEnd = (DateTime)reader["DateTimeEnd"];
-                int sTId = (int)reader["ShiftTypeId"];
+                DateTime dTStart = (DateTime) reader["DateTimeStart"];
+                DateTime dTEnd = (DateTime) reader["DateTimeEnd"];
+                int sTId = (int) reader["ShiftTypeId"];
                 return new Shift()
                 {
                     ShiftId = id,
@@ -92,11 +101,11 @@ namespace SecondSemesterProject.Services
                 SqlDataReader reader = await command.ExecuteReaderAsync();
                 while (await reader.ReadAsync())
                 {
-                    int id = (int)reader["Id"];
+                    int id = (int) reader["Id"];
                     int? memberId = reader["MemberId"] as int?;
-                    DateTime dTStart = (DateTime)reader["DateTimeStart"];
-                    DateTime dTEnd = (DateTime)reader["DateTimeEnd"];
-                    int sTId = (int)reader["ShiftTypeId"];
+                    DateTime dTStart = (DateTime) reader["DateTimeStart"];
+                    DateTime dTEnd = (DateTime) reader["DateTimeEnd"];
+                    int sTId = (int) reader["ShiftTypeId"];
                     shifts.Add(new Shift()
                     {
                         ShiftId = id,
@@ -149,6 +158,36 @@ namespace SecondSemesterProject.Services
             catch (SqlException sqlEx)
             {
                 throw new DatabaseException($"Databasen havde en fejl: {sqlEx.Message}");
+            }
+        }
+
+        public async Task<List<Shift>> GetShiftByMember(int memberId)
+        {
+            List<Shift> memShift = new List<Shift>();
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            {
+                SqlCommand command = new SqlCommand(memberShiftSql, connection);
+                command.Parameters.AddWithValue("@MemId", memberId);
+                await command.Connection.OpenAsync();
+                SqlDataReader reader = await command.ExecuteReaderAsync();
+                while (await reader.ReadAsync())
+                {
+                    int id = (int) reader["Id"];
+                    int? memId = reader["MemberId"] as int?;
+                    DateTime dTStart = (DateTime) reader["DateTimeStart"];
+                    DateTime dTEnd = (DateTime) reader["DateTimeEnd"];
+                    int sTId = (int) reader["ShiftTypeId"];
+                    memShift.Add(new Shift()
+                    {
+                        ShiftId = id,
+                        MemberId = memId,
+                        DateTimeStart = dTStart,
+                        DateTimeEnd = dTEnd,
+                        ShiftTypeId = sTId
+                    });
+                }
+
+                return memShift;
             }
         }
     }

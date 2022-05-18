@@ -14,5 +14,10 @@ namespace SecondSemesterProject.Services
         {
             ConnectionString = configuration["ConnectionStrings:DefaultConnection"];
         }
+
+        public Connection(string connectionString)
+        {
+            ConnectionString = connectionString;
+        }
     }
 }

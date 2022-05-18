@@ -23,6 +23,11 @@ namespace SecondSemesterProject.Services
 
         public List<ShiftType> Types { get; set; }
 
+        public ShiftTypeService(string connectionString) : base(connectionString)
+        {
+            
+        }
+
         public ShiftTypeService(IConfiguration configuration) : base(configuration)
         {
         }

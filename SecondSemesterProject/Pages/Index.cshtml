@@ -1,10 +1,43 @@
 ﻿@page
+@using SecondSemesterProject.Interfaces;
+@using SecondSemesterProject.Models
+@inject IMemberService _memService
 @model IndexModel
 @{
-    ViewData["Title"] = "Home page";
+    ViewData["Title"] = "Forside";
 }
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <h1 class="display-4">Velkommen til Jordnær</h1>
 </div>
+
+@if (_memService.GetCurrentMember() != null)
+{
+    <h2>Mine kommende vagter</h2>
+    <table class="table">
+        <thead>
+            <th>
+                Starttidspunkt
+            </th>
+            <th>
+                Sluttidspunkt
+            </th>
+        </thead>
+        <tbody>
+        @foreach (Shift s in Model.MemShifts)
+        {
+            <tr>
+                <td>
+                    @s.DateTimeStart
+                </td>
+                <td>
+                    @s.DateTimeEnd
+                </td>
+            </tr>
+        }
+        
+        </tbody>
+    </table>
+}
+   
+

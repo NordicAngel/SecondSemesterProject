@@ -13,5 +13,6 @@ namespace SecondSemesterProject.Interfaces
         Task<List<Shift>> GetAllShiftAsync();
         Task UpdateShiftAsync(int shiftId, Shift newShift);
         Task DeleteShiftAsync(int shiftId);
+        Task<List<Shift>> GetShiftByMember(int memberId);
     }
 }
