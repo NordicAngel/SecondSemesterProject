@@ -1,5 +1,7 @@
 ﻿@page
+@using SecondSemesterProject.Interfaces
 @model SecondSemesterProject.Pages.Shifts.ShiftModel
+@inject IMemberService _memberService
 @{
 }
 
@@ -25,15 +27,25 @@
         </h4>
     </div>
     <div>
-        @if(Model.Shift.MemberId != null)
+        @if(Model.Shift.MemberId == null)
         {
+            @if (_memberService.CheckCurrentMember())
+            {
+
             <form method="post">
-                <input type="submit" value="Tage vagt" asp-page-handler="TakeShift" 
-                       asp-route-memberId=""/>
+                <input type="submit" value="Tage vagt" asp-page-handler="TakeShift"
+                       asp-route-memberId="@_memberService.GetCurrentMember().ID"
+                       asp-route-shiftId="@Model.Shift.ShiftId"/>
             </form>
+            }
+            else
+            {
+                <a>Login for at tag vagt</a>
+            }
         }
 
-        @if (true) //if board member
+        @if (_memberService.GetCurrentMember() != null && 
+             _memberService.GetCurrentMember().BoardMember) //if board member
         {
             <div>
                 <form method="post">

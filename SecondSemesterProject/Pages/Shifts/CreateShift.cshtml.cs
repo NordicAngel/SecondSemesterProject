@@ -78,7 +78,7 @@ namespace SecondSemesterProject.Pages.Shifts
                 return Page();
             }
             #endregion
-            List<Shift> allShifts = new List<Shift>();
+            List<Shift> allShifts = new();
             foreach (ShiftTimeSpan timeSpan in TimeSpans)
             {
                 timeSpan.GetShifts().ForEach(s => allShifts.Add(s));

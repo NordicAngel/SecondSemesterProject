@@ -30,6 +30,7 @@ namespace SecondSemesterProject
             services.AddTransient<IShiftTypeService, ShiftTypeService>();
             services.AddTransient<IEventService, EventService>();
             services.AddTransient<IMemberService, MemberService>();
+            services.AddTransient<IParticipantService, ParticipantService>();
         }
         
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

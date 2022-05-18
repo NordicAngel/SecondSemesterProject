@@ -21,8 +21,8 @@ namespace SecondSemesterProject.Services
         private String insertSql = "insert into JO22_Event Values (@Name," +
                                    "@Description,@DateTime,@Place,@Image)";
 
-        private String deleteSql = "delete from JO22_Event where EventId = @ID";
-        private String updateSql = "update JO22_Event set Id = @EventID, Name=@Navn," +
+        private String deleteSql = "delete from JO22_Event where Id = @ID";
+        private String updateSql = "update JO22_Event set Name=@Navn," +
                                    "Description=@Beskrivelse,DateTime=@DatoTid," +
                                    "Place=@Sted,Image=@Billede where Id = @EventID";
 
@@ -45,15 +45,16 @@ namespace SecondSemesterProject.Services
                 try
                 {
                     SqlCommand command = new SqlCommand(updateSql, connection);
-                    command.Parameters.AddWithValue("@NewID", ev.EventId);
-                    command.Parameters.AddWithValue("@NewName", ev.Name);
-                    command.Parameters.AddWithValue("@NewDscrp", ev.Description);
-                    command.Parameters.AddWithValue("@evTime", ev.Time);
-                    command.Parameters.AddWithValue("NewPlace", ev.Place);
-                    command.Parameters.AddWithValue("NewImage", ev.Image);
+                    command.Parameters.AddWithValue("@EventID", evId);
+                    command.Parameters.AddWithValue("@Navn", ev.Name);
+                    command.Parameters.AddWithValue("@Beskrivelse", ev.Description);
+                    command.Parameters.AddWithValue("@DatoTid", ev.Time);
+                    command.Parameters.AddWithValue("@Sted", ev.Place);
+                    command.Parameters.AddWithValue("@Billede", ev.Image);
                     await command.Connection.OpenAsync();
 
-                    int noOfRows = await command.ExecuteNonQueryAsync();
+                    /*int noOfRows =*/ await command.ExecuteNonQueryAsync();
+                    
                 }
                 catch (SqlException sqlEx)
                 {
@@ -62,7 +63,7 @@ namespace SecondSemesterProject.Services
             }
         }
 
-        public async Task DeleteEventAsync(int evId)
+        public async Task<Event> DeleteEventAsync(int evId)
         {
             using (SqlConnection connection = new SqlConnection(ConnectionString))
             {
@@ -72,8 +73,8 @@ namespace SecondSemesterProject.Services
                     SqlCommand command = new SqlCommand(deleteSql, connection);
                     command.Parameters.AddWithValue("@ID", evId);
                     await command.Connection.OpenAsync();
-                    int reader = await command.ExecuteNonQueryAsync();
-
+                    await command.ExecuteNonQueryAsync();
+                    return evVariable;
                 }
                 catch (SqlException sqlEx)
                 {
@@ -124,13 +125,15 @@ namespace SecondSemesterProject.Services
                     string eventDescription = reader.GetString(2);
                     DateTime eventTime = reader.GetDateTime(3);
                     string eventPlace = reader.GetString(4);
-                    string eventImage = reader.GetString(5);
+                    string eventImage = reader[5] as string;
                     Event @ev = new Event(eventId, eventName, eventDescription, eventTime, eventPlace, eventImage);
+                    return @ev;
                 }
                 catch (SqlException sqlEx)
                 {
                     throw new DatabaseException(sqlEx.Message);
                 }
+
             return null;
         }
 

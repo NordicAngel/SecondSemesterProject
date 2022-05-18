@@ -37,9 +37,12 @@ namespace SecondSemesterProject.Pages.Shifts
             ShiftType = await _shiftTypeService.GetShiftTypeAsync(Shift.ShiftTypeId);
         }
 
-        public void OnPostTakeShift(int memberId)
+        public async Task<IActionResult> OnPostTakeShift(int shiftId, int memberId)
         {
-
+            Shift = await _shiftService.GetShiftAsync(shiftId);
+            Shift.MemberId = memberId;
+            await _shiftService.UpdateShiftAsync(shiftId, Shift);
+            return RedirectToPage("/Shifts/Index");
         }
 
         public async Task<IActionResult> OnPostDelete(int id)
