@@ -17,7 +17,7 @@ namespace SecondSemesterProject.Services
         private string selectByNameSql = "SELECT * FROM JO22_Member WHERE Name LIKE @Name";
 
         // CREATE, UPDATE, DELETE MEMBER
-        private string insertSql = "INSERT INTO JO22_Member VALUES (NULL, @Name, @Email, @Password, @PhoneNumber, @BoardMember, @HygieneCertified, 'Default.jpg')";
+        private string insertSql = "INSERT INTO JO22_Member VALUES (NULL, @Name, @Email, @Password, @PhoneNumber, @BoardMember, @HygieneCertified, DEFAULT)";
         private string updateSql = "UPDATE JO22_Member SET FamilyGroupId = @FamilyGroupId, Name = @Name, Email = @Email, Password = @Password, PhoneNumber = @PhoneNumber, BoardMember = @BoardMember, HygieneCertified = @HygieneCertified, ImageFileName = @ImageFileName WHERE Id = @ID";
         private string deleteSql = "DELETE FROM JO22_Member WHERE Id = @ID";
 
@@ -35,6 +35,7 @@ namespace SecondSemesterProject.Services
         private string insertMemberShiftTypeSql = "INSERT INTO JO22_MemberShiftType VALUES (@MemberID, @ShiftTypeID)";
         private string deleteMemberShiftTypeSql = "DELETE FROM JO22_MemberShiftType WHERE MemberId = @MemberID AND ShiftTypeId = @ShiftTypeID";
 
+        // CURRENT MEMBER
         private static IMember CurrentMember;
 
         public MemberService(IConfiguration configuration) : base(configuration)
@@ -44,7 +45,19 @@ namespace SecondSemesterProject.Services
 
         public IMember GetCurrentMember()
         {
-            return CurrentMember;
+            if (CurrentMember != null)
+            {
+                return CurrentMember;
+            }
+            else
+            {
+                return new Member();
+            }
+        }
+
+        public async Task UpdateCurrentMember(int id)
+        {
+            CurrentMember = await GetMemberByID(id);
         }
 
         public bool CheckCurrentMember()

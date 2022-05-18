@@ -75,6 +75,8 @@ namespace SecondSemesterProject.Pages.Profiles
 
             await MemberService.UpdateMemberShiftTypes(Member.ID, ShiftTypes);
 
+            await MemberService.UpdateCurrentMember(Member.ID);
+
             return Page();
         }
 
