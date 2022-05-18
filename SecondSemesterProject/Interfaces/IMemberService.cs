@@ -8,29 +8,30 @@ namespace SecondSemesterProject.Interfaces
     public interface IMemberService
     {
         public IMember GetCurrentMember();
+        public Task UpdateCurrentMember(int id);
         public bool CheckCurrentMember();
 
-        public void CreateMember(IMember member);
-        public void UpdateMember(int id, IMember member);
-        public void DeleteMember(int id);
+        public Task CreateMember(IMember member);
+        public Task UpdateMember(int id, IMember member);
+        public Task DeleteMember(int id);
 
-        public bool CheckMemberInfo(IMember checkMember);
-        public void Login(string email, string password);
+        public Task<bool> CheckMemberInfo(IMember checkMember);
+        public Task Login(string email, string password);
         public void Logout();
 
-        public void CreateFamilyGroup(List<IMember> members);
-        public void UpdateFamilyGroup(List<IMember> members, int id);
-        public void DeleteFamilyGroup(int id);
+        public Task CreateFamilyGroup(List<IMember> members);
+        public Task UpdateFamilyGroup(List<IMember> members, int id);
+        public Task DeleteFamilyGroup(int id);
 
         public Task UpdateMemberShiftTypes(int id, Dictionary<int, bool> shiftTypes);
 
         public Task<List<int>> GetMemberShiftTypes(int id);
 
-        public Dictionary<int, List<IMember>> GetAllFamilyGroups();
+        public Task<Dictionary<int, List<IMember>>> GetAllFamilyGroups();
 
-        public IMember GetMemberByID(int id);
-        public List<IMember> GetMembersByName(string name);
-        public List<IMember> GetAllMembers();
-        public List<IMember> GetAllFamilyGroupMembers(int id);
+        public Task<IMember> GetMemberByID(int id);
+        public Task<List<IMember>> GetMembersByName(string name);
+        public Task<List<IMember>> GetAllMembers();
+        public Task<List<IMember>> GetAllFamilyGroupMembers(int id);
     }
 }

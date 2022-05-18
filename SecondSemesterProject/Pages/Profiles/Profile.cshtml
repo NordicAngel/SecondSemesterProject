@@ -7,34 +7,52 @@
     ViewData["Title"] = "Min Profil";
 }
 
+<style>
+    .bold {
+        font-weight: bold;
+    }
+</style>
+
 <h1>Hej @Model.Member.Name!</h1>
 
 <div class="row">
     <div class="col-md-4">
-        <form method="post">
+        <form method="post" enctype="multipart/form-data">
             <div>
-                <div class="form-group">
-                    <label asp-for="@Model.Member.Name"></label><br />
-                    <label>@Model.Member.Name</label>
+                <div asp-validation-summary="All" class="text-danger"></div>
+                <input type="hidden" asp-for="@Model.Member.ID" class="form-control" />
+                <input type="hidden" asp-for="@Model.Member.Password" class="form-control" />
+                <input type="hidden" asp-for="@Model.Member.BoardMember" class="form-control" />
+                <input type="hidden" asp-for="@Model.Member.HygieneCertified" class="form-control" />
+                <input type="hidden" asp-for="@Model.Member.ImageFileName" class="form-control" />
+                <div>
+                    <img src="~/Images/@Model.Member.ImageFileName" width="128" height="128"/>
                 </div>
                 <div class="form-group">
-                    <label asp-for="@Model.Member.Email"></label><br />
-                    <label>@Model.Member.Email</label>
+                    <input type="file" asp-for="@Model.Upload" class="form-control" />
                 </div>
                 <div class="form-group">
-                    <label asp-for="@Model.Member.PhoneNumber"></label><br />
-                    <label>@Model.Member.PhoneNumber</label>
+                    <label class="bold">Navn</label><br />
+                    <input asp-for="@Model.Member.Name" class="form-control" />
                 </div>
                 <div class="form-group">
-                    <label asp-for="@Model.Member.BoardMember"></label>
-                    <label>@Model.Member.BoardMember</label>
+                    <label class="bold">E-mail</label><br />
+                    <input type="email" asp-for="@Model.Member.Email" class="form-control" />
                 </div>
                 <div class="form-group">
-                    <label asp-for="@Model.Member.HygieneCertified"></label>
-                    <label>@Model.Member.HygieneCertified</label>
+                    <label class="bold">Telefonnummer</label><br />
+                    <input asp-for="@Model.Member.PhoneNumber" class="form-control" />
                 </div>
                 <div class="form-group">
-                    <label>Vagttyper</label>
+                    <label class="bold">Bestyrelse: </label>
+                    <input type="checkbox" asp-for="@Model.Member.BoardMember" />
+                </div>
+                <div class="form-group">
+                    <label class="bold">Hygiejne kursus gennemført: </label>
+                    <input type="checkbox" asp-for="@Model.Member.HygieneCertified" />
+                </div>
+                <div class="form-group">
+                    <label class="bold">Vagttyper</label>
                     @foreach (KeyValuePair<int, bool> shiftType in Model.ShiftTypes)
                     {
                         <div class="form-group">

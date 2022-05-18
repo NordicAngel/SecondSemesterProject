@@ -1,7 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Data.SqlClient;
@@ -14,17 +17,22 @@ namespace SecondSemesterProject.Pages.Profiles
     {
         private IMemberService MemberService;
         private IShiftTypeService ShiftTypeService;
+        private IHostingEnvironment HostingEnvironment;
 
         [BindProperty]
         public Member Member { get; set; }
 
         [BindProperty]
+        public IFormFile Upload { get; set; }
+
+        [BindProperty]
         public Dictionary<int, bool> ShiftTypes { get; set; }
 
-        public ProfileModel(IMemberService service, IShiftTypeService shiftTypeService)
+        public ProfileModel(IMemberService service, IShiftTypeService shiftTypeService, IHostingEnvironment hostingEnvironment)
         {
             MemberService = service;
             ShiftTypeService = shiftTypeService;
+            HostingEnvironment = hostingEnvironment;
 
             ShiftTypes = new Dictionary<int, bool>();
         }
@@ -58,9 +66,16 @@ namespace SecondSemesterProject.Pages.Profiles
 
         public async Task<IActionResult> OnPostAsync()
         {
-            Member = (Member)MemberService.GetCurrentMember();
+            if (Upload != null)
+            {
+                await UploadImage();
+            }
+
+            await MemberService.UpdateMember(Member.ID, Member);
 
             await MemberService.UpdateMemberShiftTypes(Member.ID, ShiftTypes);
+
+            await MemberService.UpdateCurrentMember(Member.ID);
 
             return Page();
         }
@@ -76,6 +91,17 @@ namespace SecondSemesterProject.Pages.Profiles
             }
 
             return false;
+        }
+
+        private async Task UploadImage()
+        {
+            string file = Path.Combine(HostingEnvironment.ContentRootPath, "wwwroot\\Images", Upload.FileName);
+            using (var fileStream = new FileStream(file, FileMode.Create))
+            {
+                await Upload.CopyToAsync(fileStream);
+            }
+
+            Member.ImageFileName = Upload.FileName;
         }
     }
 }

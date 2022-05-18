@@ -24,13 +24,13 @@ namespace SecondSemesterProject.Pages.Members.FamilyGroup
             FamilyGroups = new Dictionary<int, List<IMember>>();
         }
 
-        public IActionResult OnGet()
+        public async Task<IActionResult> OnGet()
         {
             InfoText = "";
 
             try
             {
-                FamilyGroups = MemberService.GetAllFamilyGroups();
+                FamilyGroups = await MemberService.GetAllFamilyGroups();
             }
             catch (SqlException sqlEx)
             {

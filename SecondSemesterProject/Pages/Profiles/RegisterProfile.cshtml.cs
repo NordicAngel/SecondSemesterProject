@@ -8,9 +8,9 @@ using Microsoft.Data.SqlClient;
 using SecondSemesterProject.Interfaces;
 using SecondSemesterProject.Models;
 
-namespace SecondSemesterProject.Pages.Members
+namespace SecondSemesterProject.Pages.Profiles
 {
-    public class UpdateMemberModel : PageModel
+    public class RegisterProfileModel : PageModel
     {
         private IMemberService MemberService;
 
@@ -19,19 +19,17 @@ namespace SecondSemesterProject.Pages.Members
 
         public string InfoText;
 
-        public UpdateMemberModel(IMemberService service)
+        public RegisterProfileModel(IMemberService service)
         {
             MemberService = service;
         }
 
-        public async Task<IActionResult> OnGet(int id)
+        public IActionResult OnGet()
         {
-            Member = (Member) await MemberService.GetMemberByID(id);
-
             return Page();
         }
 
-        public async Task<IActionResult> OnPost(int id)
+        public async Task<IActionResult> OnPost()
         {
             if (!ModelState.IsValid)
             {
@@ -44,7 +42,7 @@ namespace SecondSemesterProject.Pages.Members
             {
                 if (await MemberService.CheckMemberInfo(Member))
                 {
-                    await MemberService.UpdateMember(id, Member);
+                    await MemberService.CreateMember(Member);
                 }
                 else
                 {
@@ -66,7 +64,9 @@ namespace SecondSemesterProject.Pages.Members
                 return Page();
             }
 
-            return RedirectToPage("Index");
+            await MemberService.Login(Member.Email, Member.Password);
+
+            return Redirect("~/Profiles/Profile");
         }
     }
 }

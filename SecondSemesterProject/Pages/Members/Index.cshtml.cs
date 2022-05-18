@@ -29,7 +29,7 @@ namespace SecondSemesterProject.Pages.Members
             Members = new List<IMember>();
         }
 
-        public IActionResult OnGet()
+        public async Task<IActionResult> OnGet()
         {
             InfoText = "";
 
@@ -37,11 +37,11 @@ namespace SecondSemesterProject.Pages.Members
             {
                 if (!string.IsNullOrEmpty(FilterCriteria))
                 {
-                    Members = MemberService.GetMembersByName(FilterCriteria);
+                    Members = await MemberService.GetMembersByName(FilterCriteria);
                 }
                 else
                 {
-                    Members = MemberService.GetAllMembers();
+                    Members = await MemberService.GetAllMembers();
                 }
 
                 if (Members.Count > 0)

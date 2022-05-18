@@ -10,15 +10,15 @@ namespace SecondSemesterProject.Services
 {
     public class MemberService : Connection, IMemberService
     {
-        // SELECT
+        // SELECT MEMBER
         private string selectSql = "SELECT * FROM JO22_Member";
         private string selectByIdSql = "SELECT * FROM JO22_Member WHERE Id = @ID";
         private string selectByFamilyGroupIdSql = "SELECT * FROM JO22_Member WHERE FamilyGroupId = @ID";
         private string selectByNameSql = "SELECT * FROM JO22_Member WHERE Name LIKE @Name";
 
-        // CREATE, UPDATE, DELETE
-        private string insertSql = "INSERT INTO JO22_Member VALUES (NULL, @Name, @Email, @Password, @PhoneNumber, @BoardMember, @HygieneCertified)";
-        private string updateSql = "UPDATE JO22_Member SET FamilyGroupId = @FamilyGroupId, Name = @Name, Email = @Email, Password = @Password, PhoneNumber = @PhoneNumber, BoardMember = @BoardMember, HygieneCertified = @HygieneCertified WHERE Id = @ID";
+        // CREATE, UPDATE, DELETE MEMBER
+        private string insertSql = "INSERT INTO JO22_Member VALUES (NULL, @Name, @Email, @Password, @PhoneNumber, @BoardMember, @HygieneCertified, DEFAULT)";
+        private string updateSql = "UPDATE JO22_Member SET FamilyGroupId = @FamilyGroupId, Name = @Name, Email = @Email, Password = @Password, PhoneNumber = @PhoneNumber, BoardMember = @BoardMember, HygieneCertified = @HygieneCertified, ImageFileName = @ImageFileName WHERE Id = @ID";
         private string deleteSql = "DELETE FROM JO22_Member WHERE Id = @ID";
 
         // LOGIN
@@ -35,6 +35,7 @@ namespace SecondSemesterProject.Services
         private string insertMemberShiftTypeSql = "INSERT INTO JO22_MemberShiftType VALUES (@MemberID, @ShiftTypeID)";
         private string deleteMemberShiftTypeSql = "DELETE FROM JO22_MemberShiftType WHERE MemberId = @MemberID AND ShiftTypeId = @ShiftTypeID";
 
+        // CURRENT MEMBER
         private static IMember CurrentMember;
 
         public MemberService(IConfiguration configuration) : base(configuration)
@@ -44,7 +45,19 @@ namespace SecondSemesterProject.Services
 
         public IMember GetCurrentMember()
         {
-            return CurrentMember;
+            if (CurrentMember != null)
+            {
+                return CurrentMember;
+            }
+            else
+            {
+                return new Member();
+            }
+        }
+
+        public async Task UpdateCurrentMember(int id)
+        {
+            CurrentMember = await GetMemberByID(id);
         }
 
         public bool CheckCurrentMember()
@@ -63,7 +76,7 @@ namespace SecondSemesterProject.Services
         /// Takes an IMember as parameter and inserts it into the database.
         /// </summary>
         /// <param name="member"></param>
-        public void CreateMember(IMember member)
+        public async Task CreateMember(IMember member)
         {
             using (SqlConnection connection = new SqlConnection(ConnectionString))
             {
@@ -76,8 +89,8 @@ namespace SecondSemesterProject.Services
                     command.Parameters.AddWithValue("@PhoneNumber", member.PhoneNumber);
                     command.Parameters.AddWithValue("@BoardMember", member.BoardMember);
                     command.Parameters.AddWithValue("@HygieneCertified", member.HygieneCertified);
-                    command.Connection.Open();
-                    command.ExecuteNonQuery();
+                    await command.Connection.OpenAsync();
+                    await command.ExecuteNonQueryAsync();
                 }
                 catch (SqlException)
                 {
@@ -90,7 +103,7 @@ namespace SecondSemesterProject.Services
             }
         }
 
-        public void UpdateMember(int id, IMember member)
+        public async Task UpdateMember(int id, IMember member)
         {
             using (SqlConnection connection = new SqlConnection(ConnectionString))
             {
@@ -114,8 +127,9 @@ namespace SecondSemesterProject.Services
                     command.Parameters.AddWithValue("@PhoneNumber", member.PhoneNumber);
                     command.Parameters.AddWithValue("@BoardMember", member.BoardMember);
                     command.Parameters.AddWithValue("@HygieneCertified", member.HygieneCertified);
-                    command.Connection.Open();
-                    command.ExecuteNonQuery();
+                    command.Parameters.AddWithValue("@ImageFileName", member.ImageFileName);
+                    await command.Connection.OpenAsync();
+                    await command.ExecuteNonQueryAsync();
                 }
                 catch (SqlException)
                 {
@@ -128,7 +142,7 @@ namespace SecondSemesterProject.Services
             }
         }
 
-        public void DeleteMember(int id)
+        public async Task DeleteMember(int id)
         {
             using (SqlConnection connection = new SqlConnection(ConnectionString))
             {
@@ -136,8 +150,8 @@ namespace SecondSemesterProject.Services
                 {
                     SqlCommand command = new SqlCommand(deleteSql, connection);
                     command.Parameters.AddWithValue("@ID", id);
-                    command.Connection.Open();
-                    command.ExecuteNonQuery();
+                    await command.Connection.OpenAsync();
+                    await command.ExecuteNonQueryAsync();
                 }
                 catch (SqlException)
                 {
@@ -150,9 +164,9 @@ namespace SecondSemesterProject.Services
             }
         }
 
-        public bool CheckMemberInfo(IMember checkMember)
+        public async Task<bool> CheckMemberInfo(IMember checkMember)
         {
-            foreach (IMember member in GetAllMembers())
+            foreach (IMember member in await GetAllMembers())
             {
                 if (member.ID != checkMember.ID)
                 {
@@ -166,7 +180,7 @@ namespace SecondSemesterProject.Services
             return true;
         }
 
-        public void Login(string email, string password)
+        public async Task Login(string email, string password)
         {
             using (SqlConnection connection = new SqlConnection(ConnectionString))
             {
@@ -175,11 +189,11 @@ namespace SecondSemesterProject.Services
                     SqlCommand command = new SqlCommand(loginSql, connection);
                     command.Parameters.AddWithValue("@Email", email);
                     command.Parameters.AddWithValue("@Password", password);
-                    command.Connection.Open();
+                    await command.Connection.OpenAsync();
 
-                    SqlDataReader reader = command.ExecuteReader();
+                    SqlDataReader reader = await command.ExecuteReaderAsync();
 
-                    if (reader.Read())
+                    if (await reader.ReadAsync())
                     {
                         int memberId = reader.GetInt32(0);
                         int? familyGroupId = (reader[1] as int?) ?? null;
@@ -192,7 +206,9 @@ namespace SecondSemesterProject.Services
                         bool boardMember = reader.GetBoolean(6);
                         bool hygieneCertified = reader.GetBoolean(7);
 
-                        IMember member = new Member(memberId, familyGroupId, memberName, memberEmail, memberPassword, memberPhoneNumber, boardMember, hygieneCertified);
+                        string imageFileName = (reader[8] as string) ?? null;
+
+                        IMember member = new Member(memberId, familyGroupId, memberName, memberEmail, memberPassword, memberPhoneNumber, boardMember, hygieneCertified, imageFileName);
 
                         CurrentMember = member;
                     }
@@ -217,15 +233,15 @@ namespace SecondSemesterProject.Services
             CurrentMember = null;
         }
 
-        private void InsertFamilyGroup()
+        private async Task InsertFamilyGroup()
         {
             using (SqlConnection connection = new SqlConnection(ConnectionString))
             {
                 try
                 {
                     SqlCommand command = new SqlCommand(insertFamilyGroupSql, connection);
-                    command.Connection.Open();
-                    command.ExecuteNonQuery();
+                    await command.Connection.OpenAsync();
+                    await command.ExecuteNonQueryAsync();
                 }
                 catch (SqlException)
                 {
@@ -238,20 +254,20 @@ namespace SecondSemesterProject.Services
             }
         }
 
-        public void CreateFamilyGroup(List<IMember> members)
+        public async Task CreateFamilyGroup(List<IMember> members)
         {
-            InsertFamilyGroup();
+            await InsertFamilyGroup();
 
             using (SqlConnection connection = new SqlConnection(ConnectionString))
             {
                 try
                 {
                     SqlCommand command = new SqlCommand(selectFamilyGroupIdSql, connection);
-                    command.Connection.Open();
+                    await command.Connection.OpenAsync();
 
-                    SqlDataReader reader = command.ExecuteReader();
+                    SqlDataReader reader = await command.ExecuteReaderAsync();
 
-                    if (reader.Read())
+                    if (await reader.ReadAsync())
                     {
                         int familyGroupId = reader.GetInt32(0);
 
@@ -259,7 +275,7 @@ namespace SecondSemesterProject.Services
                         {
                             member.FamilyGroupID = familyGroupId;
 
-                            UpdateMember(member.ID, member);
+                            await UpdateMember(member.ID, member);
                         }
                     }
                 }
@@ -274,34 +290,34 @@ namespace SecondSemesterProject.Services
             }
         }
 
-        public void UpdateFamilyGroup(List<IMember> members, int id)
+        public async Task UpdateFamilyGroup(List<IMember> members, int id)
         {
-            List<IMember> familyGroupMembers = GetAllFamilyGroupMembers(id);
+            List<IMember> familyGroupMembers = await GetAllFamilyGroupMembers(id);
 
             foreach (IMember member in familyGroupMembers)
             {
                 member.FamilyGroupID = null;
 
-                UpdateMember(member.ID, member);
+                await UpdateMember(member.ID, member);
             }
 
             foreach (IMember member in members)
             {
                 member.FamilyGroupID = id;
 
-                UpdateMember(member.ID, member);
+                await UpdateMember(member.ID, member);
             }
         }
 
-        public void DeleteFamilyGroup(int id)
+        public async Task DeleteFamilyGroup(int id)
         {
-            List<IMember> familyGroupMembers = GetAllFamilyGroupMembers(id);
+            List<IMember> familyGroupMembers = await GetAllFamilyGroupMembers(id);
 
             foreach (IMember member in familyGroupMembers)
             {
                 member.FamilyGroupID = null;
 
-                UpdateMember(member.ID, member);
+                await UpdateMember(member.ID, member);
             }
 
             using (SqlConnection connection = new SqlConnection(ConnectionString))
@@ -310,8 +326,8 @@ namespace SecondSemesterProject.Services
                 {
                     SqlCommand command = new SqlCommand(deleteFamilyGroupSql, connection);
                     command.Parameters.AddWithValue("@ID", id);
-                    command.Connection.Open();
-                    command.ExecuteNonQuery();
+                    await command.Connection.OpenAsync();
+                    await command.ExecuteNonQueryAsync();
                 }
                 catch (SqlException)
                 {
@@ -428,7 +444,7 @@ namespace SecondSemesterProject.Services
             return shiftTypes;
         }
 
-        public Dictionary<int, List<IMember>> GetAllFamilyGroups()
+        public async Task<Dictionary<int, List<IMember>>> GetAllFamilyGroups()
         {
             Dictionary<int, List<IMember>> familyGroups = new Dictionary<int, List<IMember>>();
 
@@ -437,16 +453,16 @@ namespace SecondSemesterProject.Services
                 try
                 {
                     SqlCommand command = new SqlCommand(selectFamilyGroupSql, connection);
-                    command.Connection.Open();
-                    command.ExecuteNonQuery();
+                    await command.Connection.OpenAsync();
+                    await command.ExecuteNonQueryAsync();
 
-                    SqlDataReader reader = command.ExecuteReader();
+                    SqlDataReader reader = await command.ExecuteReaderAsync();
 
-                    while (reader.Read())
+                    while (await reader.ReadAsync())
                     {
                         int familyGroupId = reader.GetInt32(0);
 
-                        List<IMember> familyGroupMembers = GetAllFamilyGroupMembers(familyGroupId);
+                        List<IMember> familyGroupMembers = await GetAllFamilyGroupMembers(familyGroupId);
 
                         familyGroups.Add(familyGroupId, familyGroupMembers);
                     }
@@ -464,7 +480,7 @@ namespace SecondSemesterProject.Services
             return familyGroups;
         }
 
-        public IMember GetMemberByID(int id)
+        public async Task<IMember> GetMemberByID(int id)
         {
             using (SqlConnection connection = new SqlConnection(ConnectionString))
             {
@@ -472,11 +488,11 @@ namespace SecondSemesterProject.Services
                 {
                     SqlCommand command = new SqlCommand(selectByIdSql, connection);
                     command.Parameters.AddWithValue("@ID", id);
-                    command.Connection.Open();
+                    await command.Connection.OpenAsync();
 
-                    SqlDataReader reader = command.ExecuteReader();
+                    SqlDataReader reader = await command.ExecuteReaderAsync();
 
-                    if (reader.Read())
+                    if (await reader.ReadAsync())
                     {
                         int memberId = reader.GetInt32(0);
                         int? familyGroupId = (reader[1] as int?) ?? null;
@@ -489,7 +505,9 @@ namespace SecondSemesterProject.Services
                         bool boardMember = reader.GetBoolean(6);
                         bool hygieneCertified = reader.GetBoolean(7);
 
-                        IMember member = new Member(memberId, familyGroupId, memberName, memberEmail, memberPassword, memberPhoneNumber, boardMember, hygieneCertified);
+                        string imageFileName = (reader[8] as string) ?? null;
+
+                        IMember member = new Member(memberId, familyGroupId, memberName, memberEmail, memberPassword, memberPhoneNumber, boardMember, hygieneCertified, imageFileName);
 
                         return member;
                     }
@@ -507,7 +525,7 @@ namespace SecondSemesterProject.Services
             return new Member();
         }
 
-        public List<IMember> GetMembersByName(string name)
+        public async Task<List<IMember>> GetMembersByName(string name)
         {
             List<IMember> memberList = new List<IMember>();
 
@@ -517,11 +535,11 @@ namespace SecondSemesterProject.Services
                 {
                     SqlCommand command = new SqlCommand(selectByNameSql, connection);
                     command.Parameters.AddWithValue("@Name", name);
-                    command.Connection.Open();
+                    await command.Connection.OpenAsync();
 
-                    SqlDataReader reader = command.ExecuteReader();
+                    SqlDataReader reader = await command.ExecuteReaderAsync();
 
-                    while (reader.Read())
+                    while (await reader.ReadAsync())
                     {
                         int memberId = reader.GetInt32(0);
                         int? familyGroupId = (reader[1] as int?) ?? null;
@@ -534,7 +552,9 @@ namespace SecondSemesterProject.Services
                         bool boardMember = reader.GetBoolean(6);
                         bool hygieneCertified = reader.GetBoolean(7);
 
-                        IMember member = new Member(memberId, familyGroupId, memberName, memberEmail, memberPassword, memberPhoneNumber, boardMember, hygieneCertified);
+                        string imageFileName = (reader[8] as string) ?? null;
+
+                        IMember member = new Member(memberId, familyGroupId, memberName, memberEmail, memberPassword, memberPhoneNumber, boardMember, hygieneCertified, imageFileName);
 
                         memberList.Add(member);
                     }
@@ -552,7 +572,7 @@ namespace SecondSemesterProject.Services
             return memberList;
         }
 
-        public List<IMember> GetAllMembers()
+        public async Task<List<IMember>> GetAllMembers()
         {
             List<IMember> memberList = new List<IMember>();
 
@@ -561,11 +581,11 @@ namespace SecondSemesterProject.Services
                 try
                 {
                     SqlCommand command = new SqlCommand(selectSql, connection);
-                    command.Connection.Open();
+                    await command.Connection.OpenAsync();
 
-                    SqlDataReader reader = command.ExecuteReader();
+                    SqlDataReader reader = await command.ExecuteReaderAsync();
 
-                    while (reader.Read())
+                    while (await reader.ReadAsync())
                     {
                         int memberId = reader.GetInt32(0);
                         int? familyGroupId = (reader[1] as int?) ?? null;
@@ -578,7 +598,9 @@ namespace SecondSemesterProject.Services
                         bool boardMember = reader.GetBoolean(6);
                         bool hygieneCertified = reader.GetBoolean(7);
 
-                        IMember member = new Member(memberId, familyGroupId, memberName, memberEmail, memberPassword, memberPhoneNumber, hygieneCertified, boardMember);
+                        string imageFileName = (reader[8] as string) ?? null;
+
+                        IMember member = new Member(memberId, familyGroupId, memberName, memberEmail, memberPassword, memberPhoneNumber, hygieneCertified, boardMember, imageFileName);
 
                         memberList.Add(member);
                     }
@@ -596,7 +618,7 @@ namespace SecondSemesterProject.Services
             return memberList;
         }
 
-        public List<IMember> GetAllFamilyGroupMembers(int id)
+        public async Task<List<IMember>> GetAllFamilyGroupMembers(int id)
         {
             List<IMember> memberList = new List<IMember>();
 
@@ -606,9 +628,9 @@ namespace SecondSemesterProject.Services
                 {
                     SqlCommand command = new SqlCommand(selectByFamilyGroupIdSql, connection);
                     command.Parameters.AddWithValue("@ID", id);
-                    command.Connection.Open();
+                    await command.Connection.OpenAsync();
 
-                    SqlDataReader reader = command.ExecuteReader();
+                    SqlDataReader reader = await command.ExecuteReaderAsync();
 
                     while (reader.Read())
                     {
@@ -623,7 +645,9 @@ namespace SecondSemesterProject.Services
                         bool boardMember = reader.GetBoolean(6);
                         bool hygieneCertified = reader.GetBoolean(7);
 
-                        IMember member = new Member(memberId, familyGroupId, memberName, memberEmail, memberPassword, memberPhoneNumber, hygieneCertified, boardMember);
+                        string imageFileName = (reader[8] as string) ?? null;
+
+                        IMember member = new Member(memberId, familyGroupId, memberName, memberEmail, memberPassword, memberPhoneNumber, hygieneCertified, boardMember, imageFileName);
 
                         memberList.Add(member);
                     }

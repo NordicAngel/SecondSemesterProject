@@ -1,6 +1,46 @@
 ﻿@page
 @model SecondSemesterProject.Pages.Events.UpdateModel
 @{
-    ViewData["Title"] = "EditEvent";
+    ViewData["Title"] = "Rediger begivenhed";
 }
-<h1>EditEvent</h1>
+<h1>Rediger begivenhed</h1>
+<p>
+    <a asp-page="/Events/GetAllEvents">Tilbage til listen</a>
+</p>
+
+
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <div asp-validation-summary="All" class="text-danger"></div>
+            @*<div class="form-group">
+                    <label asp-for="@Model.Event.EventId" class="control-label"></label>
+                    <input asp-for="@Model.Event.EventId" class="form-control" />
+                </div>*@
+            <div class="form-group">
+                <label asp-for="@Model.Event.Name" class="control-label"></label>
+                <input asp-for="@Model.Event.Name" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label asp-for="@Model.Event.Description" class="control-label"></label>
+                <input asp-for="@Model.Event.Description" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label asp-for="@Model.Event.Time" class="control-label"></label>
+                <input asp-for="@Model.Event.Time" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label asp-for="@Model.Event.Place" class="control-label"></label>
+                <input asp-for="@Model.Event.Place" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label asp-for="@Model.Event.Image" class="control-label"></label>
+                <input asp-for="@Model.Event.Image" class="form-control" />
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Gem ændringer" class="btn btn-primary" />
+                <a type="button" class="btn btn-danger" asp-page="/Events/GetAllEvents" >Annuller</a>
+        </form>
+    </div>
+</div>
+

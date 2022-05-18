@@ -14,33 +14,36 @@
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container">
-                <a class="navbar-brand" asp-area="" asp-page="/Index">SecondSemesterProject</a>
+                <a class="navbar-brand" asp-area="" asp-page="/Index">Købmandscaféen Jordnær</a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Index">Home</a>
-                        </li>
+                        @if (MemberService.GetCurrentMember().BoardMember)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-page="/Admins/Index">Admin</a>
+                            </li>
+                        }
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-page="/Members/Index">Medlemmer</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Members/FamilyGroups/Index">Familiegrupper</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/ShiftTypes/GetAllShiftType">Vagttyper</a>
-                        </li>
+                        @if (MemberService.GetCurrentMember().BoardMember)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-page="/Members/FamilyGroups/Index">Familiegrupper</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-page="/ShiftTypes/GetAllShiftType">Vagttyper</a>
+                            </li>
+                        }
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-page="/Shifts/Index">Vagter</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-page="/Events/GetAllEvents">Begivenheder</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Privacy">Privacy</a>
                         </li>
                     </ul>
                     <div>
@@ -53,7 +56,7 @@
                                 <li class="nav-item">
                                     <a class="nav-link text-dark" asp-area="" asp-page="/Profiles/Profile">
                                         <span>@MemberService.GetCurrentMember().Name</span>
-                                        <span><img src="~/Images/Default.jpg" width="28" height="28" /></span>
+                                        <span><img src="~/Images/@MemberService.GetCurrentMember().ImageFileName" width="28" height="28" /></span>
                                     </a>
                                 </li>
                             }

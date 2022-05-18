@@ -33,13 +33,16 @@ namespace SecondSemesterProject.Pages.Shifts
             Shift = await _shiftService.GetShiftAsync(id);
             MemberName = Shift.MemberId == null? 
                 "Ledig":
-                "Taget af " + _memberService.GetMemberByID((int)Shift.MemberId).Name;
+                "Taget af " + _memberService.GetMemberByID((int)Shift.MemberId).Result.Name;
             ShiftType = await _shiftTypeService.GetShiftTypeAsync(Shift.ShiftTypeId);
         }
 
-        public void OnPostTakeShift(int memberId)
+        public async Task<IActionResult> OnPostTakeShift(int shiftId, int memberId)
         {
-
+            Shift = await _shiftService.GetShiftAsync(shiftId);
+            Shift.MemberId = memberId;
+            await _shiftService.UpdateShiftAsync(shiftId, Shift);
+            return RedirectToPage("/Shifts/Index");
         }
 
         public async Task<IActionResult> OnPostDelete(int id)

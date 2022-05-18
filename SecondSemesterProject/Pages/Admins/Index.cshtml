@@ -1,0 +1,31 @@
+﻿@page
+@model SecondSemesterProject.Pages.Admins.IndexModel
+@{
+    ViewData["Title"] = "Admin";
+}
+
+<style>
+    .center {
+        margin: auto;
+        width: 50%;
+    }
+</style>
+
+<div class="center">
+    <h4>Admin</h4>
+    <p>
+        <a asp-page="/Members/Index" class="btn btn-light">Medlemmer</a>
+    </p>
+    <p>
+        <a asp-page="/Members/FamilyGroups/Index" class="btn btn-light">Familiegrupper</a>
+    </p>
+    <p>
+        <a asp-page="/Shifts/Index" class="btn btn-light">Vagter</a>
+    </p>
+    <p>
+        <a asp-page="/ShiftTypes/GetAllShiftType" class="btn btn-light">Vagttyper</a>
+    </p>
+    <p>
+        <a asp-page="/Events/GetAllEvents" class="btn btn-light">Begivenheder</a>
+    </p>
+</div>
