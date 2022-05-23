@@ -25,7 +25,7 @@ namespace SecondSemesterProject.Pages.Login
 
         public IActionResult OnGet()
         {
-            if (MemberService.CheckCurrentMember())
+            if (MemberService.GetCurrentMember() != null)
             {
                 Member = (Member)MemberService.GetCurrentMember();
 

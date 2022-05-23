@@ -1,4 +1,6 @@
 ﻿@page
+@using SecondSemesterProject.Interfaces
+@inject IMemberService MemberService
 @model SecondSemesterProject.Pages.Members.IndexModel
 @{
     ViewData["Title"] = "Medlemmer";
@@ -22,12 +24,15 @@
 <table class="table">
     <thead>
     <tr>
-        <th>
-            ID
-        </th>
-        <th>
-            Familiegruppe ID
-        </th>
+        @if (MemberService.GetBoardMember())
+        {
+            <th>
+                ID
+            </th>
+            <th>
+                Familiegruppe ID
+            </th>
+        }
         <th>
             Billede
         </th>
@@ -40,66 +45,75 @@
         <th>
             Telefonnummer
         </th>
-        <th></th>
-        <th></th>
-        <th></th>
+        @if (MemberService.GetBoardMember())
+        {
+            <th></th>
+            <th></th>
+            <th></th>
+        }
     </tr>
     </thead>
     <tbody>
-    @foreach (var item in Model.Members)
-    {
-        <tr>
-            <td>
-                @item.ID
-            </td>
-            <td>
-                @if (item.FamilyGroupID != null)
+        @foreach (var item in Model.Members)
+        {
+            <tr>
+                @if (MemberService.GetBoardMember())
                 {
-                    @item.FamilyGroupID
+                    <td>
+                        @item.ID
+                    </td>
+                    <td>
+                        @if (item.FamilyGroupID != null)
+                        {
+                            @item.FamilyGroupID
+                        }
+                        else
+                        {
+                            <span>Individuel</span>
+                        }
+                    </td>
                 }
-                else
+                <td>
+                    <img src="~/Images/@item.ImageFileName" width="64" height="64"/>
+                </td>
+                <td>
+                    @item.Name
+                </td>
+                <td>
+                    @item.Email
+                </td>
+                <td>
+                    @item.PhoneNumber
+                </td>
+                @if (MemberService.GetBoardMember())
                 {
-                    <span>Individuel</span>
+                    <td>
+                        @if (item.FamilyGroupID != null)
+                        {
+                            <p>
+                                <a asp-page="/Members/FamilyGroups/FamilyGroup" asp-route-id="@item.FamilyGroupID" class="btn btn-light">Se familiegruppe</a>
+                            </p>
+                        }
+                        else
+                        {
+                            <p>
+                                <a asp-page="/Members/FamilyGroups/Index" class="btn btn-light">Tilføj til familiegruppe</a>
+                            </p>
+                        }
+                    </td>
+                    <td>
+                        <p>
+                            <a asp-page="/Members/UpdateMember" asp-route-id="@item.ID" class="btn btn-light">Opdater</a>
+                        </p>
+                    </td>
+                    <td>
+                        <p>
+                            <a asp-page="/Members/DeleteMember" asp-route-id="@item.ID" class="btn btn-light">Slet</a>
+                        </p>
+                    </td>
                 }
-            </td>
-            <td>
-                <img src="~/Images/@item.ImageFileName" width="64" height="64" />
-            </td>
-            <td>
-                @item.Name
-            </td>
-            <td>
-                @item.Email
-            </td>
-            <td>
-                @item.PhoneNumber
-            </td>
-            <td>
-                @if (item.FamilyGroupID != null)
-                {
-                    <p>
-                        <a asp-page="/Members/FamilyGroups/FamilyGroup" asp-route-id="@item.FamilyGroupID" class="btn btn-light">Se familiegruppe</a>
-                    </p>
-                }
-                else
-                {
-                    <p>
-                        <a asp-page="/Members/FamilyGroups/Index" class="btn btn-light">Tilføj til familiegruppe</a>
-                    </p>
-                }
-            </td>
-            <td>
-                <p>
-                    <a asp-page="/Members/UpdateMember" asp-route-id="@item.ID" class="btn btn-light">Opdater</a>
-                </p>
-            </td>
-            <td>
-                <p>
-                    <a asp-page="/Members/DeleteMember" asp-route-id="@item.ID" class="btn btn-light">Slet</a>
-                </p>
-            </td>
-        </tr>
-    }
+            </tr>
+        }
 </table>
 @if (!Model.ResultsFound)
 {

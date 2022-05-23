@@ -21,7 +21,7 @@
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
-                        @if (MemberService.GetCurrentMember().BoardMember)
+                        @if (MemberService.GetBoardMember())
                         {
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-page="/Admins/Index">Admin</a>
@@ -30,7 +30,7 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-page="/Members/Index">Medlemmer</a>
                         </li>
-                        @if (MemberService.GetCurrentMember().BoardMember)
+                        @if (MemberService.GetBoardMember())
                         {
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-page="/Members/FamilyGroups/Index">Familiegrupper</a>
@@ -48,7 +48,7 @@
                     </ul>
                     <div>
                         <ul class="navbar-nav flex-grow-1">
-                            @if (MemberService.CheckCurrentMember())
+                            @if (MemberService.GetCurrentMember() != null)
                             {
                                 <li class="nav-item">
                                     <a class="nav-link text-dark" asp-area="" asp-page="/Logins/Logout">Log Ud</a>

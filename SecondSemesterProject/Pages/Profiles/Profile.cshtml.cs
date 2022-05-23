@@ -39,7 +39,7 @@ namespace SecondSemesterProject.Pages.Profiles
 
         public async Task<IActionResult> OnGetAsync()
         {
-            if (MemberService.CheckCurrentMember())
+            if (MemberService.GetCurrentMember() != null)
             {
                 Member = (Member)MemberService.GetCurrentMember();
 

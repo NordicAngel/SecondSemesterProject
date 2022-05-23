@@ -19,7 +19,7 @@ namespace SecondSemesterProject.Pages.Admins
 
         public IActionResult OnGet()
         {
-            if (MemberService.GetCurrentMember().BoardMember)
+            if (MemberService.GetBoardMember())
             {
                 return Page();
             }

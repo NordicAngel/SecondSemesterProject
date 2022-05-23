@@ -42,7 +42,7 @@ namespace SecondSemesterProject.Pages.Login
             {
                 await MemberService.Login(Email, Password);
 
-                if (MemberService.CheckCurrentMember() && MemberService.GetCurrentMember().BoardMember)
+                if (MemberService.GetBoardMember())
                 {
                     return RedirectToPage("/Profiles/Profile");
                 }

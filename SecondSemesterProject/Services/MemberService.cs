@@ -45,24 +45,14 @@ namespace SecondSemesterProject.Services
 
         public IMember GetCurrentMember()
         {
-            if (CurrentMember != null)
-            {
-                return CurrentMember;
-            }
-            else
-            {
-                return new Member();
-            }
+            return CurrentMember;
         }
 
-        public async Task UpdateCurrentMember(int id)
+        public bool GetBoardMember()
         {
-            CurrentMember = await GetMemberByID(id);
-        }
+            IMember member = GetCurrentMember();
 
-        public bool CheckCurrentMember()
-        {
-            if (CurrentMember != null)
+            if (CurrentMember != null && member.BoardMember)
             {
                 return true;
             }
@@ -70,6 +60,11 @@ namespace SecondSemesterProject.Services
             {
                 return false;
             }
+        }
+
+        public async Task UpdateCurrentMember(int id)
+        {
+            CurrentMember = await GetMemberByID(id);
         }
 
         /// <summary>
