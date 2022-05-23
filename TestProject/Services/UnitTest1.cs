@@ -25,11 +25,11 @@ namespace SecondSemesterProject.Services.Tests
             sTService.CreateShiftTypeAsync(new ShiftType(0, "B", Color.Aqua)).Wait();
             int j = sTService.GetAllShiftTypesAsync().Result.Count;
 
+
+            //Assert
             var k = sTService.GetAllShiftTypesAsync().Result;
             int m = k.Max(s => s.ShiftTypeId);
             sTService.DeleteShiftTypeAsync(m).Wait();
-
-            //Assert
             Assert.AreEqual(i+1, j);
 
             
