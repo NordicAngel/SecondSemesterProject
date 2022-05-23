@@ -2,6 +2,7 @@
 @using SecondSemesterProject.Models
 @using SecondSemesterProject.Interfaces
 @using SecondSemesterProject.Exceptions
+@using System.Globalization
 @inject IShiftTypeService stService 
 @inject IMemberService mService
 @model SecondSemesterProject.Pages.Shifts.IndexModel
@@ -186,8 +187,8 @@
                                     {
                                         <a asp-page="/Shifts/Shift" asp-route-id="@s.ShiftId">
                                             <div class="shift"
-                                                 style="top: @(s.DateTimeStart.TimeOfDay.TotalHours / 24 * 100)%;
-                                                        height: @(s.DateTimeEnd.TimeOfDay.TotalHours / 24 * 100 - s.DateTimeStart.TimeOfDay.TotalHours / 24 * 100)%;
+                                                 style="top: @((s.DateTimeStart.TimeOfDay.TotalHours / 24 * 100).ToString(CultureInfo.InvariantCulture))%;
+                                                        height: @((s.DateTimeEnd.TimeOfDay.TotalHours / 24 * 100 - s.DateTimeStart.TimeOfDay.TotalHours / 24 * 100).ToString(CultureInfo.InvariantCulture))%;
                                                         border-color: #@stService.GetShiftTypeAsync(s.ShiftTypeId).Result.Color.ToArgb().ToString("x").Substring(2)"
                                             >
                                                 <div class="tooltiptext">
