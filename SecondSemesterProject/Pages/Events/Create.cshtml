@@ -5,9 +5,7 @@
 }
 
 <h1>Opret begivenhed</h1>
-<p>
-    <a asp-page="/Events/GetAllEvents">Tilbage til listen</a>
-</p>
+
 
 @if (Model.ErrorMsg != null)
 {
@@ -44,7 +42,8 @@
             </div>
             <div class="form-group">
                 <input type="submit" value="Opret ny begivenhed" class="btn btn-primary" />
-                <input type="button" value="Annuller" class="btn btn-link" />
+                <a asp-page="/Events/GetAllEvents" class="btn btn-secondary">Annuller</a>
+            </div>
         </form>
     </div>
 </div>

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
+using SecondSemesterProject.Exceptions;
 using SecondSemesterProject.Interfaces;
 using SecondSemesterProject.Models;
 
@@ -46,13 +47,13 @@ namespace SecondSemesterProject.Services
                     return noOfRows == 1;
                 }
             }
-            catch (SqlException)
+            catch (SqlException sqlEx)
             {
-                Console.WriteLine("Noget gik galt i databasen");
-                throw;
+
+                throw new DatabaseException($"Databasen havde en fejl: {sqlEx.Message}");
             }
 
-           
+
 
         }
 
@@ -77,10 +78,10 @@ namespace SecondSemesterProject.Services
                     }
                 }
             }
-            catch (SqlException)
+            catch (SqlException sqlEx)
             {
-                Console.WriteLine("Noget gik galt i databasen");
-                throw;
+
+                throw new DatabaseException($"Databasen havde en fejl: {sqlEx.Message}");
             }
 
             return null;
@@ -108,10 +109,10 @@ namespace SecondSemesterProject.Services
                     }
                 }
             }
-            catch (SqlException)
+            catch (SqlException sqlEx)
             {
-                Console.WriteLine("Noget gik galt i databasen");
-                throw;
+
+                throw new DatabaseException($"Databasen havde en fejl: {sqlEx.Message}");
             }
 
             return sTypes;
@@ -136,10 +137,10 @@ namespace SecondSemesterProject.Services
                     await command.ExecuteNonQueryAsync();
                 }
             }
-            catch (SqlException)
+            catch (SqlException sqlEx)
             {
-                Console.WriteLine("Noget gik galt i databasen");
-                throw;
+
+                throw new DatabaseException($"Databasen havde en fejl: {sqlEx.Message}");
             }
 
 
@@ -159,10 +160,10 @@ namespace SecondSemesterProject.Services
                     await command.ExecuteNonQueryAsync();
                 }
             }
-            catch (SqlException)
+            catch (SqlException sqlEx)
             {
-                Console.WriteLine("Noget gik galt i databasen");
-                throw;
+
+                throw new DatabaseException($"Databasen havde en fejl: {sqlEx.Message}");
             }
 
 

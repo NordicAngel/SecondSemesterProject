@@ -7,7 +7,7 @@
 }
 
 <p>
-    <a asp-page="/ShiftTypes/CreateShiftType">Opret Vagttype</a>
+    <a asp-page="/ShiftTypes/CreateShiftType" class="btn btn-secondary">Opret Vagttype</a>
 </p>
 
 <h1>Vagt Typer</h1>
@@ -34,12 +34,12 @@
                 <div style="background-color:#@item.Color.ToArgb().ToString("X").Substring(2); width: 100px; height: 16px"></div>
             </td>
             <td>
-                <a asp-page="/Shifttypes/UpdateShiftType" asp-route-shiftTypeId="@item.ShiftTypeId">Opdater</a>
+                <a asp-page="/Shifttypes/UpdateShiftType" asp-route-shiftTypeId="@item.ShiftTypeId" class="btn btn-secondary">Opdater</a>
             </td>
             <td>
-                <a asp-page="/Shifttypes/DeleteShiftType" asp-route-shiftTypeId="@item.ShiftTypeId">
-                    <input class="btn-danger" type="submit" value="Slet" />
-                </a>
+                <a asp-page="/Shifttypes/DeleteShiftType" asp-route-shiftTypeId="@item.ShiftTypeId" class="btn btn-danger">
+                    Slet 
+                    </a>
             </td>
         </tr>
             }
