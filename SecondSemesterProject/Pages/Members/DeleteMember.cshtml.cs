@@ -39,15 +39,9 @@ namespace SecondSemesterProject.Pages.Members
             {
                 await MemberService.DeleteMember(id);
             }
-            catch (SqlException sqlEx)
-            {
-                InfoText = "Database Error: " + sqlEx.Message;
-
-                return Page();
-            }
             catch (Exception ex)
             {
-                InfoText = "General Error: " + ex.Message;
+                InfoText = ex.Message;
 
                 return Page();
             }

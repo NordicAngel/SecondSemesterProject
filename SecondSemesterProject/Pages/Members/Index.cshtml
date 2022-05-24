@@ -8,9 +8,12 @@
 
 <p>@Model.InfoText</p>
 
-<p>
-    <a asp-page="/Members/CreateMember" class="btn btn-primary">Tilføj nyt medlem</a>
-</p>
+@if (MemberService.GetBoardMember())
+{
+    <p>
+        <a asp-page="/Members/CreateMember" class="btn btn-primary">Tilføj nyt medlem</a>
+    </p>
+}
 
 <form>
     <p>
@@ -108,7 +111,7 @@
                     </td>
                     <td>
                         <p>
-                            <a asp-page="/Members/DeleteMember" asp-route-id="@item.ID" class="btn btn-light">Slet</a>
+                            <a asp-page="/Members/DeleteMember" asp-route-id="@item.ID" class="btn btn-danger">Slet</a>
                         </p>
                     </td>
                 }

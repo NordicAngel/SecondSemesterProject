@@ -67,15 +67,9 @@ namespace SecondSemesterProject.Pages.Members.FamilyGroup
 
                 await MemberService.UpdateFamilyGroup(members, id);
             }
-            catch (SqlException sqlEx)
-            {
-                InfoText = "Database Error: " + sqlEx.Message;
-
-                return Page();
-            }
             catch (Exception ex)
             {
-                InfoText = "General Error: " + ex.Message;
+                InfoText = ex.Message;
 
                 return Page();
             }

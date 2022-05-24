@@ -15,7 +15,7 @@ namespace SecondSemesterProject.Pages.Members.FamilyGroups
         private IMemberService MemberService;
 
         [BindProperty]
-        public int FamilyGroupId { get; set; }
+        public int FamilyGroupID { get; set; }
 
         public string InfoText;
 
@@ -26,7 +26,7 @@ namespace SecondSemesterProject.Pages.Members.FamilyGroups
 
         public IActionResult OnGet(int id)
         {
-            FamilyGroupId = id;
+            FamilyGroupID = id;
 
             return Page();
         }
@@ -39,15 +39,9 @@ namespace SecondSemesterProject.Pages.Members.FamilyGroups
             {
                 await MemberService.DeleteFamilyGroup(id);
             }
-            catch (SqlException sqlEx)
-            {
-                InfoText = "Database Error: " + sqlEx.Message;
-
-                return Page();
-            }
             catch (Exception ex)
             {
-                InfoText = "General Error: " + ex.Message;
+                InfoText = ex.Message;
 
                 return Page();
             }

@@ -13,6 +13,8 @@
     }
 </style>
 
+<p>@Model.InfoText</p>
+
 <h1>Hej @Model.Member.Name!</h1>
 
 <div class="row">
@@ -21,12 +23,13 @@
             <div>
                 <div asp-validation-summary="All" class="text-danger"></div>
                 <input type="hidden" asp-for="@Model.Member.ID" class="form-control" />
+                <input type="hidden" asp-for="@Model.Member.FamilyGroupID" class="form-control" />
                 <input type="hidden" asp-for="@Model.Member.Password" class="form-control" />
                 <input type="hidden" asp-for="@Model.Member.BoardMember" class="form-control" />
                 <input type="hidden" asp-for="@Model.Member.HygieneCertified" class="form-control" />
                 <input type="hidden" asp-for="@Model.Member.ImageFileName" class="form-control" />
                 <div>
-                    <img src="~/Images/@Model.Member.ImageFileName" width="128" height="128"/>
+                    <img src="~/Images/@Model.Member.ImageFileName" width="128" height="128" />
                 </div>
                 <div class="form-group">
                     <input type="file" asp-for="@Model.Upload" class="form-control" />
@@ -48,7 +51,7 @@
                     <input type="checkbox" asp-for="@Model.Member.BoardMember" />
                 </div>
                 <div class="form-group">
-                    <label class="bold">Hygiejne kursus gennemført: </label>
+                    <label class="bold">Hygiejnekursus gennemført: </label>
                     <input type="checkbox" asp-for="@Model.Member.HygieneCertified" />
                 </div>
                 <div class="form-group">
@@ -67,3 +70,10 @@
         </form>
     </div>
 </div>
+
+@if (Model.Member.FamilyGroupID != null)
+{
+    <p>
+        <a asp-page="/Members/FamilyGroups/FamilyGroup" asp-route-id="@Model.Member.FamilyGroupID" class="btn btn-light">Se min familiegruppe</a>
+    </p>
+}
