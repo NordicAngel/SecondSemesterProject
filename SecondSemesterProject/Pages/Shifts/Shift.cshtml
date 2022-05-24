@@ -29,7 +29,7 @@
     <div>
         @if(Model.Shift.MemberId == null)
         {
-            @if (_memberService.CheckCurrentMember())
+            @if (_memberService.GetCurrentMember() != null)
             {
 
             <form method="post">

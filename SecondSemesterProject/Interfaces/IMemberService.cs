@@ -8,8 +8,8 @@ namespace SecondSemesterProject.Interfaces
     public interface IMemberService
     {
         public IMember GetCurrentMember();
+        public bool GetBoardMember();
         public Task UpdateCurrentMember(int id);
-        public bool CheckCurrentMember();
 
         public Task CreateMember(IMember member);
         public Task UpdateMember(int id, IMember member);

@@ -13,27 +13,27 @@
         <form method="post">
             <div asp-validation-summary="All">
                 <div class="form-group">
-                    <label asp-for="@Model.Member.Name"></label><br />
+                    <label>Navn</label><br />
                     <input asp-for="@Model.Member.Name">
                 </div>
                 <div class="form-group">
-                    <label asp-for="@Model.Member.Email"></label><br />
+                    <label>E-mail</label><br />
                     <input asp-for="@Model.Member.Email">
                 </div>
                 <div class="form-group">
-                    <label asp-for="@Model.Member.Password"></label><br />
+                    <label>Kodeord</label><br />
                     <input asp-for="@Model.Member.Password">
                 </div>
                 <div class="form-group">
-                    <label asp-for="@Model.Member.PhoneNumber"></label><br />
+                    <label>Telefonnummer</label><br />
                     <input asp-for="@Model.Member.PhoneNumber">
                 </div>
                 <div class="form-group">
-                    <label asp-for="@Model.Member.BoardMember"></label>
+                    <label>Bestyrelse</label>
                     <input type="checkbox" asp-for="@Model.Member.BoardMember">
                 </div>
                 <div class="form-group">
-                    <label asp-for="@Model.Member.HygieneCertified"></label>
+                    <label>Hygiejnekursus gennemført</label>
                     <input type="checkbox" asp-for="@Model.Member.HygieneCertified">
                 </div>
                 <div class="form-group">

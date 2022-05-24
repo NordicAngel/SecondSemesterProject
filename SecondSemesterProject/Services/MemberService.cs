@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
+using SecondSemesterProject.Exceptions;
 using SecondSemesterProject.Interfaces;
 using SecondSemesterProject.Models;
 
@@ -45,24 +46,14 @@ namespace SecondSemesterProject.Services
 
         public IMember GetCurrentMember()
         {
-            if (CurrentMember != null)
-            {
-                return CurrentMember;
-            }
-            else
-            {
-                return new Member();
-            }
+            return CurrentMember;
         }
 
-        public async Task UpdateCurrentMember(int id)
+        public bool GetBoardMember()
         {
-            CurrentMember = await GetMemberByID(id);
-        }
+            IMember member = GetCurrentMember();
 
-        public bool CheckCurrentMember()
-        {
-            if (CurrentMember != null)
+            if (CurrentMember != null && member.BoardMember)
             {
                 return true;
             }
@@ -72,10 +63,15 @@ namespace SecondSemesterProject.Services
             }
         }
 
+        public async Task UpdateCurrentMember(int id)
+        {
+            CurrentMember = await GetMemberByID(id);
+        }
+
         /// <summary>
-        /// Takes an IMember as parameter and inserts it into the database.
+        /// Takes an IMember and inserts it into the database.
         /// </summary>
-        /// <param name="member"></param>
+        /// <param name="member">Member to be added.</param>
         public async Task CreateMember(IMember member)
         {
             using (SqlConnection connection = new SqlConnection(ConnectionString))
@@ -92,17 +88,23 @@ namespace SecondSemesterProject.Services
                     await command.Connection.OpenAsync();
                     await command.ExecuteNonQueryAsync();
                 }
-                catch (SqlException)
+                catch (SqlException sqlEx)
                 {
-                    throw;
+                    throw new DatabaseException("Database Error: " + sqlEx.Message);
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-                    throw;
+                    throw new Exception("General Error: " + ex.Message);
                 }
             }
         }
 
+        /// <summary>
+        /// Takes an IMember and updates the member with the given ID in the database.
+        /// </summary>
+        /// <param name="id">Member ID to be updated.</param>
+        /// <param name="member">Member to be updated with.</param>
+        /// <returns></returns>
         public async Task UpdateMember(int id, IMember member)
         {
             using (SqlConnection connection = new SqlConnection(ConnectionString))
@@ -131,17 +133,22 @@ namespace SecondSemesterProject.Services
                     await command.Connection.OpenAsync();
                     await command.ExecuteNonQueryAsync();
                 }
-                catch (SqlException)
+                catch (SqlException sqlEx)
                 {
-                    throw;
+                    throw new DatabaseException("Database Error: " + sqlEx.Message);
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-                    throw;
+                    throw new Exception("General Error: " + ex.Message);
                 }
             }
         }
 
+        /// <summary>
+        /// Removes the member with the given ID in the database
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task DeleteMember(int id)
         {
             using (SqlConnection connection = new SqlConnection(ConnectionString))
@@ -153,13 +160,13 @@ namespace SecondSemesterProject.Services
                     await command.Connection.OpenAsync();
                     await command.ExecuteNonQueryAsync();
                 }
-                catch (SqlException)
+                catch (SqlException sqlEx)
                 {
-                    throw;
+                    throw new DatabaseException("Database Error: " + sqlEx.Message);
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-                    throw;
+                    throw new Exception("General Error: " + ex.Message);
                 }
             }
         }
@@ -208,22 +215,27 @@ namespace SecondSemesterProject.Services
 
                         string imageFileName = (reader[8] as string) ?? null;
 
-                        IMember member = new Member(memberId, familyGroupId, memberName, memberEmail, memberPassword, memberPhoneNumber, boardMember, hygieneCertified, imageFileName);
+                        IMember member = new Member(memberId, familyGroupId, memberName, memberEmail, memberPassword,
+                            memberPhoneNumber, boardMember, hygieneCertified, imageFileName);
 
                         CurrentMember = member;
                     }
                     else
                     {
-                        throw new NullReferenceException();
+                        throw new IncorrectLoginException("Forkert E-mail eller kodeord.");
                     }
                 }
-                catch (SqlException)
+                catch (SqlException sqlEx)
                 {
-                    throw;
+                    throw new DatabaseException("Database Error: " + sqlEx.Message);
                 }
-                catch (Exception)
+                catch (IncorrectLoginException inLogEx)
                 {
-                    throw;
+                    throw new Exception("General Error: " + inLogEx.Message);
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("General Error: " + ex.Message);
                 }
             }
         }
@@ -243,13 +255,13 @@ namespace SecondSemesterProject.Services
                     await command.Connection.OpenAsync();
                     await command.ExecuteNonQueryAsync();
                 }
-                catch (SqlException)
+                catch (SqlException sqlEx)
                 {
-                    throw;
+                    throw new DatabaseException("Database Error: " + sqlEx.Message);
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-                    throw;
+                    throw new Exception("General Error: " + ex.Message);
                 }
             }
         }
@@ -279,13 +291,13 @@ namespace SecondSemesterProject.Services
                         }
                     }
                 }
-                catch (SqlException)
+                catch (SqlException sqlEx)
                 {
-                    throw;
+                    throw new DatabaseException("Database Error: " + sqlEx.Message);
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-                    throw;
+                    throw new Exception("General Error: " + ex.Message);
                 }
             }
         }
@@ -329,13 +341,13 @@ namespace SecondSemesterProject.Services
                     await command.Connection.OpenAsync();
                     await command.ExecuteNonQueryAsync();
                 }
-                catch (SqlException)
+                catch (SqlException sqlEx)
                 {
-                    throw;
+                    throw new DatabaseException("Database Error: " + sqlEx.Message);
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-                    throw;
+                    throw new Exception("General Error: " + ex.Message);
                 }
             }
         }
@@ -352,13 +364,13 @@ namespace SecondSemesterProject.Services
                     await command.Connection.OpenAsync();
                     await command.ExecuteNonQueryAsync();
                 }
-                catch (SqlException)
+                catch (SqlException sqlEx)
                 {
-                    throw;
+                    throw new DatabaseException("Database Error: " + sqlEx.Message);
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-                    throw;
+                    throw new Exception("General Error: " + ex.Message);
                 }
             }
         }
@@ -398,13 +410,13 @@ namespace SecondSemesterProject.Services
                     await command.Connection.OpenAsync();
                     await command.ExecuteNonQueryAsync();
                 }
-                catch (SqlException)
+                catch (SqlException sqlEx)
                 {
-                    throw;
+                    throw new DatabaseException("Database Error: " + sqlEx.Message);
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-                    throw;
+                    throw new Exception("General Error: " + ex.Message);
                 }
             }
         }
@@ -431,13 +443,13 @@ namespace SecondSemesterProject.Services
                         shiftTypes.Add(shiftTypeId);
                     }
                 }
-                catch (SqlException)
+                catch (SqlException sqlEx)
                 {
-                    throw;
+                    throw new DatabaseException("Database Error: " + sqlEx.Message);
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-                    throw;
+                    throw new Exception("General Error: " + ex.Message);
                 }
             }
 
@@ -467,13 +479,13 @@ namespace SecondSemesterProject.Services
                         familyGroups.Add(familyGroupId, familyGroupMembers);
                     }
                 }
-                catch (SqlException)
+                catch (SqlException sqlEx)
                 {
-                    throw;
+                    throw new DatabaseException("Database Error: " + sqlEx.Message);
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-                    throw;
+                    throw new Exception("General Error: " + ex.Message);
                 }
             }
 
@@ -512,13 +524,13 @@ namespace SecondSemesterProject.Services
                         return member;
                     }
                 }
-                catch (SqlException)
+                catch (SqlException sqlEx)
                 {
-                    throw;
+                    throw new DatabaseException("Database Error: " + sqlEx.Message);
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-                    throw;
+                    throw new Exception("General Error: " + ex.Message);
                 }
             }
 
@@ -559,13 +571,13 @@ namespace SecondSemesterProject.Services
                         memberList.Add(member);
                     }
                 }
-                catch (SqlException)
+                catch (SqlException sqlEx)
                 {
-                    throw;
+                    throw new DatabaseException("Database Error: " + sqlEx.Message);
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-                    throw;
+                    throw new Exception("General Error: " + ex.Message);
                 }
             }
 
@@ -605,13 +617,13 @@ namespace SecondSemesterProject.Services
                         memberList.Add(member);
                     }
                 }
-                catch (SqlException)
+                catch (SqlException sqlEx)
                 {
-                    throw;
+                    throw new DatabaseException("Database Error: " + sqlEx.Message);
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-                    throw;
+                    throw new Exception("General Error: " + ex.Message);
                 }
             }
 
@@ -652,13 +664,13 @@ namespace SecondSemesterProject.Services
                         memberList.Add(member);
                     }
                 }
-                catch (SqlException)
+                catch (SqlException sqlEx)
                 {
-                    throw;
+                    throw new DatabaseException("Database Error: " + sqlEx.Message);
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-                    throw;
+                    throw new Exception("General Error: " + ex.Message);
                 }
             }
 

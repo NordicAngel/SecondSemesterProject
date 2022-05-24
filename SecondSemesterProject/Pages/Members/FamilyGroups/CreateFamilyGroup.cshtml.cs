@@ -53,15 +53,9 @@ namespace SecondSemesterProject.Pages.Members.FamilyGroup
 
                 await MemberService.CreateFamilyGroup(members);
             }
-            catch (SqlException sqlEx)
-            {
-                InfoText = "Database Error: " + sqlEx.Message;
-
-                return Page();
-            }
             catch (Exception ex)
             {
-                InfoText = "General Error: " + ex.Message;
+                InfoText = ex.Message;
 
                 return Page();
             }
@@ -76,7 +70,9 @@ namespace SecondSemesterProject.Pages.Members.FamilyGroup
                 new SelectListItem("Ikke valgt", null)
             };
 
-            Options.AddRange(MemberService.GetAllMembers().Result.Select(a =>
+            List<IMember> members = await MemberService.GetAllMembers();
+
+            Options.AddRange(members.Select(a =>
                 new SelectListItem
                 {
                     Text = a.Name,

@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Data.SqlClient;
+using SecondSemesterProject.Exceptions;
 using SecondSemesterProject.Interfaces;
 
 namespace SecondSemesterProject.Pages.Login
@@ -42,26 +43,14 @@ namespace SecondSemesterProject.Pages.Login
             {
                 await MemberService.Login(Email, Password);
 
-                if (MemberService.CheckCurrentMember() && MemberService.GetCurrentMember().BoardMember)
+                if (MemberService.GetBoardMember())
                 {
                     return RedirectToPage("/Profiles/Profile");
                 }
             }
-            catch (SqlException sqlEx)
-            {
-                InfoText = "Database Error: " + sqlEx.Message;
-
-                return Page();
-            }
-            catch (NullReferenceException nullEx)
-            {
-                InfoText = "General Error: " + nullEx.Message;
-
-                return Page();
-            }
             catch (Exception ex)
             {
-                InfoText = "General Error: " + ex.Message;
+                InfoText = ex.Message;
 
                 return Page();
             }

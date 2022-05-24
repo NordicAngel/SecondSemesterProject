@@ -36,13 +36,11 @@ namespace SecondSemesterProject.Pages.Members
             {
                 Members = await MemberService.GetAllFamilyGroupMembers(id);
             }
-            catch (SqlException sqlEx)
-            {
-                InfoText = "Database Error: " + sqlEx.Message;
-            }
             catch (Exception ex)
             {
-                InfoText = "General Error: " + ex.Message;
+                InfoText = ex.Message;
+
+                return Page();
             }
 
             return Page();

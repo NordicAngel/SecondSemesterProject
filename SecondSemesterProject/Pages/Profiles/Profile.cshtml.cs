@@ -28,6 +28,8 @@ namespace SecondSemesterProject.Pages.Profiles
         [BindProperty]
         public Dictionary<int, bool> ShiftTypes { get; set; }
 
+        public string InfoText;
+
         public ProfileModel(IMemberService service, IShiftTypeService shiftTypeService, IHostingEnvironment hostingEnvironment)
         {
             MemberService = service;
@@ -39,7 +41,7 @@ namespace SecondSemesterProject.Pages.Profiles
 
         public async Task<IActionResult> OnGetAsync()
         {
-            if (MemberService.CheckCurrentMember())
+            if (MemberService.GetCurrentMember() != null)
             {
                 Member = (Member)MemberService.GetCurrentMember();
 
@@ -66,16 +68,27 @@ namespace SecondSemesterProject.Pages.Profiles
 
         public async Task<IActionResult> OnPostAsync()
         {
-            if (Upload != null)
+            InfoText = "";
+
+            try
             {
-                await UploadImage();
+                if (Upload != null)
+                {
+                    await UploadImage();
+                }
+
+                await MemberService.UpdateMember(Member.ID, Member);
+
+                await MemberService.UpdateMemberShiftTypes(Member.ID, ShiftTypes);
+
+                await MemberService.UpdateCurrentMember(Member.ID);
             }
+            catch (Exception ex)
+            {
+                InfoText = ex.Message;
 
-            await MemberService.UpdateMember(Member.ID, Member);
-
-            await MemberService.UpdateMemberShiftTypes(Member.ID, ShiftTypes);
-
-            await MemberService.UpdateCurrentMember(Member.ID);
+                return Page();
+            }
 
             return Page();
         }
